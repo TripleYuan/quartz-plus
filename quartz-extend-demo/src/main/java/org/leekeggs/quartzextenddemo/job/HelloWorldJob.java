@@ -7,7 +7,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 /**
- * @author wuxiaoyuan
+ * @author leekeggs
  * @since 2021-05-26
  */
 @QuartzJob(jobDescription = "在控制台打印hello world")

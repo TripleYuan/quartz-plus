@@ -25,7 +25,7 @@ import static org.leekeggs.quartzextendschedulercenter.constant.QuartzApiConstan
 /**
  * 采集quartz job和trigger信息，保存到数据库表中
  *
- * @author wuxiaoyuan
+ * @author leekeggs
  * @since 2021-04-25
  */
 @Slf4j
