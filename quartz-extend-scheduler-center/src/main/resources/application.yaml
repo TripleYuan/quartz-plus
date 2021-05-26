@@ -1,0 +1,49 @@
+server:
+  port: 62000
+
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+  datasource:
+    username: root
+    password: nDxSPnE2x
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.228.130.190:3306/quartz_job_scheduler?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true
+  quartz:
+    auto-startup: true
+    job-store-type: jdbc
+    startup-delay: 1s
+    overwrite-existing-jobs: true
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: quartzJobCenterScheduler
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 10000
+            useProperties: false
+            dataSource: myDS
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 20
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+          dataSource:
+            myDS:
+              driver: com.mysql.cj.jdbc.Driver
+              URL: jdbc:mysql://10.228.130.190:3306/kafka_data_sync?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true
+              user: root
+              password: nDxSPnE2x
+              provider: hikaricp
+              validationQuery: select 1
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  #mapper-locations: classpath*:mybatis/mapper/*.xml

@@ -1,0 +1,56 @@
+h1 {
+    background-color: #a7a5a5;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 50px;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 10% 90%;
+    grid-template-areas: "left right";
+}
+
+.sidenav {
+    grid-area: left;
+}
+
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+}
+
+.sidenav-active {
+    font-weight: bold;
+}
+
+.sidenav a:hover {
+    color: #2eac03;
+}
+
+.main {
+    grid-area: right;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5px;
+}
+
+table, thead, tbody, tr, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    text-align: center;
+    padding: 5px;
+    word-break: break-all;
+}
+
+tbody button:hover {
+    background-color: aqua;
+}
