@@ -23,4 +23,4 @@
 1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("org.leekeggs.quartzextenddemo.job")
 2. 在springboot的项目配置文件中添加配置：`quartz-job-scheduler.registry.url: your scheduler center url` （即指定你的quartz调度中心应用地址）
 
-完成上述配置后，启动你的应用，应用中的job会自动注册到quartz调度中心，重新打开quartz调度中心web页面，即可看到你的应用job。
+完成上述配置后，启动你的应用，应用中的job会自动注册到quartz调度中心，重新打开quartz调度中心web页面，即可看到你的应用job.
