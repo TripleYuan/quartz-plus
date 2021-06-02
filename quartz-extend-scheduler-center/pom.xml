@@ -66,12 +66,12 @@
         </dependency>
         <!-- mybatis end -->
 
-        <!-- mysql driver start-->
+        <!-- h2database start-->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
-        <!-- mysql driver end-->
+        <!-- h2database end-->
     </dependencies>
 
     <build>

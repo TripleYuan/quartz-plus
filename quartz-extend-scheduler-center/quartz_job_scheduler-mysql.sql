@@ -1,5 +1,5 @@
 CREATE
-DATABASE `quartz_job_scheduler` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
+    DATABASE `quartz_job_scheduler` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
 
 CREATE TABLE `quartz_scheduler_instance`
 (

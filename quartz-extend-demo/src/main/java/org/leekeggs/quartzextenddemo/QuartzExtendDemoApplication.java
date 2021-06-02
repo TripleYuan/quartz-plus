@@ -3,9 +3,8 @@ package org.leekeggs.quartzextenddemo;
 import org.leekeggs.quartzextendcore.annotation.QuartzJobScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication
 @QuartzJobScan("org.leekeggs.quartzextenddemo.job")
 public class QuartzExtendDemoApplication {
 

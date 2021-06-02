@@ -13,6 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
+import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
@@ -34,7 +35,9 @@ public class QuartzExtendConfig {
 
     @Bean
     @ConditionalOnMissingBean(SchedulerFactoryBean.class)
-    public SchedulerFactoryBean schedulerFactoryBean(QuartzProperties quartzProperties, SpringBeanJobFactory jobFactory) {
+    public SchedulerFactoryBean schedulerFactoryBean(QuartzProperties quartzProperties,
+                                                     DataSource dataSource,
+                                                     SpringBeanJobFactory jobFactory) {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
         // add properties
         Properties properties = new Properties();
@@ -49,6 +52,8 @@ public class QuartzExtendConfig {
         schedulerFactoryBean.setQuartzProperties(properties);
         // set job factory
         schedulerFactoryBean.setJobFactory(jobFactory);
+        // set datasource
+        schedulerFactoryBean.setDataSource(dataSource);
 
         return schedulerFactoryBean;
     }

@@ -6,10 +6,18 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
   datasource:
-    username: root
-    password: nDxSPnE2x
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.228.130.190:3306/quartz_job_scheduler?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:quartz_job_scheduler
+    schema: classpath:quartz_job_scheduler.sql
+  h2:
+    console:
+      enabled: true
+      settings:
+        trace: true
+        web-allow-others: true
+      path: /h2-console
   quartz:
     auto-startup: true
     job-store-type: jdbc
@@ -28,20 +36,11 @@ spring:
             isClustered: true
             clusterCheckinInterval: 10000
             useProperties: false
-            dataSource: myDS
           threadPool:
             class: org.quartz.simpl.SimpleThreadPool
             threadCount: 20
             threadPriority: 5
             threadsInheritContextClassLoaderOfInitializingThread: true
-          dataSource:
-            myDS:
-              driver: com.mysql.cj.jdbc.Driver
-              URL: jdbc:mysql://10.228.130.190:3306/kafka_data_sync?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true
-              user: root
-              password: nDxSPnE2x
-              provider: hikaricp
-              validationQuery: select 1
 
 mybatis:
   configuration:
