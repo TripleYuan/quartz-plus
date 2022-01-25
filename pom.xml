@@ -16,6 +16,7 @@
     <description>基于spring的quartz扩展</description>
 
     <modules>
+        <module>quartz-extend-common</module>
         <module>quartz-extend-core</module>
         <module>quartz-extend-scheduler-center</module>
         <module>quartz-extend-demo</module>
@@ -40,4 +41,19 @@
         </dependency>
         <!-- lombok end -->
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.leekeggs</groupId>
+                <artifactId>quartz-extend-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.leekeggs</groupId>
+                <artifactId>quartz-extend-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

@@ -32,12 +32,10 @@
         <dependency>
             <groupId>org.leekeggs</groupId>
             <artifactId>quartz-extend-common</artifactId>
-            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.leekeggs</groupId>
             <artifactId>quartz-extend-core</artifactId>
-            <version>1.1.0</version>
         </dependency>
 
         <!-- validation start -->
