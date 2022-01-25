@@ -37,7 +37,6 @@ spring:
             isClustered: true
             clusterCheckinInterval: 10000
             useProperties: false
-            dataSource: myDS
           threadPool:
             class: org.quartz.simpl.SimpleThreadPool
             threadCount: 20
