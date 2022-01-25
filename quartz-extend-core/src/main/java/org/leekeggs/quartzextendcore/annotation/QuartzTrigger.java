@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 /**
  * 用于定义quartz job's trigger
  *
- * @author leekeggs
+ * @author redcoder54
  * @see QuartzJobBeanPostProcessor
  * @since 1.0.0
  */

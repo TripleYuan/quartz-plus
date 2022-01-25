@@ -1,7 +1,6 @@
 package org.leekeggs.quartzextendcore.scheduler;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import lombok.extern.slf4j.Slf4j;
 import org.leekeggs.quartzextendcommon.utils.HttpTemplate;
 import org.leekeggs.quartzextendcommon.utils.IpUtils;
 import org.leekeggs.quartzextendcommon.utils.JsonUtils;
@@ -11,31 +10,36 @@ import org.leekeggs.quartzextendcore.core.dto.QuartzSchedulerInstance;
 import org.quartz.*;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 /**
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
-@Slf4j
-public class QuartzService implements InitializingBean {
+public class QuartzService implements InitializingBean, DisposableBean {
 
-    private static final String QUARTZ_JOB_SCHEDULER_REGISTRY_URL = "quartz-job-scheduler.registry.url";
+    private static final Logger log = LoggerFactory.getLogger(QuartzService.class);
 
     private Scheduler scheduler;
     private Environment environment;
+    private QuartzJobSchedulerProperties properties;
 
-    public QuartzService(Scheduler scheduler, Environment environment) {
+    public QuartzService(Scheduler scheduler, Environment environment, QuartzJobSchedulerProperties properties) {
         this.scheduler = scheduler;
         this.environment = environment;
+        this.properties = properties;
     }
 
     /**
@@ -74,6 +78,50 @@ public class QuartzService implements InitializingBean {
         return quartBean;
     }
 
+    /**
+     * 执行job
+     *
+     * @param jobName  job名称
+     * @param jobGroup job所在组
+     */
+    void triggerJob(String jobName, String jobGroup) throws SchedulerException {
+        JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+        scheduler.triggerJob(jobKey);
+    }
+
+    /**
+     * 暂停job
+     *
+     * @param jobName  job名称
+     * @param jobGroup job所在组
+     */
+    void pauseJob(String jobName, String jobGroup) throws SchedulerException {
+        JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+        scheduler.pauseJob(jobKey);
+    }
+
+    /**
+     * 恢复（取消暂停）job
+     *
+     * @param jobName  job名称
+     * @param jobGroup job所在组
+     */
+    void resumeJob(String jobName, String jobGroup) throws SchedulerException {
+        JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+        scheduler.resumeJob(jobKey);
+    }
+
+    /**
+     * 删除job
+     *
+     * @param jobName  job名称
+     * @param jobGroup job所在组
+     */
+    void deleteJob(String jobName, String jobGroup) throws SchedulerException {
+        JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
+        scheduler.deleteJob(jobKey);
+    }
+
     private QuartzJobTriggerInfo createQuartzJobTrigger(TriggerKey triggerKey) throws SchedulerException {
         QuartzJobTriggerInfo quartzJobTriggerInfo = new QuartzJobTriggerInfo();
 
@@ -101,42 +149,63 @@ public class QuartzService implements InitializingBean {
         return quartzJobTriggerInfo;
     }
 
-    /**
-     * 执行job
-     *
-     * @param jobName  job名称
-     * @param jobGroup job所在组
-     */
-    void triggerJob(String jobName, String jobGroup) throws SchedulerException {
-        JobKey jobKey = JobKey.jobKey(jobName, jobGroup);
-        scheduler.triggerJob(jobKey);
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        // 异步注册
+        new Thread(() -> {
+            String registerUrl = properties.getRegisterUrl();
+            if (isEmpty(registerUrl)) {
+                return;
+            }
+
+            try {
+                String schedName = scheduler.getSchedulerName();
+                String host = IpUtils.getLocalIp();
+                String port = environment.getProperty("server.port");
+                if (isEmpty(port)) {
+                    log.warn("注册实例信息失败：未配置\"server.port\"");
+                    return;
+                }
+                QuartzSchedulerInstance instance = new QuartzSchedulerInstance(schedName, host, Integer.valueOf(port));
+                QuartzApiResult<Boolean> apiResult = HttpTemplate.doPost(registerUrl, JsonUtils.beanToJsonString(instance),
+                        new TypeReference<QuartzApiResult<Boolean>>() {
+                        });
+                if (apiResult.getStatus() == 0 && Boolean.TRUE.equals(apiResult.getData())) {
+                    log.info("注册实例信息成功");
+                } else {
+                    log.warn("注册实例信息失败：" + apiResult.getMessage());
+                }
+            } catch (Exception e) {
+                log.warn("注册实例信息失败", e);
+            }
+        }, "Quartz-Register-Thread").start();
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        String url = environment.getProperty(QUARTZ_JOB_SCHEDULER_REGISTRY_URL);
-        if (StringUtils.isEmpty(url)) {
+    public void destroy() throws Exception {
+        String unregisterUrl = properties.getUnregisterUrl();
+        if (isEmpty(unregisterUrl)) {
             return;
         }
         try {
             String schedName = scheduler.getSchedulerName();
             String host = IpUtils.getLocalIp();
             String port = environment.getProperty("server.port");
-            if (StringUtils.isEmpty(port)) {
-                log.warn("注册实例信息失败：未配置\"server.port\"");
+            if (isEmpty(port)) {
+                log.warn("解除注册的实例信息失败：未配置\"server.port\"");
                 return;
             }
             QuartzSchedulerInstance instance = new QuartzSchedulerInstance(schedName, host, Integer.valueOf(port));
-            QuartzApiResult<Boolean> apiResult = HttpTemplate.doPost(url, JsonUtils.beanToJsonString(instance),
+            QuartzApiResult<Boolean> apiResult = HttpTemplate.doPost(unregisterUrl, JsonUtils.beanToJsonString(instance),
                     new TypeReference<QuartzApiResult<Boolean>>() {
                     });
             if (apiResult.getStatus() == 0 && Boolean.TRUE.equals(apiResult.getData())) {
-                log.info("注册实例信息成功");
+                log.info("解除注册的实例信息成功");
             } else {
-                log.warn("注册实例信息失败：" + apiResult.getMessage());
+                log.warn("解除注册的实例信息失败：" + apiResult.getMessage());
             }
         } catch (Exception e) {
-            log.warn("注册实例信息失败", e);
+            log.warn("解除注册的注册实例信息失败", e);
         }
     }
 }

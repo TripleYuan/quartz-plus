@@ -21,7 +21,7 @@ import java.util.Map;
  *     <li>将json字符串转换成Bean</li>
  * </ul>
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 public class JsonUtils {

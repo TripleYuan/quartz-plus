@@ -1,5 +1,6 @@
 package org.leekeggs.quartzextendschedulercenter.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.leekeggs.quartzextendcommon.utils.IpUtils;
 import org.leekeggs.quartzextendschedulercenter.mapper.QuartzSchedulerInstanceMapper;
 import org.leekeggs.quartzextendschedulercenter.mapper.QuartzSchedulerJobTriggerInfoMapper;
@@ -9,6 +10,7 @@ import org.leekeggs.quartzextendschedulercenter.service.MaintainService;
 import org.quartz.*;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,11 +23,12 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * @author leekeggs
+ * @author redcoder54
  * @since 2021-04-27
  */
 @Service
-public class MaintainServiceImpl implements MaintainService {
+@Slf4j
+public class MaintainServiceImpl implements MaintainService, InitializingBean {
 
     @Autowired
     private Scheduler scheduler;
@@ -94,5 +97,17 @@ public class MaintainServiceImpl implements MaintainService {
         }
 
         return jobTriggerInfo;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        new Thread(() -> {
+            try {
+                registerOwnInstance();
+                registerOwnJob();
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        }, "Self-Register-Thread").start();
     }
 }

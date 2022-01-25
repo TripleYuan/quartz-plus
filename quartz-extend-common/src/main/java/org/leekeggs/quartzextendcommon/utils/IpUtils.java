@@ -8,7 +8,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 
 /**
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 @Slf4j

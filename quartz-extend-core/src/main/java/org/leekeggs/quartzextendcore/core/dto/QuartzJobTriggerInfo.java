@@ -7,7 +7,7 @@ import lombok.ToString;
 /**
  * 存储quartz中的job和trigger信息
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 @Getter

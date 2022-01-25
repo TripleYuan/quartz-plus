@@ -3,7 +3,7 @@ package org.leekeggs.quartzextendcommon.exception;
 /**
  * http请求执行失败，http status != 200
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 public class HttpExecutionFailException extends RuntimeException {

@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.leekeggs.quartzextendschedulercenter.constant.ApiStatusEnum;
+import org.leekeggs.quartzextendschedulercenter.constant.ApiStatus;
 
-import static org.leekeggs.quartzextendschedulercenter.constant.ApiStatusEnum.OK;
+import static org.leekeggs.quartzextendschedulercenter.constant.ApiStatus.OK;
 
 @Getter
 @Setter
@@ -52,7 +52,7 @@ public class ApiResult<T> {
         return result;
     }
 
-    public static <T> ApiResult<T> failure(ApiStatusEnum apiStatusEnum) {
-        return new ApiResult<>(apiStatusEnum.getStatus(), apiStatusEnum.getMessage());
+    public static <T> ApiResult<T> failure(ApiStatus apiStatus) {
+        return new ApiResult<>(apiStatus.getStatus(), apiStatus.getMessage());
     }
 }

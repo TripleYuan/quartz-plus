@@ -1,13 +1,11 @@
 package org.leekeggs.quartzextendschedulercenter.service;
 
-import org.leekeggs.quartzextendschedulercenter.exception.RefreshJobTriggerInfoException;
-import org.leekeggs.quartzextendschedulercenter.exception.TriggerJobException;
-import org.leekeggs.quartzextendschedulercenter.model.dto.QuartzSchedulerInstanceDTO;
-import org.leekeggs.quartzextendschedulercenter.model.dto.tasklist.RefreshJobTriggerInfoDTO;
-import org.leekeggs.quartzextendschedulercenter.model.dto.tasklist.TriggerJobDTO;
+import org.leekeggs.quartzextendschedulercenter.model.dto.instance.QuartzInstanceDTO;
 
 /**
- * @author leekeggs
+ * quartz实例管理服务
+ *
+ * @author redcoder54
  * @since 2021-04-25
  */
 public interface QuartzJobSchedulerService {
@@ -18,29 +16,15 @@ public interface QuartzJobSchedulerService {
      * @param dto 请求数据
      * @return true - 添加成功
      */
-    boolean addInstance(QuartzSchedulerInstanceDTO dto);
+    boolean addInstance(QuartzInstanceDTO dto);
 
     /**
-     * 添加实例
+     * 删除实例，同时移除该实例下的所有job数据。
+     * <p>
+     * 注意：删除的是quartz_scheduler_job_trigger_info表中存储的job数据，而不是实例本身的job。
      *
      * @param dto 请求数据
-     * @return true - 添加成功
+     * @return true - 删除成功
      */
-    boolean deleteInstance(QuartzSchedulerInstanceDTO dto);
-
-    /**
-     * 刷新job和trigger信息
-     *
-     * @param dto 刷新请求
-     * @throws RefreshJobTriggerInfoException 刷新job和trigger信息失败
-     */
-    void refreshJobTriggerInfo(RefreshJobTriggerInfoDTO dto);
-
-    /**
-     * 触发job（执行job）
-     *
-     * @param dto 请求数据
-     * @throws TriggerJobException 触发job失败
-     */
-    void triggerJob(TriggerJobDTO dto);
+    boolean deleteInstance(QuartzInstanceDTO dto);
 }

@@ -3,7 +3,8 @@ server:
 
 quartz-job-scheduler:
   registry:
-    url: http://localhost:62000/api/quartz-job-scheduler/instance/register
+    register-url: http://localhost:62000/api/quartz-job-scheduler/instance/register
+    unregister-url: http://localhost:62000/api/quartz-job-scheduler/instance/unregister
 
 spring:
   datasource:

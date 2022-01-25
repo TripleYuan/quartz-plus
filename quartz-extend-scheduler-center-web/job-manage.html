@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>Quartz任务管理</title>
+    <link rel="shortcut icon" href="https://marketing.eastmoney.com/cdnjslib/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<header>
+    <h1>开发环境</h1>
+</header>
+<main>
+    <div class="sidenav">
+        <a id="job-list">任务列表</a>
+        <a id="instance-manage">实例管理</a>
+        <a id="job-manage" class="sidenav-active">任务管理</a>
+    </div>
+
+    <div class="main">
+        <div style="margin-left: 5px; margin-bottom: 15px; font-size: 17px">
+            <label for="schedNames">选择quartz实例:</label>
+            <select id="schedNames" style="font-size: 16px">
+                <option></option>
+            </select>
+        </div>
+        <div>
+            <table class="job-table">
+                <thead>
+                <tr style="background-color: #dedddd">
+                    <th>job名称</th>
+                    <th>job描述</th>
+                    <th>上次触发时间</th>
+                    <th>下次触发时间</th>
+                    <th>触发器状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody class="job-tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+
+<script src="script/common.js"></script>
+<script src="script/index.js"></script>
+<script src="script/job-manage.js"></script>
+</html>

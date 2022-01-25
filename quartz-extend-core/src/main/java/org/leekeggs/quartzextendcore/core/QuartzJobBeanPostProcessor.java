@@ -23,7 +23,7 @@ import java.util.List;
  * 处理{@link SchedulerFactoryBean}的BeanPostProcessor，存在{@link QuartzJob}注解的类都会被添加到QuartzScheduler中，
  * 如果类上同时存在{@link QuartzTrigger}，也会创建一个trigger，关联到job上。
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 @Slf4j

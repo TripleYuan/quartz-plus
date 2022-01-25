@@ -46,3 +46,13 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
   #mapper-locations: classpath*:mybatis/mapper/*.xml
+
+authentication:
+  cookie-config:
+    domain: localhost
+    path: /
+    max-age: 86400
+  users:
+    - name: admin
+      # 123456
+      password: e10adc3949ba59abbe56e057f20f883e

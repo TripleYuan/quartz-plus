@@ -1,6 +1,7 @@
 package org.leekeggs.quartzextendcore.core;
 
 import org.leekeggs.quartzextendcore.scheduler.QuartzController;
+import org.leekeggs.quartzextendcore.scheduler.QuartzJobSchedulerProperties;
 import org.leekeggs.quartzextendcore.scheduler.QuartzService;
 import org.quartz.Scheduler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -19,7 +20,7 @@ import java.util.Properties;
 /**
  * 配置Quartz
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 @Configuration
@@ -59,8 +60,8 @@ public class QuartzExtendConfig {
     }
 
     @Bean
-    public QuartzService quartzService(Scheduler scheduler, Environment env) {
-        return new QuartzService(scheduler, env);
+    public QuartzService quartzService(Scheduler scheduler, Environment env, QuartzJobSchedulerProperties properties) {
+        return new QuartzService(scheduler, env, properties);
     }
 
     @Bean

@@ -3,7 +3,7 @@ package org.leekeggs.quartzextendcommon.exception;
 /**
  * Bean和Json字符串转换异常
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 public class JacksonApiException extends RuntimeException {

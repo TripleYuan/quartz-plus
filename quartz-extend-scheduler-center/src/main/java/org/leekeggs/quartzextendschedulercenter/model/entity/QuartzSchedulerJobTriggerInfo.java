@@ -1,9 +1,11 @@
 package org.leekeggs.quartzextendschedulercenter.model.entity;
 
-import org.leekeggs.quartzextendschedulercenter.model.dto.QuartzSchedulerJobTriggerInfoDTO;
+import org.leekeggs.quartzextendcore.core.dto.QuartzJobTriggerInfo;
 import org.springframework.beans.BeanUtils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 @Table(name = "`quartz_scheduler_job_trigger_info`")
@@ -285,15 +287,15 @@ public class QuartzSchedulerJobTriggerInfo {
         this.updateTime = updateTime;
     }
 
-    public static QuartzSchedulerJobTriggerInfo valueOf(QuartzSchedulerJobTriggerInfoDTO dto) {
+    public static QuartzSchedulerJobTriggerInfo valueOf(QuartzJobTriggerInfo origin) {
         QuartzSchedulerJobTriggerInfo info = new QuartzSchedulerJobTriggerInfo();
         // 属性赋值
-        BeanUtils.copyProperties(dto, info);
-        if (dto.getPrevFireTime() > 0) {
-            info.setPrevFireTime(new Date(dto.getPrevFireTime()));
+        BeanUtils.copyProperties(origin, info);
+        if (origin.getPrevFireTime() > 0) {
+            info.setPrevFireTime(new Date(origin.getPrevFireTime()));
         }
-        if (dto.getNextFireTime() > 0) {
-            info.setNextFireTime(new Date(dto.getNextFireTime()));
+        if (origin.getNextFireTime() > 0) {
+            info.setNextFireTime(new Date(origin.getNextFireTime()));
         }
         return info;
     }

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 启动{@link ClassPathQuartzJobScanner}，扫描指定包下的class，将{@link QuartzJob}注解的类注册到spring容器中
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 @Slf4j

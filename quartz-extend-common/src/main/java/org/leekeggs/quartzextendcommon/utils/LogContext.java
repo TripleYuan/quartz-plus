@@ -8,10 +8,7 @@ import org.springframework.util.Assert;
 /**
  * 日志工具.
  *
- * <p>
- * LogContext实例多线程安全
- *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 public class LogContext {
@@ -67,13 +64,13 @@ public class LogContext {
     /**
      * 获取与当前线程绑定的LogContext实例，如果当前线程未绑定LogContext实例，抛出异常{@link IllegalStateException}
      *
-     * @throws IllegalStateException 当前线程未绑定LocalContext
+     * @throws IllegalStateException 当前线程未绑定LogContext
      * @since 1.2.0
      */
     public static LogContext getThreadBoundInstance() {
         LogContext logContext = LOCAL.get();
         if (logContext == null) {
-            throw new IllegalStateException("当前线程未绑定LocalContext");
+            throw new IllegalStateException("当前线程未绑定LogContext");
         }
         return logContext;
     }
@@ -84,13 +81,29 @@ public class LogContext {
      * @param logContext 待绑定的LogContext实例
      * @throws IllegalStateException 如果当前线程已绑定LocalContext，抛出异常
      * @since 1.2.0
+     * @deprecated 使用 {@link #bindCurrentThread()} 替代该方法
      */
+    @Deprecated
     public static void bindInstance(LogContext logContext) {
         Assert.notNull(logContext, "'logContext' must not be null");
         if (LOCAL.get() != null) {
             throw new IllegalStateException("当前线程已绑定LocalContext，禁止重复绑定");
         }
         LOCAL.set(logContext);
+    }
+
+    /**
+     * 将LogContext实例与当前线程绑定
+     *
+     * @throws IllegalStateException 如果当前线程已绑定LocalContext，抛出异常
+     * @since 1.4.2
+     */
+    public LogContext bindCurrentThread() {
+        if (LOCAL.get() != null) {
+            throw new IllegalStateException("当前线程已绑定LocalContext，禁止重复绑定");
+        }
+        LOCAL.set(this);
+        return this;
     }
 
     /**
@@ -118,6 +131,36 @@ public class LogContext {
         Assert.notNull(level, "'level' must not be null");
         this.level = level;
         return append(messages);
+    }
+
+    /**
+     * 更改日志级别
+     *
+     * @param level 日志级别
+     * @return 当前LogContext
+     * @since 1.4.2
+     */
+    public LogContext level(Level level) {
+        this.level = level;
+        return this;
+    }
+
+    /**
+     * 添加要输出的消息，支持{}占位符
+     *
+     * @param format    消息
+     * @param arguments 参数
+     * @return 当前LogContext
+     * @since 1.4.2
+     */
+    public synchronized LogContext appendF(String format, Object... arguments) {
+        if (arguments.length == 0) {
+            messageContainer.append(format);
+            return autoWrap ? wrap() : this;
+        }
+        String msg = String.format(format.replaceAll("\\{}", "%s"), arguments);
+        messageContainer.append(msg);
+        return autoWrap ? wrap() : this;
     }
 
     /**

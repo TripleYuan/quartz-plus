@@ -3,7 +3,7 @@ package org.leekeggs.quartzextendcommon.exception;
 /**
  * bean转map失败
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 public class BeanToMapException extends RuntimeException {

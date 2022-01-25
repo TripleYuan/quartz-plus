@@ -1,6 +1,5 @@
 package org.leekeggs.quartzextendschedulercenter.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -15,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author leekeggs
+ * @author redcoder54
  * @since 2021-05-26
  */
 @Configuration
@@ -38,8 +37,8 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("quartz调度中心API文档")
-                .description("quartz调度中心API文档")
+                .title("Quartz任务调度管理平台API文档")
+                .description("Quartz任务调度管理平台API文档")
                 .version("1.0.0")
                 .build();
     }

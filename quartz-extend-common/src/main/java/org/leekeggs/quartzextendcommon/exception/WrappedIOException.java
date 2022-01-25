@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * 包装IOException，将其转化为unchecked exception
  *
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 public class WrappedIOException extends RuntimeException {

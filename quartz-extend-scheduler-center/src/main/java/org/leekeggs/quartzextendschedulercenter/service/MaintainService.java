@@ -3,7 +3,9 @@ package org.leekeggs.quartzextendschedulercenter.service;
 import org.quartz.SchedulerException;
 
 /**
- * @author leekeggs
+ * 用于任务调度中心自身维护的服务
+ *
+ * @author redcoder54
  * @since 2021-04-27
  */
 public interface MaintainService {

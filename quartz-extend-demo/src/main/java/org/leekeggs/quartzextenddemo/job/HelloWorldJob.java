@@ -6,8 +6,11 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
- * @author leekeggs
+ * @author redcoder54
  * @since 2021-05-26
  */
 @QuartzJob(jobDescription = "在控制台打印hello world")
@@ -16,6 +19,6 @@ public class HelloWorldJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        System.out.println("hello world");
+        System.out.println("hello world， current time: " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 }

@@ -1,4 +1,4 @@
-package org.leekeggs.quartzextendschedulercenter.model.dto.tasklist;
+package org.leekeggs.quartzextendschedulercenter.model.dto.job;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -6,12 +6,12 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @author leekeggs
+ * @author redcoder54
  * @since 2021-04-25
  */
-@ApiModel("DeleteJobTriggerInfoDTO")
+@ApiModel("RemoveLocalJobTriggerDTO")
 @Data
-public class DeleteJobTriggerInfoDTO {
+public class RemoveLocalJobTriggerDTO {
     /**
      * the name of scheduler
      */

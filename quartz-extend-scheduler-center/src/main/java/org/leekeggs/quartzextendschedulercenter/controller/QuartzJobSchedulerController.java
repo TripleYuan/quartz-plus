@@ -3,7 +3,7 @@ package org.leekeggs.quartzextendschedulercenter.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.leekeggs.quartzextendschedulercenter.model.dto.ApiResult;
-import org.leekeggs.quartzextendschedulercenter.model.dto.QuartzSchedulerInstanceDTO;
+import org.leekeggs.quartzextendschedulercenter.model.dto.instance.QuartzInstanceDTO;
 import org.leekeggs.quartzextendschedulercenter.service.QuartzJobSchedulerService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 /**
- * @author leekeggs
+ * @author redcoder54
  * @since 2021-04-25
  */
 @RestController
@@ -29,7 +29,13 @@ public class QuartzJobSchedulerController {
 
     @PostMapping("/instance/register")
     @ApiOperation(value = "注册实例信息", httpMethod = "POST")
-    public ApiResult<Boolean> addInstance(@Valid @RequestBody QuartzSchedulerInstanceDTO dto) {
+    public ApiResult<Boolean> addInstance(@Valid @RequestBody QuartzInstanceDTO dto) {
         return ApiResult.success(service.addInstance(dto));
+    }
+
+    @PostMapping("/instance/unregister")
+    @ApiOperation(value = "取消注册的实例信息", httpMethod = "POST")
+    public ApiResult<Boolean> deleteInstance(@Valid @RequestBody QuartzInstanceDTO dto) {
+        return ApiResult.success(service.deleteInstance(dto));
     }
 }

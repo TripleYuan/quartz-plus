@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.ServletException;
 import java.util.Objects;
 
-import static org.leekeggs.quartzextendschedulercenter.constant.ApiStatusEnum.*;
+import static org.leekeggs.quartzextendschedulercenter.constant.ApiStatus.*;
 
 
 /**

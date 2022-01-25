@@ -1,4 +1,4 @@
-package org.leekeggs.quartzextendschedulercenter.model.dto.instancelist;
+package org.leekeggs.quartzextendschedulercenter.model.dto.instance;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,26 +9,33 @@ import org.springframework.beans.BeanUtils;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * @author leekeggs
- * @since 2021-04-26
- */
 @Data
-@ApiModel("quartz实例model")
-public class InstanceDTO {
+@ApiModel("QuartzInstanceDTO")
+public class QuartzInstanceDTO {
+    /**
+     * the name of scheduler
+     */
     @ApiModelProperty("quartz实例名称")
     @NotBlank(message = "'schedName' must not be empty")
     private String schedName;
+
+    /**
+     * 实例主机地址
+     */
     @ApiModelProperty("实例主机地址")
     @NotBlank(message = "'instanceHost' must not be empty")
     private String instanceHost;
+
+    /**
+     * 实例服务端口
+     */
     @ApiModelProperty("实例服务端口")
-    @NotNull(message = "'instancePort' must not be empty")
+    @NotNull(message = "'instanceHost' must not be null")
     private Integer instancePort;
 
-    public static InstanceDTO valueOf(QuartzSchedulerInstance instance) {
-        InstanceDTO instanceDTO = new InstanceDTO();
-        BeanUtils.copyProperties(instance, instanceDTO);
-        return instanceDTO;
+    public static QuartzInstanceDTO valueOf(QuartzSchedulerInstance instance) {
+        QuartzInstanceDTO dto = new QuartzInstanceDTO();
+        BeanUtils.copyProperties(instance, dto);
+        return dto;
     }
 }

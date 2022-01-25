@@ -54,3 +54,7 @@ th, td {
 tbody button:hover {
     background-color: aqua;
 }
+tbody button{
+    margin: 3px;
+    font-size: 16px;
+}

@@ -11,7 +11,7 @@ import java.util.List;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 /**
- * @author leekeggs
+ * @author redcoder54
  * @since 1.0.0
  */
 @RestController
