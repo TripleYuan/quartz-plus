@@ -4,7 +4,7 @@ CREATE TABLE `quartz_scheduler_instance`
 (
     `sched_name`    varchar(100) NOT NULL COMMENT 'the name of scheduler',
     `instance_host` varchar(100) NOT NULL COMMENT '实例主机地址',
-    `instance_port` int(11) NOT NULL COMMENT '实例服务端口',
+    `instance_port` int NOT NULL COMMENT '实例服务端口',
     PRIMARY KEY (`sched_name`, `instance_host`, `instance_port`)
 );
 
