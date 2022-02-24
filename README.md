@@ -16,7 +16,7 @@
 ## Quartz任务调度管理平台使用指南
 
 1. 启动 **quartz-extend-scheduler-center** 应用
-2. 打开quartz调度中心web页面 **job.html** （位于quartz-extend-scheduler-center-web模块目录下）
+2. 进入Quartz任务调度中心[主页](http://localhost:62000/job.html)
 
 ## 我的应用如何接入Quartz任务调度管理平台
 
