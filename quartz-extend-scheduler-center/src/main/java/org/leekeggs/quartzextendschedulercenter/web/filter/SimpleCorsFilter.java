@@ -7,6 +7,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,9 +43,7 @@ public class SimpleCorsFilter implements Filter {
     }
 
     private Map<String, String> getCorsHeaders(String origin, HttpServletRequest httpServletRequest) {
-        if (!hasText(origin)) {
-            origin = "*";
-        }
+        String allowOrigin = hasText(origin) ? getHost(origin) : "*";
         String allowHeaders = httpServletRequest.getHeader(ACCESS_CONTROL_REQUEST_HEADERS);
         allowHeaders = !hasText(allowHeaders) ? "Content-Type" : allowHeaders;
 
@@ -55,9 +55,19 @@ public class SimpleCorsFilter implements Filter {
         corsHeaders.put(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
         corsHeaders.put(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, allowHeaders);
         corsHeaders.put(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, allowMethod);
-        corsHeaders.put(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+        corsHeaders.put(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, allowOrigin);
         corsHeaders.put(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "*");
         corsHeaders.put(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
         return corsHeaders;
+    }
+
+    private String getHost(String origin) {
+        try {
+            URL url = new URL(origin);
+            return url.getHost();
+        } catch (MalformedURLException e) {
+            log.warn("", e);
+            return "*";
+        }
     }
 }
