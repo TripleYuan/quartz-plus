@@ -7,8 +7,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,11 +37,14 @@ public class SimpleCorsFilter implements Filter {
         Map<String, String> corsHeaders = getCorsHeaders(origin, httpServletRequest);
         corsHeaders.forEach(httpServletResponse::addHeader);
 
+        if ("OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
+            return;
+        }
         chain.doFilter(request, response);
     }
 
     private Map<String, String> getCorsHeaders(String origin, HttpServletRequest httpServletRequest) {
-        String allowOrigin = hasText(origin) ? getHost(origin) : "*";
+        String allowOrigin = hasText(origin) ? origin : "*";
         String allowHeaders = httpServletRequest.getHeader(ACCESS_CONTROL_REQUEST_HEADERS);
         allowHeaders = !hasText(allowHeaders) ? "Content-Type" : allowHeaders;
 
@@ -59,15 +60,5 @@ public class SimpleCorsFilter implements Filter {
         corsHeaders.put(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "*");
         corsHeaders.put(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
         return corsHeaders;
-    }
-
-    private String getHost(String origin) {
-        try {
-            URL url = new URL(origin);
-            return url.getHost();
-        } catch (MalformedURLException e) {
-            log.warn("", e);
-            return "*";
-        }
     }
 }
