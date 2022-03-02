@@ -14,14 +14,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FilterConfig {
 
-    @Bean
-    public FilterRegistrationBean<SimpleCorsFilter> corsFilterRegisterBean() {
-        FilterRegistrationBean<SimpleCorsFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new SimpleCorsFilter());
-        filterRegistrationBean.addUrlPatterns("/api/*");
-        filterRegistrationBean.setOrder(0);
-        return filterRegistrationBean;
-    }
+    // @Bean
+    // public FilterRegistrationBean<SimpleCorsFilter> corsFilterRegisterBean() {
+    //     FilterRegistrationBean<SimpleCorsFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+    //     filterRegistrationBean.setFilter(new SimpleCorsFilter());
+    //     filterRegistrationBean.addUrlPatterns("/api/*");
+    //     filterRegistrationBean.setOrder(0);
+    //     return filterRegistrationBean;
+    // }
 
     @Bean
     public FilterRegistrationBean<AuthenticateFilter> authenticateFilterRegistrationBean(LoginService loginService) {
