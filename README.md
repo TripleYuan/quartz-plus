@@ -7,7 +7,7 @@
 
 ## 上手指南
 
-1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("org.leekeggs.quartzextenddemo.job")
+1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("redcoder.quartzextenddemo.job")
 2. 在你的Job类上添加`QuartzJob`注解，配置job相关属性，目前支持配置 **jobKeyName**（默认值：类名） 、 **jobKeyGroup**（默认值：DEFAULT） 、 **jobDescription**
    （默认值：空字符串） 、 **storeDurably** （默认值：true）
 3. 在你的Job类上添加`QuartzTrigger`注解，配置trigger相关属性，目前支持配置 **triggerKeyName**（默认值：类名+"Trigger""） 、 **triggerKeyGroup**（默认值：DEFAULT） 、 **triggerDescription**
@@ -16,11 +16,14 @@
 ## Quartz任务调度管理平台使用指南
 
 1. 启动 **quartz-extend-scheduler-center** 应用
-2. 进入Quartz任务调度中心[主页](http://localhost:62000/job.html)
+2. 进入Quartz任务调度中心 http://localhost:62000/job.html
+
+默认的用户名：admin
+密码：123456
 
 ## 我的应用如何接入Quartz任务调度管理平台
 
-1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("org.leekeggs.quartzextenddemo.job")
+1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("redcoder.quartzextenddemo.job")
 2. 在springboot的项目配置文件中添加配置：
 ```
 quartz-job-scheduler:

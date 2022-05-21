@@ -7,7 +7,7 @@ schedNameList.addEventListener("click", loadInstanceTable);
 
 function loadSchedNameList() {
     let xhr = new XMLHttpRequest();
-    let url = baseUrl + '/api/job-manage/sched-names';
+    let url = baseUrl + '/api/job/sched-names';
     try {
         xhr.open("get", url);
         xhr.withCredentials = true;
@@ -34,7 +34,7 @@ function loadSchedNameList() {
 function loadInstanceTable() {
     instanceTbody.innerHTML = '';
     let xhr = new XMLHttpRequest();
-    let url = baseUrl + '/api/instance-manage/list';
+    let url = baseUrl + '/api/instance/list';
     try {
         let index = schedNameList.selectedIndex;
         if (index > 0) {
@@ -88,7 +88,7 @@ function loadInstanceTable() {
 
 // 删除实例
 function deleteInstance(model, tr) {
-    let url = baseUrl + '/api/instance-manage/delete';
+    let url = baseUrl + '/api/instance/delete';
     let xhr = new XMLHttpRequest();
     xhr.open('delete', url);
     xhr.withCredentials = true;

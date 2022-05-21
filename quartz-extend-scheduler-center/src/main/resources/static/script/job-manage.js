@@ -6,7 +6,7 @@ schedNameList.addEventListener("click", loadJobTable);
 
 function loadSchedNameList() {
     let xhr = new XMLHttpRequest();
-    let url = baseUrl + '/api/job-manage/sched-names';
+    let url = baseUrl + '/api/job/sched-names';
     xhr.open("get", url);
     xhr.withCredentials = true;
     xhr.send();
@@ -33,7 +33,7 @@ function loadJobTable() {
     }
 
     jobTbody.innerHTML = '';
-    let url = baseUrl + '/api/job-manage/list';
+    let url = baseUrl + '/api/job/list';
     let xhr = new XMLHttpRequest();
     let params = "schedName=" + schedNameList.options[index].value;
     url = url + "?" + params
@@ -109,7 +109,7 @@ function loadJobTable() {
 
 // 移除job
 function removeJob(model, tr) {
-    let url = baseUrl + "/api/job-manage/removeLocal"
+    let url = baseUrl + "/api/job/removeLocal"
     let xhr = new XMLHttpRequest();
     xhr.open("delete", url);
     xhr.withCredentials = true;
@@ -135,9 +135,9 @@ function removeJob(model, tr) {
 function pauseOrResumeJob(pauseOrResumeBtn, model, jobNameTd, jobDescTd, prevFireTimeTd, nextFireTime, triggerStateTd) {
     let url;
     if (pauseOrResumeBtn.textContent === "暂停") {
-        url = baseUrl + '/api/job-manage/pause';
+        url = baseUrl + '/api/job/pause';
     } else {
-        url = baseUrl + '/api/job-manage/resume';
+        url = baseUrl + '/api/job/resume';
     }
     let xhr = new XMLHttpRequest();
     xhr.open("post", url);
@@ -168,7 +168,7 @@ function pauseOrResumeJob(pauseOrResumeBtn, model, jobNameTd, jobDescTd, prevFir
 
 // 刷新job
 function refreshJob(model, jobNameTd, jobDescTd, prevFireTimeTd, nextFireTime, triggerStateTd) {
-    let url = baseUrl + '/api/job-manage/refresh';
+    let url = baseUrl + '/api/job/refresh';
     let xhr = new XMLHttpRequest();
     xhr.open("post", url);
     xhr.withCredentials = true;
@@ -197,7 +197,7 @@ function refreshJob(model, jobNameTd, jobDescTd, prevFireTimeTd, nextFireTime, t
 
 // 删除job
 function deleteJob(model, tr) {
-    let url = baseUrl + '/api/job-manage/delete';
+    let url = baseUrl + '/api/job/delete';
     let xhr = new XMLHttpRequest();
     xhr.open("post", url);
     xhr.withCredentials = true;

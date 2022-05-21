@@ -7,7 +7,7 @@ schedNameList.addEventListener("click", loadJobTable);
 
 function loadSchedNameList() {
     let xhr = new XMLHttpRequest();
-    let url = baseUrl + '/api/job-manage/sched-names';
+    let url = baseUrl + '/api/job/sched-names';
     xhr.open("get", url);
     xhr.withCredentials = true;
     xhr.send();
@@ -30,7 +30,7 @@ function loadSchedNameList() {
 function loadJobTable() {
     jobTbody.innerHTML = '';
 
-    let url = baseUrl + '/api/job-manage/list';
+    let url = baseUrl + '/api/job/list';
     let xhr = new XMLHttpRequest();
     let index = schedNameList.selectedIndex;
     if (index > 0) {
@@ -106,7 +106,7 @@ function loadJobTable() {
 
 // 执行job
 function triggerJob(model) {
-    let url = baseUrl + '/api/job-manage/trigger';
+    let url = baseUrl + '/api/job/trigger';
     let xhr = new XMLHttpRequest();
     xhr.open("post", url);
     xhr.withCredentials = true;
@@ -131,7 +131,7 @@ function triggerJob(model) {
 
 // 刷新job
 function refreshJob(model, jobNameTd, jobDescTd, prevFireTimeTd, nextFireTime, triggerStateTd) {
-    let url = baseUrl + '/api/job-manage/refresh';
+    let url = baseUrl + '/api/job/refresh';
     let xhr = new XMLHttpRequest();
     xhr.open("post", url);
     xhr.withCredentials = true;
