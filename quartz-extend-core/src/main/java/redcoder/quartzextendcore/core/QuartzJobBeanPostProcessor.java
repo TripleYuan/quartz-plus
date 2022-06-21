@@ -27,7 +27,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Slf4j
-public class QuartzJobBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
+public class QuartzJobBeanPostProcessor extends QuartzJobProcessorSupport implements BeanPostProcessor, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
@@ -58,10 +58,9 @@ public class QuartzJobBeanPostProcessor implements BeanPostProcessor, Applicatio
                 QuartzJob quartzJob = AnnotationUtils.findAnnotation(jobType, QuartzJob.class);
                 QuartzTrigger quartzTrigger = AnnotationUtils.findAnnotation(jobType, QuartzTrigger.class);
                 if (quartzJob != null) {
-                    String jobKeyName = quartzJob.jobKeyName();
                     // 创建JobDetail并添加到列表中
                     JobDetail jobDetail = JobBuilder.newJob(jobType)
-                            .withIdentity(StringUtils.hasText(jobKeyName) ? jobKeyName : jobBeanName, quartzJob.jobKeyGroup())
+                            .withIdentity(createJobKeyName(quartzJob, jobType), quartzJob.jobKeyGroup())
                             .withDescription(quartzJob.jobDescription())
                             .storeDurably(quartzJob.storeDurably())
                             .build();
@@ -69,15 +68,11 @@ public class QuartzJobBeanPostProcessor implements BeanPostProcessor, Applicatio
 
                     if (quartzTrigger != null) {
                         // 创建job对应的trigger并添加到列表中
-                        String triggerKeyName = quartzTrigger.triggerKeyName();
                         String cron = quartzTrigger.cron();
                         if (StringUtils.hasText(cron)) {
-                            if (!StringUtils.hasText(triggerKeyName)) {
-                                triggerKeyName = jobBeanName + "Trigger";
-                            }
                             CronTrigger trigger = TriggerBuilder.newTrigger()
                                     .forJob(jobDetail.getKey())
-                                    .withIdentity(triggerKeyName, quartzTrigger.triggerKeyGroup())
+                                    .withIdentity(createTriggerKeyName(quartzTrigger, jobType), quartzTrigger.triggerKeyGroup())
                                     .withDescription(quartzTrigger.triggerDescription())
                                     .withSchedule(CronScheduleBuilder.cronSchedule(cron))
                                     .build();
