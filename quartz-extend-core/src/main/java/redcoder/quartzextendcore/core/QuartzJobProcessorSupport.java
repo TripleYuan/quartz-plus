@@ -35,7 +35,7 @@ public class QuartzJobProcessorSupport {
         try {
             return clazz.newInstance();
         } catch (Exception e) {
-            log.error("Failed to create QuartzKeyNameGenerator, we will use DefaultQuartzKeyNameGenerator.", e);
+            log.warn("Failed to create QuartzKeyNameGenerator, we will use DefaultQuartzKeyNameGenerator.", e);
             return defaultQuartzKeyNameGenerator;
         }
     }
