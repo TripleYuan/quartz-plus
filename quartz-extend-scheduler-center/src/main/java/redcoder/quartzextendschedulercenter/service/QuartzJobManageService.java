@@ -1,9 +1,7 @@
 package redcoder.quartzextendschedulercenter.service;
 
-import redcoder.quartzextendschedulercenter.model.dto.job.JobManageDTO;
-import redcoder.quartzextendschedulercenter.model.dto.job.JobTriggerDTO;
-import redcoder.quartzextendschedulercenter.model.dto.job.RefreshJobTriggerDTO;
-import redcoder.quartzextendschedulercenter.model.dto.job.RemoveLocalJobTriggerDTO;
+import redcoder.quartzextendschedulercenter.model.dto.PageResponse;
+import redcoder.quartzextendschedulercenter.model.dto.job.*;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public interface QuartzJobManageService {
     /**
      * 获取所有的job及其trigger信息
      */
-    List<JobTriggerDTO> getJobTriggerInfos(@Nullable String schedName);
+    PageResponse<JobTriggerDTO> getJobTriggerInfos(QueryJobTriggerInfo queryJobTriggerInfo);
 
     /**
      * 刷新job和trigger信息

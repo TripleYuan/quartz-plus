@@ -1,10 +1,14 @@
 package redcoder.quartzextendschedulercenter.controller;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerInstanceMapper;
 import redcoder.quartzextendschedulercenter.model.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.model.dto.PageResponse;
 import redcoder.quartzextendschedulercenter.model.dto.instance.QuartzInstanceDTO;
+import redcoder.quartzextendschedulercenter.model.dto.instance.QueryInstanceInfo;
 import redcoder.quartzextendschedulercenter.model.entity.QuartzSchedulerInstance;
 import redcoder.quartzextendschedulercenter.service.QuartzJobSchedulerService;
 import org.springframework.util.StringUtils;
@@ -33,7 +37,11 @@ public class QuartzInstanceController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取实例", httpMethod = "GET")
-    public ApiResult<List<QuartzInstanceDTO>> getInstancesList(@RequestParam(required = false) String schedName) {
+    public ApiResult<PageResponse<QuartzInstanceDTO>> getInstancesList(QueryInstanceInfo queryInstanceInfo) {
+        String schedName = queryInstanceInfo.getSchedName();
+        int pageNo = queryInstanceInfo.getPageNo();
+        int pageSize = queryInstanceInfo.getPageSize();
+
         Example.Builder builder = Example.builder(QuartzSchedulerInstance.class)
                 .orderByDesc("schedName");
         if (StringUtils.hasText(schedName)) {
@@ -41,12 +49,14 @@ public class QuartzInstanceController {
         }
         Example example = builder.build();
 
+        PageHelper.startPage(pageNo, pageSize);
         List<QuartzSchedulerInstance> list = instanceMapper.selectByExample(example);
-        List<QuartzInstanceDTO> data = list.stream().map(QuartzInstanceDTO::valueOf).collect(Collectors.toList());
-        return ApiResult.success(data);
+        Page<QuartzSchedulerInstance> page = (Page<QuartzSchedulerInstance>) list;
+        List<QuartzInstanceDTO> data = page.stream().map(QuartzInstanceDTO::valueOf).collect(Collectors.toList());
+        return ApiResult.success(new PageResponse<>(page.getTotal(), pageNo, pageSize, data));
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @ApiOperation(value = "删除实例", httpMethod = "DELETE")
     public ApiResult<Boolean> delete(@Valid @RequestBody QuartzInstanceDTO dto) {
         return ApiResult.success(quartzJobSchedulerService.deleteInstance(dto));

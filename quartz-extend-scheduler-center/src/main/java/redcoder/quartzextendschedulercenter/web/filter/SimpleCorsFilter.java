@@ -17,7 +17,7 @@ import static org.springframework.util.StringUtils.hasText;
 /**
  * 处理跨域
  *
- * @author wuxiaoyuan
+ * @author redcoder
  * @since 2021-06-19
  */
 @Slf4j

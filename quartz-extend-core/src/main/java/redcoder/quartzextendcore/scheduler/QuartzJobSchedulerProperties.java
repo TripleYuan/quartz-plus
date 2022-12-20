@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * quartz任务调度管理平台的配置属性
  *
- * @author wuxiaoyuan
+ * @author redcoder
  * @since 1.4
  */
 @ConfigurationProperties(prefix = "quartz-job-scheduler.registry")

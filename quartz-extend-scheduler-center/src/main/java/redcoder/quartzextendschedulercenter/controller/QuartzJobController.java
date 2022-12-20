@@ -5,10 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import redcoder.quartzextendschedulercenter.exception.JobManageException;
 import redcoder.quartzextendschedulercenter.model.dto.ApiResult;
-import redcoder.quartzextendschedulercenter.model.dto.job.JobManageDTO;
-import redcoder.quartzextendschedulercenter.model.dto.job.JobTriggerDTO;
-import redcoder.quartzextendschedulercenter.model.dto.job.RefreshJobTriggerDTO;
-import redcoder.quartzextendschedulercenter.model.dto.job.RemoveLocalJobTriggerDTO;
+import redcoder.quartzextendschedulercenter.model.dto.PageResponse;
+import redcoder.quartzextendschedulercenter.model.dto.job.*;
 import redcoder.quartzextendschedulercenter.service.QuartzJobManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +35,8 @@ public class QuartzJobController {
 
     @GetMapping("/list")
     @ApiOperation(value = "获取job", httpMethod = "GET")
-    public ApiResult<List<JobTriggerDTO>> getJobTriggerInfoList(@RequestParam(required = false) String schedName) {
-        return ApiResult.success(jobManageService.getJobTriggerInfos(schedName));
+    public ApiResult<PageResponse<JobTriggerDTO>> getJobTriggerInfoList(QueryJobTriggerInfo queryJobTriggerInfo) {
+        return ApiResult.success(jobManageService.getJobTriggerInfos(queryJobTriggerInfo));
     }
 
     @PostMapping("/refresh")
@@ -47,7 +45,7 @@ public class QuartzJobController {
         return ApiResult.success(jobManageService.refreshJobTrigger(dto));
     }
 
-    @DeleteMapping("/removeLocal")
+    @PostMapping("/removeLocal")
     @ApiOperation(value = "删除本地保存的job数据", httpMethod = "DELETE")
     public ApiResult<Boolean> removeLocal(@Valid @RequestBody RemoveLocalJobTriggerDTO dto) {
         return ApiResult.success(jobManageService.removeLocal(dto));

@@ -15,7 +15,7 @@ import static redcoder.quartzextendschedulercenter.constant.ApiStatus.UNAUTHORIZ
 /**
  * 授权拦截器，验证用户是否登录
  *
- * @author wuxiaoyuan
+ * @author redcoder
  * @since 2022-01-11
  */
 public class AuthenticateFilter implements Filter {
