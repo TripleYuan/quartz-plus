@@ -12,7 +12,7 @@ public enum ApiStatus {
 
     BAD_REQUEST(400, "错误的请求"),
 
-    UNAUTHORIZED_REQUEST(401, "未授权的请求"),
+    UNAUTHORIZED_REQUEST(401, "未登录，请登录后进行此操作"),
 
     SERVER_ERROR(500, "服务繁忙"),
 

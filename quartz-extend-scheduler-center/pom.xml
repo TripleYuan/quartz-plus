@@ -103,6 +103,13 @@
             <artifactId>jakarta.el</artifactId>
             <version>3.0.4</version>
         </dependency>
+
+        <!-- shiro -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring-boot-web-starter</artifactId>
+            <version>1.8.0</version>
+        </dependency>
     </dependencies>
 
     <build>

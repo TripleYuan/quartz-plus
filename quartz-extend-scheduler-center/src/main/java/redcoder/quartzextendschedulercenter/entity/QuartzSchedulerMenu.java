@@ -45,10 +45,10 @@ public class QuartzSchedulerMenu {
     private String parentId;
 
     /**
-     * 是否显示
+     * 菜单状态，0-隐藏，1-显示
      */
-    @Column(name = "is_show")
-    private Boolean isShow;
+    @Column(name = "menu_status")
+    private Integer menuStatus;
 
     /**
      * 创建时间

@@ -2,8 +2,6 @@ package redcoder.quartzextendschedulercenter.service;
 
 import redcoder.quartzextendschedulercenter.dto.login.LoginDTO;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * 登录服务
  *
@@ -21,9 +19,8 @@ public interface LoginService {
     boolean login(LoginDTO loginDTO);
 
     /**
-     * 判断用户是否登录
-     *
-     * @return 如果用户已登录，返回true
+     * 登出
      */
-    boolean isLogin(HttpServletRequest httpServletRequest);
+    void logout();
+
 }

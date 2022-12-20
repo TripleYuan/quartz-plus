@@ -34,9 +34,9 @@ public class AuthenticationProperties {
     @Setter
     public static class CookieConfig {
         /**
-         * cookie's name, default value: user-id
+         * cookie's name, default value: JSESSIONID
          */
-        private String name = "user-id";
+        private String name = "JSESSIONID";
         /**
          * cookie domain, default value: localhost
          */

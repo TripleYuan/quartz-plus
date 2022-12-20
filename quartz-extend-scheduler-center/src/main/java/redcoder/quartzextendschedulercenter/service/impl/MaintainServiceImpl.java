@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author redcoder54
@@ -103,6 +104,7 @@ public class MaintainServiceImpl implements MaintainService, InitializingBean {
     public void afterPropertiesSet() throws Exception {
         new Thread(() -> {
             try {
+                TimeUnit.SECONDS.sleep(5);
                 registerOwnInstance();
                 registerOwnJob();
             } catch (Exception e) {

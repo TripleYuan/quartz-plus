@@ -12,8 +12,8 @@ public class QuartzSchedulerUserRoleRel {
      * 用户id
      */
     @Id
-    @Column(name = "`user_id`")
-    private Integer userId;
+    @Column(name = "`userid`")
+    private Integer userid;
 
     /**
      * 角色id

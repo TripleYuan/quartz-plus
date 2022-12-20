@@ -34,4 +34,11 @@ public class LoginController {
             return ApiResult.failure(UNKNOWN_USER);
         }
     }
+
+    @PostMapping("/api/logout")
+    @ApiOperation("登出")
+    public ApiResult<String> logout() {
+        loginService.logout();
+        return ApiResult.success("ok");
+    }
 }

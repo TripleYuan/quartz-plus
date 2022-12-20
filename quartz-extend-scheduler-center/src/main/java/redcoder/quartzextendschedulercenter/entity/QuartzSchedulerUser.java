@@ -28,10 +28,10 @@ public class QuartzSchedulerUser {
     private String password;
 
     /**
-     * 是否为管理员，0-否、1-是
+     * 用户类型，0-普通用户，1-管理员
      */
-    @Column(name = "`is_admin`")
-    private Boolean isAdmin;
+    @Column(name = "`user_type`")
+    private Integer userType;
 
     /**
      * 创建时间

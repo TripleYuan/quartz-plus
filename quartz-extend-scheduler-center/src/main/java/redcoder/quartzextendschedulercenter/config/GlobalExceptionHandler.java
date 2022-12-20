@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import redcoder.quartzextendschedulercenter.constant.ApiStatus;
+import redcoder.quartzextendschedulercenter.exception.UserNotLoginException;
 
 import javax.servlet.ServletException;
 import java.util.Objects;
@@ -32,6 +33,10 @@ public class GlobalExceptionHandler {
 
         if (e instanceof ServletException) {
             return ApiResult.failure(ApiStatus.BAD_REQUEST.getStatus(), e.getMessage());
+        }
+
+        if (e instanceof UserNotLoginException) {
+            return ApiResult.failure(ApiStatus.UNAUTHORIZED_REQUEST);
         }
 
         return ApiResult.failure(ApiStatus.SERVER_ERROR.getStatus(), ApiStatus.SERVER_ERROR.getMessage());

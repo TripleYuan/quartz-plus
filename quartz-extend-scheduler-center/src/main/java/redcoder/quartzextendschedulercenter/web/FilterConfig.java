@@ -1,7 +1,5 @@
 package redcoder.quartzextendschedulercenter.web;
 
-import redcoder.quartzextendschedulercenter.service.LoginService;
-import redcoder.quartzextendschedulercenter.web.filter.AuthenticateFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,15 +17,6 @@ public class FilterConfig {
         FilterRegistrationBean<SimpleCorsFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new SimpleCorsFilter());
         filterRegistrationBean.addUrlPatterns("/api/*");
-        filterRegistrationBean.setOrder(0);
-        return filterRegistrationBean;
-    }
-
-    @Bean
-    public FilterRegistrationBean<AuthenticateFilter> authenticateFilterRegistrationBean(LoginService loginService) {
-        FilterRegistrationBean<AuthenticateFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new AuthenticateFilter(loginService));
-        filterRegistrationBean.addUrlPatterns("/api/instance/*", "/api/job/*");
         filterRegistrationBean.setOrder(0);
         return filterRegistrationBean;
     }
