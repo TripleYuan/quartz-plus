@@ -1,7 +1,7 @@
 package redcoder.quartzextendschedulercenter.web.filter;
 
 import redcoder.quartzextendcommon.utils.JsonUtils;
-import redcoder.quartzextendschedulercenter.model.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.dto.ApiResult;
 import redcoder.quartzextendschedulercenter.service.LoginService;
 import redcoder.quartzextendschedulercenter.utils.WebUtils;
 

@@ -1,4 +1,4 @@
-package redcoder.quartzextendschedulercenter.model.entity;
+package redcoder.quartzextendschedulercenter.entity;
 
 import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
 import org.springframework.beans.BeanUtils;

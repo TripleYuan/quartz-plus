@@ -9,9 +9,9 @@ import redcoder.quartzextendcore.annotation.QuartzTrigger;
 import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
 import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerInstanceMapper;
 import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerJobTriggerInfoMapper;
-import redcoder.quartzextendschedulercenter.model.dto.ApiResult;
-import redcoder.quartzextendschedulercenter.model.entity.QuartzSchedulerInstance;
-import redcoder.quartzextendschedulercenter.model.entity.QuartzSchedulerJobTriggerInfo;
+import redcoder.quartzextendschedulercenter.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
+import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
 import org.quartz.JobExecutionContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 

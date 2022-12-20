@@ -3,7 +3,7 @@ package redcoder.quartzextendschedulercenter.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import redcoder.quartzextendschedulercenter.model.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.dto.ApiResult;
 import redcoder.quartzextendschedulercenter.service.MaintainService;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;

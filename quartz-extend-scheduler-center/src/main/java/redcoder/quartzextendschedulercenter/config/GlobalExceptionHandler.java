@@ -1,7 +1,7 @@
 package redcoder.quartzextendschedulercenter.config;
 
 import lombok.extern.slf4j.Slf4j;
-import redcoder.quartzextendschedulercenter.model.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.dto.ApiResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

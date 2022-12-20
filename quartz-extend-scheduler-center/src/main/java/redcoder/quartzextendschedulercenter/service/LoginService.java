@@ -1,6 +1,6 @@
 package redcoder.quartzextendschedulercenter.service;
 
-import redcoder.quartzextendschedulercenter.model.dto.login.LoginDTO;
+import redcoder.quartzextendschedulercenter.dto.login.LoginDTO;
 
 import javax.servlet.http.HttpServletRequest;
 

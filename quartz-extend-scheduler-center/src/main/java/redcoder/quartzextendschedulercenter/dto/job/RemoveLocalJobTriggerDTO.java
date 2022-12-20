@@ -1,4 +1,4 @@
-package redcoder.quartzextendschedulercenter.model.dto.job;
+package redcoder.quartzextendschedulercenter.dto.job;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -9,9 +9,9 @@ import javax.validation.constraints.NotBlank;
  * @author redcoder54
  * @since 2021-04-25
  */
-@ApiModel("RefreshJobTriggerDTO")
+@ApiModel("RemoveLocalJobTriggerDTO")
 @Data
-public class RefreshJobTriggerDTO {
+public class RemoveLocalJobTriggerDTO {
     /**
      * the name of scheduler
      */

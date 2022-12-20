@@ -1,8 +1,8 @@
-package redcoder.quartzextendschedulercenter.model.dto.job;
+package redcoder.quartzextendschedulercenter.dto.job;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import redcoder.quartzextendschedulercenter.model.dto.BasePageRequest;
+import redcoder.quartzextendschedulercenter.dto.BasePageRequest;
 
 @Data
 public class QueryJobTriggerInfo extends BasePageRequest {

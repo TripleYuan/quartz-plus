@@ -3,7 +3,7 @@ package redcoder.quartzextendschedulercenter.service.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
-import redcoder.quartzextendschedulercenter.model.dto.login.LoginDTO;
+import redcoder.quartzextendschedulercenter.dto.login.LoginDTO;
 import redcoder.quartzextendschedulercenter.properties.AuthenticationProperties;
 import redcoder.quartzextendschedulercenter.service.LoginService;
 import redcoder.quartzextendschedulercenter.utils.HttpServletUtils;

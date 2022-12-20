@@ -2,8 +2,8 @@ package redcoder.quartzextendschedulercenter.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import redcoder.quartzextendschedulercenter.model.dto.ApiResult;
-import redcoder.quartzextendschedulercenter.model.dto.login.LoginDTO;
+import redcoder.quartzextendschedulercenter.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.dto.login.LoginDTO;
 import redcoder.quartzextendschedulercenter.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

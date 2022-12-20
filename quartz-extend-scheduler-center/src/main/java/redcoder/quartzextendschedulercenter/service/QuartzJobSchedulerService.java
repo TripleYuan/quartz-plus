@@ -1,6 +1,6 @@
 package redcoder.quartzextendschedulercenter.service;
 
-import redcoder.quartzextendschedulercenter.model.dto.instance.QuartzInstanceDTO;
+import redcoder.quartzextendschedulercenter.dto.instance.QuartzInstanceDTO;
 
 /**
  * quartz实例管理服务

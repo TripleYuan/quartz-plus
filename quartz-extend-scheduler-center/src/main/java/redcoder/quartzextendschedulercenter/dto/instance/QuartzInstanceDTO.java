@@ -1,9 +1,9 @@
-package redcoder.quartzextendschedulercenter.model.dto.instance;
+package redcoder.quartzextendschedulercenter.dto.instance;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import redcoder.quartzextendschedulercenter.model.entity.QuartzSchedulerInstance;
+import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;

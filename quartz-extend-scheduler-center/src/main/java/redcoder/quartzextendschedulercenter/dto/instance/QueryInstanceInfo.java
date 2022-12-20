@@ -1,8 +1,8 @@
-package redcoder.quartzextendschedulercenter.model.dto.instance;
+package redcoder.quartzextendschedulercenter.dto.instance;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import redcoder.quartzextendschedulercenter.model.dto.BasePageRequest;
+import redcoder.quartzextendschedulercenter.dto.BasePageRequest;
 
 @Data
 public class QueryInstanceInfo extends BasePageRequest {

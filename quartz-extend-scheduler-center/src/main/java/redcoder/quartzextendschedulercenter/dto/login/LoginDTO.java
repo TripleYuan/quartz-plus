@@ -1,4 +1,4 @@
-package redcoder.quartzextendschedulercenter.model.dto.login;
+package redcoder.quartzextendschedulercenter.dto.login;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

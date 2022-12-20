@@ -1,4 +1,4 @@
-package redcoder.quartzextendschedulercenter.model.dto.job;
+package redcoder.quartzextendschedulercenter.dto.job;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
