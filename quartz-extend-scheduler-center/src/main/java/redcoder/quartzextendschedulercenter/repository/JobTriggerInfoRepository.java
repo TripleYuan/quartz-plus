@@ -2,7 +2,7 @@ package redcoder.quartzextendschedulercenter.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
 import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerJobTriggerInfoKey;
@@ -13,7 +13,8 @@ import java.util.List;
 public interface JobTriggerInfoRepository
         extends PagingAndSortingRepository<QuartzSchedulerJobTriggerInfo, QuartzSchedulerJobTriggerInfoKey> {
 
-    // List<SchedName> findAll(Sort.Order order);
+    @Query(value = "select distinct(u.schedName) from QuartzSchedulerJobTriggerInfo u order by u.schedName")
+    List<String> findAllSchedName();
 
     Page<QuartzSchedulerJobTriggerInfo> findBySchedNameAndJobNameLike(String schedName, String jobName, Pageable pageable);
 
@@ -26,8 +27,4 @@ public interface JobTriggerInfoRepository
 
     @Transactional
     void deleteBySchedName(String schedName);
-
-    interface SchedName {
-        String getSchedName();
-    }
 }

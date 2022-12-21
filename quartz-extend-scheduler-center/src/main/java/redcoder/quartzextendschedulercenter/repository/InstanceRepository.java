@@ -13,4 +13,6 @@ public interface InstanceRepository
         extends PagingAndSortingRepository<QuartzSchedulerInstance, QuartzSchedulerInstanceKey> {
 
     Page<QuartzSchedulerInstance> findBySchedName(String schedName, Pageable pageable);
+
+    QuartzSchedulerInstance findTopBySchedName(String schedName);
 }

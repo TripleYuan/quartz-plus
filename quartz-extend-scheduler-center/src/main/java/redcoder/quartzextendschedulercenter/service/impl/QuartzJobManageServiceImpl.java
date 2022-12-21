@@ -43,9 +43,10 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
 
     @Override
     public List<String> getSchedNames() {
-        Set<String> set = new HashSet<>();
-        jobTriggerInfoRepository.findAll(Sort.by(Order.asc("schedName"))).forEach(t -> set.add(t.getSchedName()));
-        return new ArrayList<>(set);
+        // Set<String> set = new HashSet<>();
+        // jobTriggerInfoRepository.findAll(Sort.by(Order.asc("schedName"))).forEach(t -> set.add(t.getSchedName()));
+        // return new ArrayList<>(set);
+        return jobTriggerInfoRepository.findAllSchedName();
     }
 
     @Override
@@ -176,9 +177,7 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
     }
 
     private QuartzSchedulerInstance getQuartzSchedulerInstance(String schedName) {
-        PageRequest pageRequest = PageRequest.of(0, 1);
-        Page<QuartzSchedulerInstance> page = instanceRepository.findBySchedName(schedName, pageRequest);
-        return page.iterator().next();
+        return instanceRepository.findTopBySchedName(schedName);
     }
 }
 
