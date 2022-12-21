@@ -2,18 +2,18 @@ package redcoder.quartzextendschedulercenter.job;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.JobExecutionContext;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 import redcoder.quartzextendcommon.utils.HttpTemplate;
 import redcoder.quartzextendcommon.utils.JsonUtils;
 import redcoder.quartzextendcore.annotation.QuartzJob;
 import redcoder.quartzextendcore.annotation.QuartzTrigger;
 import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerInstanceMapper;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerJobTriggerInfoMapper;
 import redcoder.quartzextendschedulercenter.dto.ApiResult;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
-import org.quartz.JobExecutionContext;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import redcoder.quartzextendschedulercenter.repository.InstanceRepository;
+import redcoder.quartzextendschedulercenter.repository.JobTriggerInfoRepository;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -32,15 +32,15 @@ import static redcoder.quartzextendschedulercenter.constant.QuartzApiConstants.J
 public class JobTriggerInfoCollectingJob extends QuartzJobBean {
 
     @Resource
-    private QuartzSchedulerInstanceMapper instanceMapper;
+    private JobTriggerInfoRepository jobTriggerInfoRepository;
     @Resource
-    private QuartzSchedulerJobTriggerInfoMapper infoMapper;
+    private InstanceRepository instanceRepository;
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
         try {
             Set<String> handledScheduler = new HashSet<>();
-            List<QuartzSchedulerInstance> instances = instanceMapper.selectAll();
+            Iterable<QuartzSchedulerInstance> instances = instanceRepository.findAll();
             for (QuartzSchedulerInstance instance : instances) {
                 String schedName = instance.getSchedName();
                 if (!handledScheduler.contains(schedName)) {
@@ -79,15 +79,14 @@ public class JobTriggerInfoCollectingJob extends QuartzJobBean {
             return;
         }
         // delete
-        QuartzSchedulerJobTriggerInfo deleteR = new QuartzSchedulerJobTriggerInfo();
-        deleteR.setSchedName(schedName);
-        infoMapper.delete(deleteR);
+        jobTriggerInfoRepository.deleteBySchedName(schedName);
+
         // insert
         for (QuartzJobTriggerInfo dto : jobTriggerInfos) {
             QuartzSchedulerJobTriggerInfo info = QuartzSchedulerJobTriggerInfo.valueOf(dto);
             info.setCreateTime(new Date());
             info.setUpdateTime(new Date());
-            infoMapper.insertSelective(info);
+            jobTriggerInfoRepository.save(info);
         }
     }
 }

@@ -2,14 +2,16 @@ package redcoder.quartzextendschedulercenter.entity;
 
 import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
 import org.springframework.beans.BeanUtils;
+import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerJobTriggerInfoKey;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
+@Entity(name = "QuartzSchedulerJobTriggerInfo")
 @Table(name = "`quartz_scheduler_job_trigger_info`")
-public class QuartzSchedulerJobTriggerInfo {
+@IdClass(QuartzSchedulerJobTriggerInfoKey.class)
+public class QuartzSchedulerJobTriggerInfo implements Serializable {
     /**
      * the name of scheduler
      */

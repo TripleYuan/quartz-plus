@@ -1,11 +1,11 @@
 package redcoder.quartzextendschedulercenter.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerInstanceMapper;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerJobTriggerInfoMapper;
 import redcoder.quartzextendschedulercenter.dto.instance.QuartzInstanceDTO;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
-import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
+import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerInstanceKey;
+import redcoder.quartzextendschedulercenter.repository.InstanceRepository;
+import redcoder.quartzextendschedulercenter.repository.JobTriggerInfoRepository;
 import redcoder.quartzextendschedulercenter.service.QuartzJobSchedulerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -21,34 +21,38 @@ import javax.annotation.Resource;
 public class QuartzJobSchedulerServiceImpl implements QuartzJobSchedulerService {
 
     @Resource
-    private QuartzSchedulerInstanceMapper instanceMapper;
+    private JobTriggerInfoRepository jobTriggerInfoRepository;
     @Resource
-    private QuartzSchedulerJobTriggerInfoMapper jobTriggerInfoMapper;
+    private InstanceRepository instanceRepository;
 
     @Override
     public boolean addInstance(QuartzInstanceDTO dto) {
-        QuartzSchedulerInstance instance = new QuartzSchedulerInstance();
-        BeanUtils.copyProperties(dto, instance);
-        if (instanceMapper.selectByPrimaryKey(instance) != null) {
+        QuartzSchedulerInstanceKey key = new QuartzSchedulerInstanceKey();
+        key.setSchedName(dto.getSchedName());
+        key.setInstanceHost(dto.getInstanceHost());
+        key.setInstancePort(dto.getInstancePort());
+        if (instanceRepository.existsById(key)) {
             // 已存在
             return true;
         }
         // 新增
-        instanceMapper.insertSelective(instance);
+        QuartzSchedulerInstance instance = new QuartzSchedulerInstance();
+        BeanUtils.copyProperties(dto, instance);
+        instanceRepository.save(instance);
         return true;
     }
 
     @Override
     public boolean deleteInstance(QuartzInstanceDTO dto) {
         // 删除实例
-        QuartzSchedulerInstance instance = new QuartzSchedulerInstance();
-        BeanUtils.copyProperties(dto, instance);
-        instanceMapper.deleteByPrimaryKey(instance);
+        QuartzSchedulerInstanceKey key = new QuartzSchedulerInstanceKey();
+        key.setSchedName(dto.getSchedName());
+        key.setInstanceHost(dto.getInstanceHost());
+        key.setInstancePort(dto.getInstancePort());
+        instanceRepository.deleteById(key);
 
         // 删除此实例下的job数据
-        QuartzSchedulerJobTriggerInfo jobTriggerInfo = new QuartzSchedulerJobTriggerInfo();
-        jobTriggerInfo.setSchedName(dto.getSchedName());
-        jobTriggerInfoMapper.delete(jobTriggerInfo);
+        jobTriggerInfoRepository.deleteBySchedName(dto.getSchedName());
 
         return true;
     }

@@ -1,31 +1,30 @@
 package redcoder.quartzextendschedulercenter.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import redcoder.quartzextendcommon.utils.HttpTemplate;
 import redcoder.quartzextendcommon.utils.MapUtils;
 import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
-import redcoder.quartzextendschedulercenter.dto.job.*;
-import redcoder.quartzextendschedulercenter.exception.JobManageException;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerInstanceMapper;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerJobTriggerInfoMapper;
+import redcoder.quartzextendschedulercenter.constant.QuartzApiConstants;
 import redcoder.quartzextendschedulercenter.dto.ApiResult;
 import redcoder.quartzextendschedulercenter.dto.PageResponse;
+import redcoder.quartzextendschedulercenter.dto.job.*;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
+import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerJobTriggerInfoKey;
+import redcoder.quartzextendschedulercenter.exception.JobManageException;
+import redcoder.quartzextendschedulercenter.repository.InstanceRepository;
+import redcoder.quartzextendschedulercenter.repository.JobTriggerInfoRepository;
 import redcoder.quartzextendschedulercenter.service.QuartzJobManageService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import redcoder.quartzextendschedulercenter.constant.QuartzApiConstants;
-import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.util.Sqls;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,42 +37,36 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
     private static final String OK = "OK";
 
     @Resource
-    private QuartzSchedulerInstanceMapper instanceMapper;
+    private JobTriggerInfoRepository jobTriggerInfoRepository;
     @Resource
-    private QuartzSchedulerJobTriggerInfoMapper infoMapper;
+    private InstanceRepository instanceRepository;
 
     @Override
     public List<String> getSchedNames() {
-        Example example = Example.builder(QuartzSchedulerJobTriggerInfo.class)
-                .select("schedName")
-                .distinct()
-                .orderByDesc("schedName")
-                .build();
-        List<QuartzSchedulerJobTriggerInfo> list = infoMapper.selectByExample(example);
-        return list.stream().map(QuartzSchedulerJobTriggerInfo::getSchedName).collect(Collectors.toList());
+        Set<String> set = new HashSet<>();
+        jobTriggerInfoRepository.findAll(Sort.by(Order.asc("schedName"))).forEach(t -> set.add(t.getSchedName()));
+        return new ArrayList<>(set);
     }
 
     @Override
     public PageResponse<JobTriggerDTO> getJobTriggerInfos(QueryJobTriggerInfo queryJobTriggerInfo) {
         String schedName = queryJobTriggerInfo.getSchedName();
         String jobName = queryJobTriggerInfo.getJobName();
-        int pageNo = queryJobTriggerInfo.getPageNo();
+        int pageNo = queryJobTriggerInfo.getPageNo() - 1;
         int pageSize = queryJobTriggerInfo.getPageSize();
 
-        Example.Builder builder = Example.builder(QuartzSchedulerJobTriggerInfo.class)
-                .orderByDesc("schedName")
-                .orderByAsc("jobName");
-        if (StringUtils.hasText(schedName)) {
-            builder.andWhere(Sqls.custom().andEqualTo("schedName", schedName));
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(Order.asc("schedName"), Order.asc("jobName")));
+        Page<QuartzSchedulerJobTriggerInfo> page;
+        if (StringUtils.hasText(schedName) && StringUtils.hasText(jobName)) {
+            page = jobTriggerInfoRepository.findBySchedNameAndJobNameLike(schedName, "%" + jobName + "%", pageRequest);
+        } else if (StringUtils.hasText(schedName)) {
+            page = jobTriggerInfoRepository.findBySchedName(schedName, pageRequest);
+        } else if (StringUtils.hasText(schedName)) {
+            page = jobTriggerInfoRepository.findByJobNameLike("%" + jobName + "%", pageRequest);
+        } else {
+            page = jobTriggerInfoRepository.findAll(pageRequest);
         }
-        if (StringUtils.hasText(jobName)) {
-            builder.andWhere(Sqls.custom().andLike("jobName", "%" + jobName + "%"));
-        }
-        Example example = builder.build();
 
-        PageHelper.startPage(pageNo, pageSize);
-        List<QuartzSchedulerJobTriggerInfo> list = infoMapper.selectByExample(example);
-        Page<QuartzSchedulerJobTriggerInfo> page = (Page<QuartzSchedulerJobTriggerInfo>) list;
         List<JobTriggerDTO> data = page.stream()
                 .map(t -> {
                     JobTriggerDTO dto = new JobTriggerDTO();
@@ -83,21 +76,18 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
                 })
                 .collect(Collectors.toList());
 
-        return new PageResponse<>(page.getTotal(), pageNo, pageSize, data);
+        return new PageResponse<>(page.getTotalElements(), pageNo, pageSize, data);
     }
 
     @Override
     public JobTriggerDTO refreshJobTrigger(RefreshJobTriggerDTO dto) {
         // 刷新数据
         refreshJobTriggerInfoInternal(dto);
+
         // 获取刷新后的数据
-        Example example = Example.builder(QuartzSchedulerJobTriggerInfo.class)
-                .andWhere(Sqls.custom()
-                        .andEqualTo("schedName", dto.getSchedName())
-                        .andEqualTo("triggerName", dto.getTriggerName())
-                        .andEqualTo("triggerGroup", dto.getTriggerGroup()))
-                .build();
-        QuartzSchedulerJobTriggerInfo jobTriggerInfo = infoMapper.selectOneByExample(example);
+        QuartzSchedulerJobTriggerInfoKey key =
+                new QuartzSchedulerJobTriggerInfoKey(dto.getSchedName(), dto.getTriggerName(), dto.getTriggerGroup());
+        QuartzSchedulerJobTriggerInfo jobTriggerInfo = jobTriggerInfoRepository.findById(key).orElse(null);
 
         JobTriggerDTO jobTriggerDTO = new JobTriggerDTO();
         BeanUtils.copyProperties(jobTriggerInfo, jobTriggerDTO);
@@ -119,18 +109,19 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
 
         // 更新数据
         QuartzSchedulerJobTriggerInfo info = QuartzSchedulerJobTriggerInfo.valueOf(result.getData());
+        info.setCreateTime(new Date());
         info.setUpdateTime(new Date());
-        infoMapper.updateByPrimaryKeySelective(info);
+        jobTriggerInfoRepository.save(info);
     }
 
     @Override
     public boolean removeLocal(RemoveLocalJobTriggerDTO dto) {
-        QuartzSchedulerJobTriggerInfo info = new QuartzSchedulerJobTriggerInfo();
-        info.setSchedName(dto.getSchedName());
-        info.setTriggerName(dto.getTriggerName());
-        info.setTriggerGroup(dto.getTriggerGroup());
-        int i = infoMapper.deleteByPrimaryKey(info);
-        return i > 0;
+        QuartzSchedulerJobTriggerInfoKey key = new QuartzSchedulerJobTriggerInfoKey();
+        key.setSchedName(dto.getSchedName());
+        key.setTriggerName(dto.getTriggerName());
+        key.setTriggerGroup(dto.getTriggerGroup());
+        jobTriggerInfoRepository.deleteById(key);
+        return true;
     }
 
     @Override
@@ -161,14 +152,10 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
     }
 
     @Override
-    public void deleteJob(JobManageDTO jobManageDTO) {
-        String result = executeCommand(jobManageDTO, QuartzApiConstants.DELETE_JOB);
+    public void deleteJob(JobManageDTO dto) {
+        String result = executeCommand(dto, QuartzApiConstants.DELETE_JOB);
         if (OK.equals(result)) {
-            QuartzSchedulerJobTriggerInfo info = new QuartzSchedulerJobTriggerInfo();
-            info.setSchedName(jobManageDTO.getSchedName());
-            info.setJobName(jobManageDTO.getJobName());
-            info.setJobGroup(jobManageDTO.getJobGroup());
-            infoMapper.delete(info);
+            jobTriggerInfoRepository.deleteBySchedNameAndJobNameAndJobGroup(dto.getSchedName(), dto.getJobName(), dto.getJobGroup());
             return;
         }
         throw new JobManageException("删除job失败：" + result);
@@ -189,11 +176,9 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
     }
 
     private QuartzSchedulerInstance getQuartzSchedulerInstance(String schedName) {
-        Example example = Example.builder(QuartzSchedulerInstance.class)
-                .select("instanceHost", "instancePort")
-                .where(Sqls.custom().andEqualTo("schedName", schedName))
-                .build();
-        List<QuartzSchedulerInstance> instances = instanceMapper.selectByExample(example);
-        return instances.get(0);
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        Page<QuartzSchedulerInstance> page = instanceRepository.findBySchedName(schedName, pageRequest);
+        return page.iterator().next();
     }
 }
+

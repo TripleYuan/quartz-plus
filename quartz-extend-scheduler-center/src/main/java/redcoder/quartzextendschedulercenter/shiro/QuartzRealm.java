@@ -5,9 +5,7 @@ import org.apache.shiro.authc.pam.UnsupportedTokenException;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.springframework.stereotype.Service;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerUser;
-import redcoder.quartzextendschedulercenter.mapper.UserMapper;
-import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.util.Sqls;
+import redcoder.quartzextendschedulercenter.repository.UserRepository;
 
 import javax.annotation.Resource;
 
@@ -22,7 +20,7 @@ import javax.annotation.Resource;
 public class QuartzRealm extends AuthenticatingRealm {
 
     @Resource
-    private UserMapper userMapper;
+    private UserRepository userRepository;
 
     /**
      * 根据手机号从用户表中查询用户信息，将查询到用户信息作为身份验证信息返回。
@@ -41,10 +39,7 @@ public class QuartzRealm extends AuthenticatingRealm {
 
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         String username = usernamePasswordToken.getUsername();
-        Example qex = Example.builder(QuartzSchedulerUser.class)
-                .where(Sqls.custom().andEqualTo("username", username))
-                .build();
-        QuartzSchedulerUser user = userMapper.selectOneByExample(qex);
+        QuartzSchedulerUser user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UnknownAccountException("用户" + username + "不存在");
         }

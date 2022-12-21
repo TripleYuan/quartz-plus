@@ -1,9 +1,14 @@
 package redcoder.quartzextendschedulercenter.entity;
 
-import javax.persistence.*;
+import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerInstanceKey;
 
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity(name = "QuartzSchedulerInstance")
 @Table(name = "`quartz_scheduler_instance`")
-public class QuartzSchedulerInstance {
+@IdClass(QuartzSchedulerInstanceKey.class)
+public class QuartzSchedulerInstance implements Serializable {
     /**
      * the name of scheduler
      */

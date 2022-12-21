@@ -47,6 +47,7 @@ public class ShiroConfig extends AbstractShiroWebConfiguration {
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
         DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
         chainDefinition.addPathDefinition("/api/login", "anon");
+        chainDefinition.addPathDefinition("/api/quartz-job-scheduler/**", "anon");
         chainDefinition.addPathDefinition("/api/**", "authc");
         return chainDefinition;
     }

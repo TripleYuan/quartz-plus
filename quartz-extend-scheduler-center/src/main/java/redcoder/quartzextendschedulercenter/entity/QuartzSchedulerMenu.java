@@ -2,15 +2,14 @@ package redcoder.quartzextendschedulercenter.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Table(name = "quartz_scheduler_menu")
-public class QuartzSchedulerMenu {
+@Entity(name = "QuartzSchedulerMenu")
+public class QuartzSchedulerMenu implements Serializable {
 
     /**
      * 角色id

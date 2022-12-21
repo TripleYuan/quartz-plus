@@ -3,11 +3,13 @@ package redcoder.quartzextendschedulercenter.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Table(name = "`quartz_scheduler_role`")
 @Data
-public class QuartzSchedulerRole {
+@Entity(name = "QuartzSchedulerRole")
+public class QuartzSchedulerRole implements Serializable {
     /**
      * 角色id
      */

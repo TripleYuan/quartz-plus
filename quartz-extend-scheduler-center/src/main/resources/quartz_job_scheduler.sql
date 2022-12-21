@@ -1,6 +1,6 @@
 -- 注册的quartz实例
--- drop table if exists quartz_scheduler_instance;
-CREATE TABLE `QUARTZ_SCHEDULER_INSTANCE`
+drop table if exists quartz_scheduler_instance;
+CREATE TABLE `quartz_scheduler_instance`
 (
     `sched_name`    varchar(100) NOT NULL COMMENT 'the name of scheduler',
     `instance_host` varchar(100) NOT NULL COMMENT '实例主机地址',
@@ -11,6 +11,7 @@ CREATE TABLE `QUARTZ_SCHEDULER_INSTANCE`
 );
 
 -- 存储quartz中的job和trigger信息
+drop table if exists quartz_scheduler_job_trigger_info;
 CREATE TABLE `quartz_scheduler_job_trigger_info`
 (
     `sched_name`     varchar(100) NOT NULL COMMENT 'the name of scheduler',
@@ -29,6 +30,7 @@ CREATE TABLE `quartz_scheduler_job_trigger_info`
 );
 
 -- 菜单
+drop table if exists quartz_scheduler_menu;
 create table quartz_scheduler_menu
 (
     `menu_id`     int auto_increment not null comment '菜单id',
@@ -52,6 +54,7 @@ values (1, 'sys-manage', '系统管理', 'C', 0),
        (6, 'instance-manage', '实例管理', 'M', 0);
 
 -- 用户
+drop table if exists quartz_scheduler_user;
 create table quartz_scheduler_user
 (
     `userid`      int auto_increment not null comment '用户id',
@@ -68,6 +71,8 @@ insert into quartz_scheduler_user(`userid`, `username`, `password`, `user_type`)
 values (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 1),
        (2, 'quartz', 'e10adc3949ba59abbe56e057f20f883e', 0);
 
+-- 角色表
+drop table if exists quartz_scheduler_role;
 create table quartz_scheduler_role
 (
     role_id       int auto_increment not null comment '角色id',
@@ -81,6 +86,7 @@ insert into quartz_scheduler_role(role_id, role_name)
 values (1, '普通用户');
 
 -- 用户角色表
+drop table if exists quartz_scheduler_user_role_rel;
 create table quartz_scheduler_user_role_rel
 (
     userid        int not null comment '用户id',
@@ -89,11 +95,12 @@ create table quartz_scheduler_user_role_rel
     `update_time` datetime DEFAULT CURRENT_TIMESTAMP,
     primary key (userid, role_id)
 );
---添加用户角关系
+-- 添加用户角关系
 insert into quartz_scheduler_user_role_rel(userid, role_id)
 values (2, 1);
 
 -- 角色菜单关系表
+drop table if exists quartz_scheduler_role_menu_rel;
 create table quartz_scheduler_role_menu_rel
 (
     role_id       int not null comment '角色id',
@@ -102,6 +109,6 @@ create table quartz_scheduler_role_menu_rel
     `update_time` datetime DEFAULT CURRENT_TIMESTAMP,
     primary key (role_id, menu_id)
 );
---添加角色菜单关系
+-- 添加角色菜单关系
 insert into quartz_scheduler_role_menu_rel(role_id, menu_id)
 values (1, 4);

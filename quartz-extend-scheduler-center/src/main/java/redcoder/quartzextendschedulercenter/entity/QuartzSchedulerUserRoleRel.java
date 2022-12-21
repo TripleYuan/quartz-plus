@@ -1,13 +1,17 @@
 package redcoder.quartzextendschedulercenter.entity;
 
 import lombok.Data;
+import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerUserRoleRelKey;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Table(name = "`quartz_scheduler_user_role_rel`")
 @Data
-public class QuartzSchedulerUserRoleRel {
+@Entity(name = "QuartzSchedulerUserRoleRel")
+@IdClass(QuartzSchedulerUserRoleRelKey.class)
+public class QuartzSchedulerUserRoleRel implements Serializable {
     /**
      * 用户id
      */

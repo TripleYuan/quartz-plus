@@ -1,20 +1,19 @@
 package redcoder.quartzextendschedulercenter.controller;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerInstanceMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import redcoder.quartzextendschedulercenter.dto.ApiResult;
 import redcoder.quartzextendschedulercenter.dto.PageResponse;
 import redcoder.quartzextendschedulercenter.dto.instance.QuartzInstanceDTO;
 import redcoder.quartzextendschedulercenter.dto.instance.QueryInstanceInfo;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
+import redcoder.quartzextendschedulercenter.repository.InstanceRepository;
 import redcoder.quartzextendschedulercenter.service.QuartzJobSchedulerService;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.util.Sqls;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 public class QuartzInstanceController {
 
     @Resource
-    private QuartzSchedulerInstanceMapper instanceMapper;
+    private InstanceRepository instanceRepository;
     @Resource
     private QuartzJobSchedulerService quartzJobSchedulerService;
 
@@ -39,21 +38,18 @@ public class QuartzInstanceController {
     @ApiOperation(value = "获取实例", httpMethod = "GET")
     public ApiResult<PageResponse<QuartzInstanceDTO>> getInstancesList(QueryInstanceInfo queryInstanceInfo) {
         String schedName = queryInstanceInfo.getSchedName();
-        int pageNo = queryInstanceInfo.getPageNo();
+        int pageNo = queryInstanceInfo.getPageNo() - 1;
         int pageSize = queryInstanceInfo.getPageSize();
 
-        Example.Builder builder = Example.builder(QuartzSchedulerInstance.class)
-                .orderByDesc("schedName");
+        Page<QuartzSchedulerInstance> page;
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by("schedName"));
         if (StringUtils.hasText(schedName)) {
-            builder.where(Sqls.custom().andEqualTo("schedName", schedName));
+            page = instanceRepository.findBySchedName(schedName, pageRequest);
+        } else {
+            page = instanceRepository.findAll(pageRequest);
         }
-        Example example = builder.build();
-
-        PageHelper.startPage(pageNo, pageSize);
-        List<QuartzSchedulerInstance> list = instanceMapper.selectByExample(example);
-        Page<QuartzSchedulerInstance> page = (Page<QuartzSchedulerInstance>) list;
         List<QuartzInstanceDTO> data = page.stream().map(QuartzInstanceDTO::valueOf).collect(Collectors.toList());
-        return ApiResult.success(new PageResponse<>(page.getTotal(), pageNo, pageSize, data));
+        return ApiResult.success(new PageResponse<>(page.getTotalElements(), pageNo, pageSize, data));
     }
 
     @PostMapping("/delete")

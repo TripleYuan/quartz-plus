@@ -1,20 +1,21 @@
 package redcoder.quartzextendschedulercenter.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import redcoder.quartzextendcommon.utils.IpUtils;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerInstanceMapper;
-import redcoder.quartzextendschedulercenter.mapper.QuartzSchedulerJobTriggerInfoMapper;
-import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
-import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
-import redcoder.quartzextendschedulercenter.service.MaintainService;
 import org.quartz.*;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import redcoder.quartzextendcommon.utils.IpUtils;
+import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
+import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
+import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerInstanceKey;
+import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerJobTriggerInfoKey;
+import redcoder.quartzextendschedulercenter.repository.InstanceRepository;
+import redcoder.quartzextendschedulercenter.repository.JobTriggerInfoRepository;
+import redcoder.quartzextendschedulercenter.service.MaintainService;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -31,12 +32,12 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class MaintainServiceImpl implements MaintainService, InitializingBean {
 
-    @Autowired
+    @Resource
     private Scheduler scheduler;
     @Resource
-    private QuartzSchedulerJobTriggerInfoMapper infoMapper;
+    private JobTriggerInfoRepository jobTriggerInfoRepository;
     @Resource
-    private QuartzSchedulerInstanceMapper instanceMapper;
+    private InstanceRepository instanceRepository;
     @Resource
     private Environment environment;
 
@@ -47,7 +48,7 @@ public class MaintainServiceImpl implements MaintainService, InitializingBean {
         instance.setInstanceHost(IpUtils.getLocalIp());
         instance.setInstancePort(Integer.valueOf(Objects.requireNonNull(environment.getProperty("server.port"))));
         try {
-            instanceMapper.insertSelective(instance);
+            instanceRepository.save(instance);
         } catch (DuplicateKeyException e) {
             // 重复数据，忽略
         }
@@ -59,18 +60,22 @@ public class MaintainServiceImpl implements MaintainService, InitializingBean {
 
         Set<TriggerKey> triggerKeys = scheduler.getTriggerKeys(GroupMatcher.anyTriggerGroup());
         for (TriggerKey triggerKey : triggerKeys) {
-            QuartzSchedulerJobTriggerInfo jobTriggerInfo = createJobTriggerInfo(triggerKey);
-            jobTriggerInfo.setSchedName(schedulerName);
+            QuartzSchedulerJobTriggerInfoKey key =
+                    new QuartzSchedulerJobTriggerInfoKey(schedulerName,triggerKey.getName(),triggerKey.getGroup());
 
-            if (infoMapper.selectByPrimaryKey(jobTriggerInfo) != null) {
+            Optional<QuartzSchedulerJobTriggerInfo> optional = jobTriggerInfoRepository.findById(key);
+            if (optional.isPresent()) {
                 // 更新数据
-                jobTriggerInfo.setUpdateTime(new Date());
-                infoMapper.updateByPrimaryKeySelective(jobTriggerInfo);
+                QuartzSchedulerJobTriggerInfo info = optional.get();
+                info.setUpdateTime(new Date());
+                jobTriggerInfoRepository.save(info);
             } else {
                 // 新增数据
-                jobTriggerInfo.setCreateTime(new Date());
-                jobTriggerInfo.setUpdateTime(new Date());
-                infoMapper.insertSelective(jobTriggerInfo);
+                QuartzSchedulerJobTriggerInfo info = createJobTriggerInfo(triggerKey);
+                info.setSchedName(schedulerName);
+                info.setCreateTime(new Date());
+                info.setUpdateTime(new Date());
+                jobTriggerInfoRepository.save(info);
             }
         }
     }
