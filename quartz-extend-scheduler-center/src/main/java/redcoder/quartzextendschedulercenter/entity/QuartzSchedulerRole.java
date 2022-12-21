@@ -15,7 +15,7 @@ public class QuartzSchedulerRole implements Serializable {
      */
     @Id
     @Column(name = "`role_id`")
-    @GeneratedValue(generator = "JDBC")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer roleId;
 
     /**

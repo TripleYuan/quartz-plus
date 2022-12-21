@@ -15,6 +15,7 @@ public class QuartzSchedulerUser implements Serializable {
      */
     @Id
     @Column(name = "`userid`")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userid;
 
     /**

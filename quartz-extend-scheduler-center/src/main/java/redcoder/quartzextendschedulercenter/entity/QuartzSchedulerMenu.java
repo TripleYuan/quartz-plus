@@ -16,7 +16,7 @@ public class QuartzSchedulerMenu implements Serializable {
      */
     @Id
     @Column(name = "`menu_id`")
-    @GeneratedValue(generator = "JDBC")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int menuId;
 
     /**
