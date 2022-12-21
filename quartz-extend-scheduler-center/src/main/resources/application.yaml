@@ -9,7 +9,7 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:quartz_job_scheduler?MODE=MySQL;DATABASE_TO_LOWER=TRUE
+    url: jdbc:h2:mem:quartz_job_scheduler;MODE=MySQL;DATABASE_TO_LOWER=TRUE
     schema: classpath:quartz_job_scheduler.sql
   h2:
     console:
