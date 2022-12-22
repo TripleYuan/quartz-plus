@@ -9,4 +9,8 @@ import java.util.List;
 public interface RoleMenuRelRepository extends CrudRepository<QuartzSchedulerRoleMenuRel, QuartzSchedulerRoleMenuRelKey> {
 
     List<QuartzSchedulerRoleMenuRel> findByRoleId(int roleId);
+
+    boolean existsByRoleId(int roleId);
+
+    void deleteByRoleId(int roleId);
 }

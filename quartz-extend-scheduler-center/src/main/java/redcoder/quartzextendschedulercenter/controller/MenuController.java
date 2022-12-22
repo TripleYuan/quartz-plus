@@ -26,4 +26,11 @@ public class MenuController {
         List<MenuDto> menuDtos = menuService.getUserMenu();
         return ApiResult.success(menuDtos);
     }
+
+    @GetMapping("/list")
+    @ApiOperation("获取所有菜单")
+    public ApiResult<List<MenuDto>> getList() {
+        List<MenuDto> menuDtos = menuService.getList();
+        return ApiResult.success(menuDtos);
+    }
 }

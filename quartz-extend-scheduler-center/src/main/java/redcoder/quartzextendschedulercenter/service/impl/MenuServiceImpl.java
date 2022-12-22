@@ -32,8 +32,8 @@ public class MenuServiceImpl implements MenuService {
         QuartzSchedulerUser user = ShiroUtils.getUser();
         if (user.getUserType() == 1) {
             // 管理员看到所有菜单
-            List<QuartzSchedulerMenu> list = menuRepository.findByMenuStatus(1);
-            return list.stream()
+            return menuRepository.findByMenuStatus(1)
+                    .stream()
                     .map(t -> new MenuDto(t.getMenuId(), t.getMenuCode(), t.getMenuName(), t.getMenuType()))
                     .collect(Collectors.toList());
         }
@@ -50,6 +50,14 @@ public class MenuServiceImpl implements MenuService {
             });
         });
         return menus.stream()
+                .map(t -> new MenuDto(t.getMenuId(), t.getMenuCode(), t.getMenuName(), t.getMenuType()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MenuDto> getList() {
+        return menuRepository.findByMenuStatus(1)
+                .stream()
                 .map(t -> new MenuDto(t.getMenuId(), t.getMenuCode(), t.getMenuName(), t.getMenuType()))
                 .collect(Collectors.toList());
     }

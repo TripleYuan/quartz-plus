@@ -25,6 +25,12 @@ public class QuartzSchedulerRole implements Serializable {
     private String roleName;
 
     /**
+     * 角色描述
+     */
+    @Column(name = "`role_desc`")
+    private String roleDesc;
+
+    /**
      * 创建时间
      */
     @Column(name = "`create_time`")

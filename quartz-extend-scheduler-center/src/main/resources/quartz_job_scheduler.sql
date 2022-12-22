@@ -77,13 +77,14 @@ create table quartz_scheduler_role
 (
     role_id       int auto_increment not null comment '角色id',
     role_name     varchar(20) not null comment '用户名',
+    role_desc     varchar(20) not null comment '角色描述',
     `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
     `update_time` datetime DEFAULT CURRENT_TIMESTAMP,
     primary key (role_id)
 );
 -- 添加角色
-insert into quartz_scheduler_role(role_id, role_name)
-values (1, '普通用户');
+insert into quartz_scheduler_role(role_id, role_name, role_desc)
+values (1, '普通用户', '只能查看任务列表的用户');
 
 -- 用户角色表
 drop table if exists quartz_scheduler_user_role_rel;
