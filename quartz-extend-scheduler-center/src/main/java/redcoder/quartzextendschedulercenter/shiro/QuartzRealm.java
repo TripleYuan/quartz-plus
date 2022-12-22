@@ -10,8 +10,8 @@ import redcoder.quartzextendschedulercenter.repository.UserRepository;
 import javax.annotation.Resource;
 
 /**
- * 继承{@link AuthenticatingRealm}，根据手机号从用户表中查询用户信息，将查询到用户信息作为身份验证信息返回。
- * 如果未查询到用户信息，或者用户已被禁用，抛出相应的异常。
+ * 自定义的Realm实现类，根据username从用户表中查询用户信息，将查询到用户信息作为身份验证信息返回。
+ * 如果未查询到用户信息，抛出异常。
  *
  * @author redcoder
  * @since 2022-12-20
