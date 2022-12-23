@@ -1,6 +1,7 @@
 package redcoder.quartzextendschedulercenter.repository;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerRoleMenuRel;
 import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerRoleMenuRelKey;
 
@@ -12,5 +13,6 @@ public interface RoleMenuRelRepository extends CrudRepository<QuartzSchedulerRol
 
     boolean existsByRoleId(int roleId);
 
+    @Transactional(rollbackFor = Exception.class)
     void deleteByRoleId(int roleId);
 }

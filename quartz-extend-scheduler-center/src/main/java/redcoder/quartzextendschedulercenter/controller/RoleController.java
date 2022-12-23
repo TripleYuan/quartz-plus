@@ -28,13 +28,13 @@ public class RoleController {
 
     @PostMapping("/addOrUpdate")
     @ApiOperation("新增|更新角色")
-    public ApiResult<String> addOrUpdateRole(@RequestBody @Valid RoleDto dto) {
-        return roleService.addOrUpdateRole(dto);
+    public ApiResult<String> addOrUpdate(@RequestBody @Valid RoleDto dto) {
+        return roleService.addOrUpdate(dto);
     }
 
     @DeleteMapping("/delete/{roleId}")
     @ApiOperation("删除角色")
-    public ApiResult<String> deleteRole(@PathVariable int roleId) {
-        return roleService.deleteRole(roleId);
+    public ApiResult<String> delete(@PathVariable int roleId) {
+        return roleService.delete(roleId);
     }
 }

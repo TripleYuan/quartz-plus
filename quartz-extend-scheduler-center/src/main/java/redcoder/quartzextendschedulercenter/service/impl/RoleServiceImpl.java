@@ -34,7 +34,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiResult<String> addOrUpdateRole(RoleDto dto) {
+    public ApiResult<String> addOrUpdate(RoleDto dto) {
         Integer roleId = dto.getRoleId();
         if (roleId == null) {
             // add
@@ -59,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiResult<String> deleteRole(int roleId) {
+    public ApiResult<String> delete(int roleId) {
         roleRepository.deleteById(roleId);
         relService.deletePermission(roleId);
         return ApiResult.success();

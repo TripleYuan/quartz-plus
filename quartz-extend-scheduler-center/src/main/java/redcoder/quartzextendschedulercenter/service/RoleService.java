@@ -9,7 +9,7 @@ public interface RoleService {
 
     List<RoleDto> getList();
 
-    ApiResult<String> addOrUpdateRole(RoleDto dto);
+    ApiResult<String> addOrUpdate(RoleDto dto);
 
-    ApiResult<String> deleteRole(int roleId);
+    ApiResult<String> delete(int roleId);
 }
