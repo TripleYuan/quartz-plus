@@ -1,19 +1,19 @@
 package redcoder.quartzextendschedulercenter.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import redcoder.quartzextendschedulercenter.constant.ApiStatus;
 import redcoder.quartzextendschedulercenter.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.dto.sys.ModifyPasswordReq;
 import redcoder.quartzextendschedulercenter.dto.sys.UserDto;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerUser;
 import redcoder.quartzextendschedulercenter.repository.UserRepository;
 import redcoder.quartzextendschedulercenter.service.UserPermissionService;
 import redcoder.quartzextendschedulercenter.service.UserService;
+import redcoder.quartzextendschedulercenter.shiro.ShiroUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getList() {
         List<UserDto> data = new ArrayList<>();
-        repository.findAll().forEach(t->{
+        repository.findAll().forEach(t -> {
             UserDto dto = new UserDto(t.getUserid(), t.getUsername(), t.getUserType());
             data.add(dto);
         });
@@ -59,12 +59,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ApiResult<String> delete(int userid) {
         // 删除用户
         repository.deleteById(userid);
         // 删除用户的角色
         manageService.delete(userid);
 
+        return ApiResult.success();
+    }
+
+    @Override
+    public ApiResult<String> modifyPassword(ModifyPasswordReq req) {
+        int userid = ShiroUtils.getUserId();
+        Optional<QuartzSchedulerUser> optional = repository.findById(userid);
+        if (!optional.isPresent()) {
+            return ApiResult.failure(ApiStatus.BAD_REQUEST.getStatus(), "用户不存在");
+        }
+        QuartzSchedulerUser user = optional.get();
+        if (!Objects.equals(req.getOldPwd(), user.getPassword())) {
+            return ApiResult.failure(ApiStatus.BAD_REQUEST.getStatus(), "旧密码错误");
+        }
+        repository.updatePassword(userid, req.getNewPwd(), new Date());
         return ApiResult.success();
     }
 }

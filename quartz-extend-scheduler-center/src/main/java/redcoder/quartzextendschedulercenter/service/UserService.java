@@ -1,6 +1,7 @@
 package redcoder.quartzextendschedulercenter.service;
 
 import redcoder.quartzextendschedulercenter.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.dto.sys.ModifyPasswordReq;
 import redcoder.quartzextendschedulercenter.dto.sys.UserDto;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface UserService {
     ApiResult<String> addOrUpdate(UserDto dto);
 
     ApiResult<String> delete(int userid);
+
+    ApiResult<String> modifyPassword(ModifyPasswordReq req);
 }

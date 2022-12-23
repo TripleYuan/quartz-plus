@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import redcoder.quartzextendschedulercenter.dto.ApiResult;
+import redcoder.quartzextendschedulercenter.dto.sys.ModifyPasswordReq;
 import redcoder.quartzextendschedulercenter.dto.sys.UserDto;
 import redcoder.quartzextendschedulercenter.service.UserService;
 
@@ -36,5 +37,11 @@ public class UserController {
     @ApiOperation("删除角色")
     public ApiResult<String> delete(@PathVariable int userid) {
         return userService.delete(userid);
+    }
+
+    @PostMapping("/pwd")
+    @ApiOperation("修改密码")
+    public ApiResult<String> modifyPassword(@RequestBody @Valid ModifyPasswordReq req) {
+        return userService.modifyPassword(req);
     }
 }
