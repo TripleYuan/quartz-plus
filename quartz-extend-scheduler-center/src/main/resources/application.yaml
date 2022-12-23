@@ -47,4 +47,5 @@ spring:
 
 shiro:
   session:
-    expire-in-days: 1
+    # session有效期
+    valid-days: 1

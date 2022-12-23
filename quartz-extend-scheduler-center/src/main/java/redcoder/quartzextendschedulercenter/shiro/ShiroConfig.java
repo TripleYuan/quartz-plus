@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class ShiroConfig extends AbstractShiroWebConfiguration {
 
-    @Value("${shiro.session.expire-in-days}")
+    @Value("${shiro.session.valid-days}")
     private int expireInDays;
 
     @Autowired

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class MemorySessionDAO extends AbstractSessionDAO implements InitializingBean {
 
-    @Value("${shiro.session.expire-in-days}")
+    @Value("${shiro.session.valid-days}")
     private int expireInDays;
 
     private Cache<Serializable, Session> cache;

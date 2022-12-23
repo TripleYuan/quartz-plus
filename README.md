@@ -17,10 +17,15 @@
 
 ## Quartz任务调度管理系统使用指南
 
-1. 启动 **quartz-extend-scheduler-center** 应用
-2. 进入Quartz任务调度中心 http://localhost:62000/job.html
+我这里以本地启动的方式进行演示：
 
-内置两个登录用户：
+> 1. 本地启动后端项目 **quartz-extend-scheduler-center**
+>   
+> 2. 本地启动前端项目 **quartz-extend-scheduler-web**
+>   
+> 3. 进入http://localhost:8080
+
+系统内置两个登录用户：
 
 > - 用户1，用户名：admin, 密码：123456
 > - 用户2，用户名：quartz, 密码：123456
