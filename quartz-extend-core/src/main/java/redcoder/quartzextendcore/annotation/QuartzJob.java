@@ -1,9 +1,11 @@
 package redcoder.quartzextendcore.annotation;
 
+import redcoder.quartzextendcore.core.DefaultQuartzKeyNameGenerator;
 import redcoder.quartzextendcore.core.QuartzJobBeanPostProcessor;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
+import redcoder.quartzextendcore.core.QuartzKeyNameGenerator;
 
 import java.lang.annotation.*;
 
@@ -41,4 +43,9 @@ public @interface QuartzJob {
      * @see JobDetail#isDurable()
      */
     boolean storeDurably() default true;
+
+    /**
+     * Specifies the strategy indicates how to generate Quartz JobKey name and Trigger name.
+     */
+    Class<? extends QuartzKeyNameGenerator> quartzKeyNameGenerator() default DefaultQuartzKeyNameGenerator.class;
 }
