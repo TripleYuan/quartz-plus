@@ -1,6 +1,7 @@
 package redcoder.quartzextendschedulercenter.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import redcoder.quartzextendschedulercenter.constant.ApiStatus;
 import redcoder.quartzextendschedulercenter.dto.ApiResult;
 import redcoder.quartzextendschedulercenter.dto.sys.RoleDto;
@@ -59,6 +60,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ApiResult<String> delete(int roleId) {
         roleRepository.deleteById(roleId);
         relService.deletePermission(roleId);
