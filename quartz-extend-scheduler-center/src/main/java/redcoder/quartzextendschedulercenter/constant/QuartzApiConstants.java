@@ -12,4 +12,5 @@ public class QuartzApiConstants {
     public static final String PAUSE_JOB = "/quartz/pause-job";
     public static final String RESUME_JOB = "/quartz/resume-job";
     public static final String DELETE_JOB = "/quartz/delete-job";
+    public static final String SCHEDULE_JOB = "/quartz/schedule-job";
 }

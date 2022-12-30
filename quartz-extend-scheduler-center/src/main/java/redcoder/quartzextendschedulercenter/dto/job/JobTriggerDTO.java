@@ -54,12 +54,12 @@ public class JobTriggerDTO {
     private Date nextFireTime;
 
     /**
-     * 触发器的状态：NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED
+     * 触发器的状态
      */
     private String triggerState;
 
     /**
-     * 更新时间
+     * cron表达式
      */
-    private Date updateTime;
+    private String cron;
 }

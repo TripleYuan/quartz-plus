@@ -5,6 +5,7 @@ import org.quartz.SchedulerException;
 import org.springframework.web.bind.annotation.*;
 import redcoder.quartzextendcore.core.dto.QuartzApiResult;
 import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
+import redcoder.quartzextendcore.core.dto.ScheduleJob;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class QuartzController {
             List<QuartzJobTriggerInfo> quartzJobTriggerInfoList = quartzService.getQuartzJobTriggerInfoList();
             return new QuartzApiResult<>(0, "", quartzJobTriggerInfoList);
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage());
         }
     }
@@ -42,7 +43,7 @@ public class QuartzController {
             QuartzJobTriggerInfo quartzJobTriggerInfo = quartzService.getQuartzJobTriggerInfo(triggerName, triggerGroup);
             return new QuartzApiResult<>(0, "", quartzJobTriggerInfo);
         } catch (SchedulerException e) {
-            log.warn(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage());
         }
     }
@@ -53,7 +54,7 @@ public class QuartzController {
             quartzService.triggerJob(jobName, jobGroup);
             return new QuartzApiResult<>(0, "", true);
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage(), false);
         }
     }
@@ -64,7 +65,7 @@ public class QuartzController {
             quartzService.pauseJob(jobName, jobGroup);
             return new QuartzApiResult<>(0, "", true);
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage(), false);
         }
     }
@@ -75,7 +76,7 @@ public class QuartzController {
             quartzService.resumeJob(jobName, jobGroup);
             return new QuartzApiResult<>(0, "", true);
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage(), false);
         }
     }
@@ -86,7 +87,18 @@ public class QuartzController {
             quartzService.deleteJob(jobName, jobGroup);
             return new QuartzApiResult<>(0, "", true);
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            log.error(e.getMessage(), e);
+            return new QuartzApiResult<>(500, e.getMessage(), false);
+        }
+    }
+
+    @PostMapping("/schedule-job")
+    public QuartzApiResult<Boolean> scheduleJob(@RequestBody ScheduleJob scheduleJob) {
+        try {
+            quartzService.scheduleJob(scheduleJob);
+            return new QuartzApiResult<>(0, "", true);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage(), false);
         }
     }

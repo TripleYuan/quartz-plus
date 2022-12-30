@@ -2,6 +2,7 @@ package redcoder.quartzextendschedulercenter.service;
 
 import redcoder.quartzextendschedulercenter.dto.PageResponse;
 import redcoder.quartzextendschedulercenter.dto.job.*;
+import redcoder.quartzextendschedulercenter.exception.JobManageException;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public interface QuartzJobManageService {
     /**
      * 删除本地保存的job数据
      */
-    boolean removeLocal(RemoveLocalJobTriggerDTO removeLocalJobTriggerDTO);
+    void removeLocal(RemoveLocalJobTriggerDTO removeLocalJobTriggerDTO);
 
     /**
      * 执行job
@@ -63,4 +64,11 @@ public interface QuartzJobManageService {
      * @throws JobManageException 删除job失败
      */
     void deleteJob(JobManageDTO jobManageDTO);
+
+    /**
+     * 修改job
+     *
+     * @throws JobManageException 删除job失败
+     */
+    void scheduleJob(ScheduleJobDto scheduleJobDto);
 }

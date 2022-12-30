@@ -26,7 +26,8 @@ CREATE TABLE `quartz_scheduler_job_trigger_info`
     `trigger_desc`   varchar(255) DEFAULT NULL COMMENT '触发器的描述信息',
     `prev_fire_time` datetime     DEFAULT NULL COMMENT 'job的上一次执行时间',
     `next_fire_time` datetime     DEFAULT NULL COMMENT 'job的下一次执行时间',
-    `trigger_state`  varchar(20)  DEFAULT NULL COMMENT '触发器的状态：NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED',
+    `trigger_state`  varchar(20)  DEFAULT NULL COMMENT '触发器的状态',
+    `cron`           varchar(1000) default null COMMENT 'cron expression',
     `create_time`    datetime     DEFAULT CURRENT_TIMESTAMP,
     `update_time`    datetime     DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`sched_name`, `trigger_name`, `trigger_group`)

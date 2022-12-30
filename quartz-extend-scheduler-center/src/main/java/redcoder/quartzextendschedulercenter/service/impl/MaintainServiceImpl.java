@@ -4,11 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import redcoder.quartzextendcommon.utils.IpUtils;
+import redcoder.quartzextendcore.core.QuartzJobTriggerInfoCreator;
+import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
 import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
 import redcoder.quartzextendschedulercenter.entity.key.QuartzSchedulerInstanceKey;
@@ -40,6 +43,8 @@ public class MaintainServiceImpl implements MaintainService, InitializingBean {
     private InstanceRepository instanceRepository;
     @Resource
     private Environment environment;
+    @Resource
+    private QuartzJobTriggerInfoCreator creator;
 
     @Override
     public void registerOwnInstance() throws SchedulerException {
@@ -71,38 +76,11 @@ public class MaintainServiceImpl implements MaintainService, InitializingBean {
                 jobTriggerInfoRepository.save(info);
             } else {
                 // 新增数据
-                QuartzSchedulerJobTriggerInfo info = createJobTriggerInfo(triggerKey);
-                info.setSchedName(schedulerName);
-                info.setCreateTime(new Date());
-                info.setUpdateTime(new Date());
-                jobTriggerInfoRepository.save(info);
+                QuartzJobTriggerInfo source = creator.create(triggerKey);
+                QuartzSchedulerJobTriggerInfo target = QuartzSchedulerJobTriggerInfo.valueOf(source);
+                jobTriggerInfoRepository.save(target);
             }
         }
-    }
-
-    private QuartzSchedulerJobTriggerInfo createJobTriggerInfo(TriggerKey triggerKey) throws SchedulerException {
-        QuartzSchedulerJobTriggerInfo jobTriggerInfo = new QuartzSchedulerJobTriggerInfo();
-
-        Trigger trigger = scheduler.getTrigger(triggerKey);
-        TriggerState triggerState = scheduler.getTriggerState(triggerKey);
-        // 设置触发器相关属性
-        jobTriggerInfo.setTriggerName(triggerKey.getName());
-        jobTriggerInfo.setTriggerGroup(triggerKey.getGroup());
-        jobTriggerInfo.setTriggerDesc(trigger.getDescription());
-        Optional.ofNullable(trigger.getPreviousFireTime()).ifPresent(jobTriggerInfo::setPrevFireTime);
-        Optional.ofNullable(trigger.getNextFireTime()).ifPresent(jobTriggerInfo::setNextFireTime);
-        jobTriggerInfo.setTriggerState(triggerState.name());
-
-        JobKey jobKey = trigger.getJobKey();
-        if (jobKey != null) {
-            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-            // 设置job相关属性
-            jobTriggerInfo.setJobName(jobDetail.getKey().getName());
-            jobTriggerInfo.setJobGroup(jobDetail.getKey().getGroup());
-            jobTriggerInfo.setJobDesc(jobDetail.getDescription());
-        }
-
-        return jobTriggerInfo;
     }
 
     @Override

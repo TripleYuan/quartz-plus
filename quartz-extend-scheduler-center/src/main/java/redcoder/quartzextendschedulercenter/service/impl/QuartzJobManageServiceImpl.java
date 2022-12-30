@@ -1,6 +1,7 @@
 package redcoder.quartzextendschedulercenter.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.quartz.CronExpression;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import redcoder.quartzextendcommon.utils.HttpTemplate;
+import redcoder.quartzextendcommon.utils.JsonUtils;
 import redcoder.quartzextendcommon.utils.MapUtils;
 import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
 import redcoder.quartzextendschedulercenter.constant.QuartzApiConstants;
@@ -24,6 +26,7 @@ import redcoder.quartzextendschedulercenter.repository.JobTriggerInfoRepository;
 import redcoder.quartzextendschedulercenter.service.QuartzJobManageService;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,9 +46,6 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
 
     @Override
     public List<String> getSchedNames() {
-        // Set<String> set = new HashSet<>();
-        // jobTriggerInfoRepository.findAll(Sort.by(Order.asc("schedName"))).forEach(t -> set.add(t.getSchedName()));
-        // return new ArrayList<>(set);
         return jobTriggerInfoRepository.findAllSchedName();
     }
 
@@ -62,7 +62,7 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
             page = jobTriggerInfoRepository.findBySchedNameAndJobNameLike(schedName, "%" + jobName + "%", pageRequest);
         } else if (StringUtils.hasText(schedName)) {
             page = jobTriggerInfoRepository.findBySchedName(schedName, pageRequest);
-        } else if (StringUtils.hasText(schedName)) {
+        } else if (StringUtils.hasText(jobName)) {
             page = jobTriggerInfoRepository.findByJobNameLike("%" + jobName + "%", pageRequest);
         } else {
             page = jobTriggerInfoRepository.findAll(pageRequest);
@@ -88,7 +88,7 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
         // 获取刷新后的数据
         QuartzSchedulerJobTriggerInfoKey key =
                 new QuartzSchedulerJobTriggerInfoKey(dto.getSchedName(), dto.getTriggerName(), dto.getTriggerGroup());
-        QuartzSchedulerJobTriggerInfo jobTriggerInfo = jobTriggerInfoRepository.findById(key).orElse(null);
+        QuartzSchedulerJobTriggerInfo jobTriggerInfo = jobTriggerInfoRepository.findById(key).orElseThrow(() -> new JobManageException("刷新Job失败"));
 
         JobTriggerDTO jobTriggerDTO = new JobTriggerDTO();
         BeanUtils.copyProperties(jobTriggerInfo, jobTriggerDTO);
@@ -110,19 +110,16 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
 
         // 更新数据
         QuartzSchedulerJobTriggerInfo info = QuartzSchedulerJobTriggerInfo.valueOf(result.getData());
-        info.setCreateTime(new Date());
-        info.setUpdateTime(new Date());
         jobTriggerInfoRepository.save(info);
     }
 
     @Override
-    public boolean removeLocal(RemoveLocalJobTriggerDTO dto) {
+    public void removeLocal(RemoveLocalJobTriggerDTO dto) {
         QuartzSchedulerJobTriggerInfoKey key = new QuartzSchedulerJobTriggerInfoKey();
         key.setSchedName(dto.getSchedName());
         key.setTriggerName(dto.getTriggerName());
         key.setTriggerGroup(dto.getTriggerGroup());
         jobTriggerInfoRepository.deleteById(key);
-        return true;
     }
 
     @Override
@@ -160,6 +157,29 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
             return;
         }
         throw new JobManageException("删除job失败：" + result);
+    }
+
+    @Override
+    public void scheduleJob(ScheduleJobDto scheduleJobDto) {
+        // 校验cron表达式是否有效
+        String cron = scheduleJobDto.getCron();
+        try{
+            new CronExpression(cron);
+        }catch (ParseException e){
+            throw new JobManageException(String.format("无效的cron表达式 \"%s\"", cron));
+        }
+
+        QuartzSchedulerInstance instance = getQuartzSchedulerInstance(scheduleJobDto.getSchedName());
+        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + QuartzApiConstants.SCHEDULE_JOB;
+        Map<String, String> body = MapUtils.buildMap("jobName", scheduleJobDto.getJobName(),
+                "jobGroup", scheduleJobDto.getJobGroup(), "cron", cron);
+        ApiResult<Boolean> result = HttpTemplate.doPost(url, JsonUtils.mapToJsonString(body),
+                new TypeReference<ApiResult<Boolean>>() {
+                });
+        if (result.getStatus() == 0 && Boolean.TRUE.equals(result.getData())) {
+            return;
+        }
+        throw new JobManageException("修改job失败：" + result.getMessage());
     }
 
     private String executeCommand(JobManageDTO jobManageDTO, String api) {

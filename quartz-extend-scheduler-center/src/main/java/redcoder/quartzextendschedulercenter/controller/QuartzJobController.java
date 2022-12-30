@@ -3,6 +3,7 @@ package redcoder.quartzextendschedulercenter.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import redcoder.quartzextendschedulercenter.constant.ApiStatus;
 import redcoder.quartzextendschedulercenter.dto.job.*;
 import redcoder.quartzextendschedulercenter.exception.JobManageException;
 import redcoder.quartzextendschedulercenter.dto.ApiResult;
@@ -47,63 +48,68 @@ public class QuartzJobController {
 
     @PostMapping("/removeLocal")
     @ApiOperation(value = "删除本地保存的job数据", httpMethod = "DELETE")
-    public ApiResult<Boolean> removeLocal(@Valid @RequestBody RemoveLocalJobTriggerDTO dto) {
-        return ApiResult.success(jobManageService.removeLocal(dto));
+    public ApiResult<String> removeLocal(@Valid @RequestBody RemoveLocalJobTriggerDTO dto) {
+        jobManageService.removeLocal(dto);
+        return ApiResult.success();
     }
-
+    
     @PostMapping("/trigger")
     @ApiOperation(value = "执行job", httpMethod = "POST")
-    public ApiResult<Boolean> triggerJob(@Valid @RequestBody JobManageDTO dto) {
+    public ApiResult<String> triggerJob(@Valid @RequestBody JobManageDTO dto) {
         try {
             jobManageService.triggerJob(dto);
-            return ApiResult.success(true);
+            return ApiResult.success();
         } catch (JobManageException e) {
             log.error(e.getMessage(), e);
-            ApiResult<Boolean> result = ApiResult.success(false);
-            result.setMessage(e.getMessage());
-            return result;
+            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
     }
 
     @PostMapping("/pause")
     @ApiOperation(value = "暂停job", httpMethod = "POST")
-    public ApiResult<Boolean> pauseJob(@Valid @RequestBody JobManageDTO dto) {
+    public ApiResult<String> pauseJob(@Valid @RequestBody JobManageDTO dto) {
         try {
             jobManageService.pauseJob(dto);
-            return ApiResult.success(true);
+            return ApiResult.success();
         } catch (JobManageException e) {
             log.error(e.getMessage(), e);
-            ApiResult<Boolean> result = ApiResult.success(false);
-            result.setMessage(e.getMessage());
-            return result;
+            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
     }
 
     @PostMapping("/resume")
     @ApiOperation(value = "恢复job", httpMethod = "POST")
-    public ApiResult<Boolean> resumeJob(@Valid @RequestBody JobManageDTO dto) {
+    public ApiResult<String> resumeJob(@Valid @RequestBody JobManageDTO dto) {
         try {
             jobManageService.resumeJob(dto);
-            return ApiResult.success(true);
+            return ApiResult.success();
         } catch (JobManageException e) {
             log.error(e.getMessage(), e);
-            ApiResult<Boolean> result = ApiResult.success(false);
-            result.setMessage(e.getMessage());
-            return result;
+            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
     }
 
     @PostMapping("/delete")
     @ApiOperation(value = "删除job", httpMethod = "POST")
-    public ApiResult<Boolean> deleteJob(@Valid @RequestBody JobManageDTO dto) {
+    public ApiResult<String> deleteJob(@Valid @RequestBody JobManageDTO dto) {
         try {
             jobManageService.deleteJob(dto);
-            return ApiResult.success(true);
+            return ApiResult.success();
         } catch (JobManageException e) {
             log.error(e.getMessage(), e);
-            ApiResult<Boolean> result = ApiResult.success(false);
-            result.setMessage(e.getMessage());
-            return result;
+            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
+        }
+    }
+
+    @PostMapping("/schedule")
+    @ApiOperation(value = "修改job", httpMethod = "POST")
+    public ApiResult<String> scheduleJob(@Valid @RequestBody ScheduleJobDto dto) {
+        try {
+            jobManageService.scheduleJob(dto);
+            return ApiResult.success();
+        } catch (JobManageException e) {
+            log.error(e.getMessage(), e);
+            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
     }
 }

@@ -2,7 +2,7 @@ package redcoder.quartzextendcore.core;
 
 import redcoder.quartzextendcore.scheduler.QuartzController;
 import redcoder.quartzextendcore.scheduler.QuartzJobSchedulerProperties;
-import redcoder.quartzextendcore.scheduler.QuartzService;
+import redcoder.quartzextendcore.scheduler.DefaultQuartzService;
 import org.quartz.Scheduler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
+import redcoder.quartzextendcore.scheduler.QuartzService;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -60,8 +61,16 @@ public class QuartzExtendConfig {
     }
 
     @Bean
-    public QuartzService quartzService(Scheduler scheduler, Environment env, QuartzJobSchedulerProperties properties) {
-        return new QuartzService(scheduler, env, properties);
+    public QuartzJobTriggerInfoCreator quartzJobTriggerInfoCreator(Scheduler scheduler) {
+        return new DefaultQuartzJobTriggerInfoCreator(scheduler);
+    }
+
+    @Bean
+    public QuartzService quartzService(Scheduler scheduler,
+                                       Environment env,
+                                       QuartzJobSchedulerProperties properties,
+                                       QuartzJobTriggerInfoCreator creator) {
+        return new DefaultQuartzService(scheduler, env, properties, creator);
     }
 
     @Bean

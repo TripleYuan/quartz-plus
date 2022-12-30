@@ -53,7 +53,12 @@ public class QuartzJobTriggerInfo {
     private long nextFireTime = -1;
 
     /**
-     * 触发器的状态：NONE, NORMAL, PAUSED, COMPLETE, ERROR, BLOCKED
+     * 触发器的状态
      */
     private String triggerState;
+
+    /**
+     * cron表达式
+     */
+    private String cron;
 }

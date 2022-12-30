@@ -84,8 +84,6 @@ public class JobTriggerInfoCollectingJob extends QuartzJobBean {
         // insert
         for (QuartzJobTriggerInfo dto : jobTriggerInfos) {
             QuartzSchedulerJobTriggerInfo info = QuartzSchedulerJobTriggerInfo.valueOf(dto);
-            info.setCreateTime(new Date());
-            info.setUpdateTime(new Date());
             jobTriggerInfoRepository.save(info);
         }
     }
