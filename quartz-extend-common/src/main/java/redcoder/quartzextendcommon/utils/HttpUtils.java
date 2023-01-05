@@ -20,13 +20,13 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import redcoder.quartzextendcommon.exception.HttpExecutionFailException;
-import redcoder.quartzextendcommon.exception.WrappedIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+import redcoder.quartzextendcommon.exception.HttpExecutionFailException;
+import redcoder.quartzextendcommon.exception.WrappedIOException;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,8 +40,6 @@ import java.util.Optional;
 
 /**
  * http工具类，支持http get和post请求
- *
- * @since 1.0.0
  */
 public class HttpUtils {
 
@@ -165,7 +163,8 @@ public class HttpUtils {
     public static String doGet(String url,
                                @Nullable Map<String, String> queryParams,
                                @Nullable Map<String, String> headers) {
-        LogContext logContext = LogContext.createInstance(true, Level.INFO);
+        LogContext logContext = LogContext.createInstance(true, Level.INFO).logger(log);
+        ;
         try {
             logContext.append("http get请求，", url);
             Optional.ofNullable(queryParams).ifPresent(map -> logContext.append("queryParams: ", queryParams));
@@ -302,7 +301,8 @@ public class HttpUtils {
                                 @Nullable Map<String, String> headers,
                                 @Nullable Map<String, String> formParams,
                                 @Nullable String requestBody) {
-        LogContext logContext = LogContext.createInstance(true, Level.INFO);
+        LogContext logContext = LogContext.createInstance(true, Level.INFO).logger(log);
+        ;
         try {
             logContext.append("http post请求，", url);
             logContext.append("Content-Type: ", contentType);
@@ -353,7 +353,7 @@ public class HttpUtils {
     public static String transferFiles(String url,
                                        Map<String, Object> formParams,
                                        @Nullable Map<String, String> headers) {
-        LogContext logContext = LogContext.createInstance();
+        LogContext logContext = LogContext.createInstance().logger(log);
         logContext.append("transferFiles, url: ", url);
         try {
             Optional.ofNullable(headers).ifPresent(map -> logContext.append("headers: ", headers));

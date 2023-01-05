@@ -3,13 +3,11 @@ package redcoder.quartzextendcommon.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
-import org.springframework.util.Assert;
 
 /**
  * 日志工具.
  *
  * @author redcoder54
- * @since 1.0.0
  */
 public class LogContext {
 
@@ -28,6 +26,8 @@ public class LogContext {
     private final StringBuilder messageContainer;
 
     private Level level;
+
+    private Logger logger;
 
     /**
      * 构建LogContext实例
@@ -65,7 +65,6 @@ public class LogContext {
      * 获取与当前线程绑定的LogContext实例，如果当前线程未绑定LogContext实例，抛出异常{@link IllegalStateException}
      *
      * @throws IllegalStateException 当前线程未绑定LogContext
-     * @since 1.2.0
      */
     public static LogContext getThreadBoundInstance() {
         LogContext logContext = LOCAL.get();
@@ -78,31 +77,29 @@ public class LogContext {
     /**
      * 将LogContext实例与当前线程绑定
      *
-     * @param logContext 待绑定的LogContext实例
      * @throws IllegalStateException 如果当前线程已绑定LocalContext，抛出异常
-     * @since 1.2.0
-     * @deprecated 使用 {@link #bindCurrentThread()} 替代该方法
-     */
-    @Deprecated
-    public static void bindInstance(LogContext logContext) {
-        Assert.notNull(logContext, "'logContext' must not be null");
-        if (LOCAL.get() != null) {
-            throw new IllegalStateException("当前线程已绑定LocalContext，禁止重复绑定");
-        }
-        LOCAL.set(logContext);
-    }
-
-    /**
-     * 将LogContext实例与当前线程绑定
-     *
-     * @throws IllegalStateException 如果当前线程已绑定LocalContext，抛出异常
-     * @since 1.4.2
      */
     public LogContext bindCurrentThread() {
         if (LOCAL.get() != null) {
             throw new IllegalStateException("当前线程已绑定LocalContext，禁止重复绑定");
         }
         LOCAL.set(this);
+        return this;
+    }
+
+    /**
+     * 更改日志级别
+     */
+    public LogContext level(Level level) {
+        this.level = level;
+        return this;
+    }
+
+    /**
+     * 设置logger
+     */
+    public LogContext logger(Logger logger) {
+        this.logger = logger;
         return this;
     }
 
@@ -120,38 +117,11 @@ public class LogContext {
     }
 
     /**
-     * 添加要输出的消息，改变日志级别
-     *
-     * @param level    日志级别
-     * @param messages 消息
-     * @return 当前LogContext
-     * @since 1.2.0
-     */
-    public synchronized LogContext append(Level level, Object... messages) {
-        Assert.notNull(level, "'level' must not be null");
-        this.level = level;
-        return append(messages);
-    }
-
-    /**
-     * 更改日志级别
-     *
-     * @param level 日志级别
-     * @return 当前LogContext
-     * @since 1.4.2
-     */
-    public LogContext level(Level level) {
-        this.level = level;
-        return this;
-    }
-
-    /**
      * 添加要输出的消息，支持{}占位符
      *
      * @param format    消息
      * @param arguments 参数
      * @return 当前LogContext
-     * @since 1.4.2
      */
     public synchronized LogContext appendF(String format, Object... arguments) {
         if (arguments.length == 0) {
@@ -181,17 +151,18 @@ public class LogContext {
     /**
      * 输出日志
      *
-     * @param remove true-调用{@link ThreadLocal#remove()}
+     * @param remove true-移除绑定的LogContext实例
      */
     public synchronized void print(boolean remove) {
         try {
+            Logger log = logger != null ? logger : LOGGER;
             String msg = messageContainer.toString();
             if (level.toInt() == Level.ERROR.toInt()) {
-                LOGGER.error(msg);
+                log.error(msg);
             } else if (level.toInt() == Level.WARN.toInt()) {
-                LOGGER.warn(msg);
+                log.warn(msg);
             } else {
-                LOGGER.info(msg);
+                log.info(msg);
             }
         } finally {
             if (remove) {
@@ -214,10 +185,6 @@ public class LogContext {
                 remove();
             }
         }
-    }
-
-    public Level getLogLevel() {
-        return level;
     }
 
     /**
