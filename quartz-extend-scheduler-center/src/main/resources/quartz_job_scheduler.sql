@@ -53,7 +53,7 @@ values (1, 'sys-manage', '系统管理', 'C', 0),
        (4, 'job-list', '任务列表', 'M', 0),
        (5, 'job-manage', '任务管理', 'M', 0),
        (6, 'instance-manage', '实例管理', 'M', 0),
-       (7, 'operation-log', '操作日志', 'M', 0);
+       (7, 'operation-log', '操作日志', 'M', 1);
 
 -- 用户
 drop table if exists quartz_scheduler_user;
