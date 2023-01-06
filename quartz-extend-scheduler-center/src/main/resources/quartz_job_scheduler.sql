@@ -35,13 +35,13 @@ drop table if exists quartz_scheduler_menu;
 create table quartz_scheduler_menu
 (
     `menu_id`     int auto_increment not null comment '菜单id',
-    `menu_code`   varchar(100) not null comment '菜单编码',
-    `menu_name`   varchar(100) not null comment '菜单名称',
-    `menu_type`   varchar(100) not null comment '菜单类型，C: 目录，M：菜单，A：操作',
-    `parent_id`   int          not null default 0 comment '父菜单id，0：表示无父菜单，即一级菜单',
-    `menu_status` int          not null default 1 comment '菜单状态，0-隐藏，1-显示',
-    `create_time` datetime              DEFAULT CURRENT_TIMESTAMP,
-    `update_time` datetime              DEFAULT CURRENT_TIMESTAMP,
+    `menu_code`   varchar(100)       not null comment '菜单编码',
+    `menu_name`   varchar(100)       not null comment '菜单名称',
+    `menu_type`   varchar(100)       not null comment '菜单类型，C: 目录，M：菜单，A：操作',
+    `parent_id`   int                not null default 0 comment '父菜单id，0：表示无父菜单，即一级菜单',
+    `menu_status` int                not null default 1 comment '菜单状态，0-隐藏，1-显示',
+    `create_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
+    `update_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
     primary key (`menu_id`),
     constraint quartz_scheduler_menu_uidx_menu_code unique (`menu_code`)
 );
@@ -52,18 +52,19 @@ values (1, 'sys-manage', '系统管理', 'C', 0),
        (3, 'role-manage', '角色管理', 'M', 1),
        (4, 'job-list', '任务列表', 'M', 0),
        (5, 'job-manage', '任务管理', 'M', 0),
-       (6, 'instance-manage', '实例管理', 'M', 0);
+       (6, 'instance-manage', '实例管理', 'M', 0),
+       (7, 'operation-log', '操作日志', 'M', 0);
 
 -- 用户
 drop table if exists quartz_scheduler_user;
 create table quartz_scheduler_user
 (
     `userid`      int auto_increment not null comment '用户id',
-    `username`    varchar(20) not null comment '用户名',
-    `password`    varchar(50) not null comment '密码（真实密码的md5值）',
-    `user_type`   int         not null default 0 comment '用户类型，0-普通用户，1-管理员',
-    `create_time` datetime             DEFAULT CURRENT_TIMESTAMP,
-    `update_time` datetime             DEFAULT CURRENT_TIMESTAMP,
+    `username`    varchar(20)        not null comment '用户名',
+    `password`    varchar(50)        not null comment '密码（真实密码的md5值）',
+    `user_type`   int                not null default 0 comment '用户类型，0-普通用户，1-管理员',
+    `create_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
+    `update_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
     primary key (`userid`),
     constraint quartz_scheduler_menu_uidx_username unique (`username`)
 );
@@ -77,8 +78,8 @@ drop table if exists quartz_scheduler_role;
 create table quartz_scheduler_role
 (
     role_id       int auto_increment not null comment '角色id',
-    role_name     varchar(20) not null comment '用户名',
-    role_desc     varchar(20) not null comment '角色描述',
+    role_name     varchar(20)        not null comment '用户名',
+    role_desc     varchar(20)        not null comment '角色描述',
     `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
     `update_time` datetime DEFAULT CURRENT_TIMESTAMP,
     primary key (role_id)
@@ -114,3 +115,16 @@ create table quartz_scheduler_role_menu_rel
 -- 添加角色菜单关系
 insert into quartz_scheduler_role_menu_rel(role_id, menu_id)
 values (1, 4);
+
+drop table if exists quartz_scheduler_operation_log;
+create table quartz_scheduler_operation_log
+(
+    id             bigint auto_increment,
+    userid         int                                null comment '操作人用户id',
+    `username`     varchar(20)                        not null comment '用户名',
+    controller     varchar(200)                       not null comment '访问的controller名称',
+    method         varchar(100)                       not null comment '访问的方法名',
+    api_desc       varchar(100)                       null comment '访问的接口信息',
+    operation_time datetime default CURRENT_TIMESTAMP null comment '操作时间',
+    primary key (id)
+)
