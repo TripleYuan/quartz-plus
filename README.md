@@ -23,7 +23,7 @@
 >   
 > 2. 本地启动前端项目 **quartz-extend-scheduler-web**
 >   
-> 3. 进入http://localhost:8080
+> 3. 进入http://localhost:8080，即可查看已注册的实例和 Job
 
 系统内置两个登录用户：
 
