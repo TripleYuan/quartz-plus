@@ -1,24 +1,13 @@
 package redcoder.quartzextendschedulercenter.job;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import redcoder.quartzextendcommon.utils.HttpTemplate;
-import redcoder.quartzextendcommon.utils.JsonUtils;
 import redcoder.quartzextendcore.annotation.QuartzJob;
 import redcoder.quartzextendcore.annotation.QuartzTrigger;
-import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
-import redcoder.quartzextendschedulercenter.dto.ApiResult;
-import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
-import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerJobTriggerInfo;
-import redcoder.quartzextendschedulercenter.repository.InstanceRepository;
-import redcoder.quartzextendschedulercenter.repository.JobTriggerInfoRepository;
+import redcoder.quartzextendschedulercenter.collecting.JobTriggerInfoCollector;
 
 import javax.annotation.Resource;
-import java.util.*;
-
-import static redcoder.quartzextendschedulercenter.constant.QuartzApiConstants.JOB_TRIGGER_INFO_LIST;
 
 /**
  * 采集quartz job和trigger信息，保存到数据库表中
@@ -32,59 +21,14 @@ import static redcoder.quartzextendschedulercenter.constant.QuartzApiConstants.J
 public class JobTriggerInfoCollectingJob extends QuartzJobBean {
 
     @Resource
-    private JobTriggerInfoRepository jobTriggerInfoRepository;
-    @Resource
-    private InstanceRepository instanceRepository;
+    private JobTriggerInfoCollector collector;
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
         try {
-            Set<String> handledScheduler = new HashSet<>();
-            Iterable<QuartzSchedulerInstance> instances = instanceRepository.findAll();
-            for (QuartzSchedulerInstance instance : instances) {
-                String schedName = instance.getSchedName();
-                if (!handledScheduler.contains(schedName)) {
-                    try {
-                        List<QuartzJobTriggerInfo> jobTriggerInfos = getJobTriggerInfos(instance);
-                        clearThenInsert(schedName, jobTriggerInfos);
-                        handledScheduler.add(schedName);
-                    } catch (Exception e) {
-                        log.error("收集数据失败: " + JsonUtils.beanToJsonString(instance), e);
-                    }
-                }
-            }
+            collector.collecting();
         } catch (Exception e) {
             log.error("JobTriggerInfoCollectingJob error", e);
-        }
-    }
-
-    private List<QuartzJobTriggerInfo> getJobTriggerInfos(QuartzSchedulerInstance instance) {
-        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + JOB_TRIGGER_INFO_LIST;
-        ApiResult<List<QuartzJobTriggerInfo>> result = HttpTemplate.doGet(url, new TypeReference<ApiResult<List<QuartzJobTriggerInfo>>>() {
-        });
-        if (result.getStatus() != 0) {
-            log.error("获取QuartzJobTriggerInfo失败，原因：{}", result.getMessage());
-            return Collections.emptyList();
-        }
-        return result.getData();
-    }
-
-    /**
-     * 删除指定的schedName数据，然后再插入
-     *
-     * @param jobTriggerInfos job和trigger数据
-     */
-    private void clearThenInsert(String schedName, List<QuartzJobTriggerInfo> jobTriggerInfos) {
-        if (jobTriggerInfos.isEmpty()) {
-            return;
-        }
-        // delete
-        jobTriggerInfoRepository.deleteBySchedName(schedName);
-
-        // insert
-        for (QuartzJobTriggerInfo dto : jobTriggerInfos) {
-            QuartzSchedulerJobTriggerInfo info = QuartzSchedulerJobTriggerInfo.valueOf(dto);
-            jobTriggerInfoRepository.save(info);
         }
     }
 }
