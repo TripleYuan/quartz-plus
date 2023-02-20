@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 采集错误处理器链
  *
- * @author wuxiaoyuan
+ * @author redcoder54
  */
 @Component
 public class CollectingErrorHandlerChain implements InitializingBean, ApplicationContextAware {

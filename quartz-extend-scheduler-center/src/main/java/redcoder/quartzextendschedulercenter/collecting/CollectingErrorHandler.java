@@ -7,7 +7,7 @@ import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
  * 采集错误处理器：采集出错的情况下，如何处理出错的quartz实例信息。
  * 多个采集错误处理器可构成一个错误处理器链。
  *
- * @author wuxiaoyuan
+ * @author redcoder54
  */
 public interface CollectingErrorHandler extends Ordered {
 

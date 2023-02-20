@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 采集出错时，如果异常类在指定范围内，将删除出错的实例信息
  *
- * @author wuxiaoyuan
+ * @author redcoder54
  */
 @Component
 @Slf4j

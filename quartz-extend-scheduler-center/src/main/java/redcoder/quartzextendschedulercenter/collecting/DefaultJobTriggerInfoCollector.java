@@ -23,7 +23,7 @@ import static redcoder.quartzextendschedulercenter.constant.QuartzApiConstants.J
 /**
  * 负责采集job和trigger信息的采集器，对于集群模式的quartz实例，随机选择其中一个实例，进行信息采集。
  *
- * @author wuxiaoyuan
+ * @author redcoder54
  */
 @Slf4j
 @Component

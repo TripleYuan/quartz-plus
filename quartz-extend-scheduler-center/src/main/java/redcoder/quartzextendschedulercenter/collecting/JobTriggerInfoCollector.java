@@ -3,7 +3,7 @@ package redcoder.quartzextendschedulercenter.collecting;
 /**
  * 负责采集job和trigger信息的采集器
  *
- * @author wuxiaoyuan
+ * @author redcoder54
  */
 public interface JobTriggerInfoCollector {
 

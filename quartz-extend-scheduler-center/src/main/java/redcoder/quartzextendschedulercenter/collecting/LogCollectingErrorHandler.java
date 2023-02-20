@@ -9,7 +9,7 @@ import redcoder.quartzextendschedulercenter.entity.QuartzSchedulerInstance;
 /**
  * 采集出错时，打印错误日志
  *
- * @author wuxiaoyuan
+ * @author redcoder54
  */
 @Slf4j
 @Component
