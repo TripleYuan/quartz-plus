@@ -58,6 +58,11 @@ public class QuartzJobTriggerInfo {
     private String triggerState;
 
     /**
+     * 触发器的状态描述
+     */
+    private String triggerStateDesc;
+
+    /**
      * cron表达式
      */
     private String cron;

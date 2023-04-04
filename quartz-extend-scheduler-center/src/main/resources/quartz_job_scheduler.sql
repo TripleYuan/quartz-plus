@@ -14,19 +14,20 @@ CREATE TABLE `quartz_scheduler_instance`
 drop table if exists quartz_scheduler_job_trigger_info;
 CREATE TABLE `quartz_scheduler_job_trigger_info`
 (
-    `sched_name`     varchar(100) NOT NULL COMMENT 'the name of scheduler',
-    `job_name`       varchar(255)  DEFAULT NULL COMMENT 'job名称',
-    `job_group`      varchar(255)  DEFAULT NULL COMMENT 'job所在组名称',
-    `job_desc`       varchar(255)  DEFAULT NULL COMMENT 'job的描述信息',
-    `trigger_name`   varchar(100) NOT NULL COMMENT '与job相关联的触发器名称',
-    `trigger_group`  varchar(100) NOT NULL COMMENT '与job相关联的触发器所在组名称',
-    `trigger_desc`   varchar(255)  DEFAULT NULL COMMENT '触发器的描述信息',
-    `prev_fire_time` datetime      DEFAULT NULL COMMENT 'job的上一次执行时间',
-    `next_fire_time` datetime      DEFAULT NULL COMMENT 'job的下一次执行时间',
-    `trigger_state`  varchar(20)   DEFAULT NULL COMMENT '触发器的状态',
-    `cron`           varchar(1000) default null COMMENT 'cron expression',
-    `create_time`    datetime      DEFAULT CURRENT_TIMESTAMP,
-    `update_time`    datetime      DEFAULT CURRENT_TIMESTAMP,
+    `sched_name`         varchar(100) NOT NULL COMMENT 'the name of scheduler',
+    `job_name`           varchar(255)  DEFAULT NULL COMMENT 'job名称',
+    `job_group`          varchar(255)  DEFAULT NULL COMMENT 'job所在组名称',
+    `job_desc`           varchar(255)  DEFAULT NULL COMMENT 'job的描述信息',
+    `trigger_name`       varchar(100) NOT NULL COMMENT '与job相关联的触发器名称',
+    `trigger_group`      varchar(100) NOT NULL COMMENT '与job相关联的触发器所在组名称',
+    `trigger_desc`       varchar(255)  DEFAULT NULL COMMENT '触发器的描述信息',
+    `prev_fire_time`     datetime      DEFAULT NULL COMMENT 'job的上一次执行时间',
+    `next_fire_time`     datetime      DEFAULT NULL COMMENT 'job的下一次执行时间',
+    `trigger_state`      varchar(20)   DEFAULT NULL COMMENT '触发器的状态',
+    `trigger_state_desc` varchar(20)   DEFAULT NULL COMMENT '触发器的状态描述',
+    `cron`               varchar(1000) default null COMMENT 'cron expression',
+    `create_time`        datetime      DEFAULT CURRENT_TIMESTAMP,
+    `update_time`        datetime      DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`sched_name`, `trigger_name`, `trigger_group`)
 );
 

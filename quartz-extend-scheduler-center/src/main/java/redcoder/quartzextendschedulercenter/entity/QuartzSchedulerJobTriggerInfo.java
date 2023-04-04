@@ -78,6 +78,12 @@ public class QuartzSchedulerJobTriggerInfo implements Serializable {
     private String triggerState;
 
     /**
+     * 触发器的状态描述
+     */
+    @Column(name = "`trigger_state_desc`")
+    private String triggerStateDesc;
+
+    /**
      * cron表达式
      */
     @Column(name = "`cron`")

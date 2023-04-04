@@ -5,7 +5,7 @@ import redcoder.quartzextendcore.core.dto.QuartzJobTriggerInfo;
 
 import java.util.Optional;
 
-public class DefaultQuartzJobTriggerInfoCreator implements QuartzJobTriggerInfoCreator{
+public class DefaultQuartzJobTriggerInfoCreator implements QuartzJobTriggerInfoCreator {
 
     private Scheduler scheduler;
 
@@ -27,7 +27,8 @@ public class DefaultQuartzJobTriggerInfoCreator implements QuartzJobTriggerInfoC
         quartzJobTriggerInfo.setTriggerDesc(trigger.getDescription());
         Optional.ofNullable(trigger.getPreviousFireTime()).ifPresent(t -> quartzJobTriggerInfo.setPrevFireTime(t.getTime()));
         Optional.ofNullable(trigger.getNextFireTime()).ifPresent(t -> quartzJobTriggerInfo.setNextFireTime(t.getTime()));
-        quartzJobTriggerInfo.setTriggerState(QuartzTriggerState.getDesc(triggerState.name()));
+        quartzJobTriggerInfo.setTriggerState(triggerState.name());
+        quartzJobTriggerInfo.setTriggerStateDesc(QuartzTriggerState.getDesc(triggerState.name()));
         if (trigger instanceof CronTrigger) {
             quartzJobTriggerInfo.setCron(((CronTrigger) trigger).getCronExpression());
         }
