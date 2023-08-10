@@ -1,9 +1,11 @@
 # 基于spring的quartz任务调度框架扩展
 
+这是Quartz任务调度管理系统的前端项目，后端项目[源码](https://github.com/redcoder54/spring-quartz-extend)
+
 这是一款基于spring的quartz任务调度框架扩展，主要功能：
 
 - 支持注解的方式快速定义Job、Trigger，并自动注册到Quartz Scheduler中
-- 实现了一个Quartz任务调度管理系统，提供了Job管理、Quartz实例管理、用户管理等功能
+- 一个简单的Quartz任务调度管理系统，实现了Jo管理、Quartz实例管理、用户管理等功能
 
 ## 快速上手
 
@@ -18,10 +20,10 @@
 我这里以本地启动的方式进行演示：
 
 > 1. 本地启动后端项目 **quartz-extend-scheduler-center**
->
-> 2. 本地启动前端项目 **quartz-extend-web**
->
-> 3. 进入http://localhost:8080，即可查看已注册的实例和 Job
+>   
+> 2. 本地启动前端项目 **quartz-extend-scheduler-web**
+>   
+> 3. 进入http://localhost:8080
 
 系统内置两个登录用户：
 
@@ -38,9 +40,9 @@
 quartz-job-scheduler:
   registry:
     # Quartz任务调度管理系统-注册地址
-    register-url: http://localhost:32007/api/quartz-job-scheduler/instance/register
+    register-url: http://localhost:62000/api/quartz-job-scheduler/instance/register
     # Quartz任务调度管理系统-解除注册地址
-    unregister-url: http://localhost:32007/api/quartz-job-scheduler/instance/unregister
+    unregister-url: http://localhost:62000/api/quartz-job-scheduler/instance/unregister
 ```
 
 完成上述配置后，启动你的应用，应用中的job会自动注册到quartz调度中心，重新打开quartz调度中心web页面，即可看到你的应用job.
