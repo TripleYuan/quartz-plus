@@ -9,11 +9,7 @@ import redcoder.quartzplus.core.annotation.QuartzTrigger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * @author redcoder54
- * @since 2021-05-26
- */
-@QuartzJob(jobDescription = "在控制台打印hello world 17, 每隔1分钟执行一次")
+@QuartzJob(description = "在控制台打印hello world 17, 每隔1分钟执行一次")
 @QuartzTrigger(cron = "0 0/1 * * * ?")
 public class HelloWorld17Job implements Job {
 

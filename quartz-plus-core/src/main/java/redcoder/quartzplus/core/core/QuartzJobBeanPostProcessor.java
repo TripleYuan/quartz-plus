@@ -60,8 +60,8 @@ public class QuartzJobBeanPostProcessor extends QuartzJobProcessorSupport implem
                 if (quartzJob != null) {
                     // 创建JobDetail并添加到列表中
                     JobDetail jobDetail = JobBuilder.newJob(jobType)
-                            .withIdentity(createJobKeyName(quartzJob, jobType), quartzJob.jobKeyGroup())
-                            .withDescription(quartzJob.jobDescription())
+                            .withIdentity(createJobKeyName(quartzJob, jobType), quartzJob.keyGroup())
+                            .withDescription(quartzJob.description())
                             .storeDurably(quartzJob.storeDurably())
                             .build();
                     jobDetails.add(jobDetail);
@@ -72,8 +72,8 @@ public class QuartzJobBeanPostProcessor extends QuartzJobProcessorSupport implem
                         if (StringUtils.hasText(cron)) {
                             CronTrigger trigger = TriggerBuilder.newTrigger()
                                     .forJob(jobDetail.getKey())
-                                    .withIdentity(createTriggerKeyName(quartzTrigger, jobType), quartzTrigger.triggerKeyGroup())
-                                    .withDescription(quartzTrigger.triggerDescription())
+                                    .withIdentity(createTriggerKeyName(quartzTrigger, jobType), quartzTrigger.keyGroup())
+                                    .withDescription(quartzTrigger.description())
                                     .withSchedule(CronScheduleBuilder.cronSchedule(cron))
                                     .build();
                             triggers.add(trigger);

@@ -24,17 +24,17 @@ public @interface QuartzJob {
     /**
      * the name of Job's JobKey
      */
-    String jobKeyName() default "";
+    String keyName() default "";
 
     /**
      * the group of Job's JobKey
      */
-    String jobKeyGroup() default Scheduler.DEFAULT_GROUP;
+    String keyGroup() default Scheduler.DEFAULT_GROUP;
 
     /**
      * job's  description
      */
-    String jobDescription() default "";
+    String description() default "";
 
     /**
      * Whether or not the <code>Job</code> should remain stored after it is

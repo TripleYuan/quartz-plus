@@ -16,7 +16,7 @@ public class QuartzJobProcessorSupport {
     private final QuartzKeyNameGenerator defaultQuartzKeyNameGenerator = new DefaultQuartzKeyNameGenerator();
 
     public String createJobKeyName(QuartzJob quartzJob, Class<? extends Job> jobClass) {
-        String name = quartzJob.jobKeyName();
+        String name = quartzJob.keyName();
         if (StringUtils.hasText(name)) {
             return name;
         }
@@ -24,7 +24,7 @@ public class QuartzJobProcessorSupport {
     }
 
     public String createTriggerKeyName(QuartzTrigger quartzTrigger, Class<? extends Job> jobClass) {
-        String name = quartzTrigger.triggerKeyName();
+        String name = quartzTrigger.keyName();
         if (StringUtils.hasText(name)) {
             return name;
         }

@@ -22,17 +22,17 @@ public @interface QuartzTrigger {
     /**
      * the name of Trigger's TriggerKey
      */
-    String triggerKeyName() default "";
+    String keyName() default "";
 
     /**
      * the group of Trigger's TriggerKey
      */
-    String triggerKeyGroup() default Scheduler.DEFAULT_GROUP;
+    String keyGroup() default Scheduler.DEFAULT_GROUP;
 
     /**
      * trigger's  description
      */
-    String triggerDescription() default "";
+    String description() default "";
 
     /**
      * the cron expression string to base the schedule on

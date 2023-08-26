@@ -16,8 +16,8 @@ import javax.annotation.Resource;
  * @since 2021-04-25
  */
 @Slf4j
-@QuartzJob(jobDescription = "采集quartz实例上的job和trigger信息")
-@QuartzTrigger(triggerDescription = "JobTriggerInfoCollectingJob's trigger", cron = "0 0/5 * * * ?")
+@QuartzJob(description = "采集quartz实例上的job和trigger信息")
+@QuartzTrigger(description = "JobTriggerInfoCollectingJob's trigger", cron = "0 0/5 * * * ?")
 public class JobTriggerInfoCollectingJob extends QuartzJobBean {
 
     @Resource
