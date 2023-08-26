@@ -19,9 +19,9 @@ quartz-plus是一个基于spring的quartz任务调度框架扩展，提供了原
 
 > 1.  启动调度中心服务 **quartz-plus-scheduler-center**
 >
-> 2.  启动web控制台 **quartz-plus-web**
+> 2.  启动web控制台 **quartz-plus-web-console**
 >
-> 3.  进入http://localhost:8080，即可查看已注册的实例和 Job
+> 3.  打开 http://localhost:8080 即可查看已注册的实例和Job
 
 系统内置两个登录用户：
 
