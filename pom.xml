@@ -9,17 +9,17 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>redcoder</groupId>
-    <artifactId>spring-quartz-extend</artifactId>
+    <artifactId>quartz-plus</artifactId>
     <version>1.1.0</version>
     <packaging>pom</packaging>
-    <name>spring-quartz-extend</name>
+    <name>quartz-plus</name>
     <description>基于spring的quartz扩展</description>
 
     <modules>
-        <module>quartz-extend-common</module>
-        <module>quartz-extend-core</module>
-        <module>quartz-extend-scheduler-center</module>
-        <module>quartz-extend-demo</module>
+        <module>quartz-plus-common</module>
+        <module>quartz-plus-core</module>
+        <module>quartz-plus-scheduler-center</module>
+        <module>quartz-plus-demo</module>
     </modules>
 
     <properties>
@@ -46,12 +46,12 @@
         <dependencies>
             <dependency>
                 <groupId>redcoder</groupId>
-                <artifactId>quartz-extend-common</artifactId>
+                <artifactId>quartz-plus-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>redcoder</groupId>
-                <artifactId>quartz-extend-core</artifactId>
+                <artifactId>quartz-plus-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

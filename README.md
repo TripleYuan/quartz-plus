@@ -1,13 +1,13 @@
-# 基于spring的quartz任务调度框架扩展
+# Quartz Plus
 
-这是一款基于spring的quartz任务调度框架扩展，主要功能：
+quartz-plus是一个基于spring的quartz任务调度框架扩展，提供了原生quartz不具备的能力，帮助我们更好的使用quartz：
 
-- 支持注解的方式快速定义Job、Trigger，并自动注册到Quartz Scheduler中
-- 实现了一个Quartz任务调度管理系统，提供了Job管理、Quartz实例管理、用户管理等功能
+- 支持注解的方式快速定义job、trigger，并自动注册到quartz scheduler中
+- 实现了一个quartz任务调度管理系统（quartz调度中心），提供了Job管理、Quartz实例管理、用户管理等功能
 
 ## 快速上手
 
-1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("redcoder.quartzextenddemo.job")
+1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("redcoder.quartzplus.job")
 2. 在你的Job类上添加`QuartzJob`注解，配置job相关属性，目前支持配置 **jobKeyName**（默认值：类名） 、 **jobKeyGroup**（默认值：DEFAULT） 、 **jobDescription**
    （默认值：空字符串） 、 **storeDurably** （默认值：true）
 3. 在你的Job类上添加`QuartzTrigger`注解，配置trigger相关属性，目前支持配置 **triggerKeyName**（默认值：类名+"Trigger""） 、 **triggerKeyGroup**（默认值：DEFAULT） 、 **triggerDescription**
@@ -17,11 +17,11 @@
 
 我这里以本地启动的方式进行演示：
 
-> 1. 本地启动后端项目 **quartz-extend-scheduler-center**
+> 1.  启动调度中心服务 **quartz-plus-scheduler-center**
 >
-> 2. 本地启动前端项目 **quartz-extend-web**
+> 2.  启动web控制台 **quartz-plus-web**
 >
-> 3. 进入http://localhost:8080，即可查看已注册的实例和 Job
+> 3.  进入http://localhost:8080，即可查看已注册的实例和 Job
 
 系统内置两个登录用户：
 
@@ -32,7 +32,7 @@
 
 ## 我的应用如何接入Quartz任务调度管理系统
 
-1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("redcoder.quartzextenddemo.job")
+1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("redcoder.quartzplusdemo.job")
 2. 在springboot的项目配置文件中添加配置：
 ```
 quartz-job-scheduler:
