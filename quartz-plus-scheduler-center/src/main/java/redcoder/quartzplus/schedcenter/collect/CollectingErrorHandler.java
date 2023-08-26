@@ -1,4 +1,4 @@
-package redcoder.quartzplus.schedcenter.collecting;
+package redcoder.quartzplus.schedcenter.collect;
 
 import org.springframework.core.Ordered;
 import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;

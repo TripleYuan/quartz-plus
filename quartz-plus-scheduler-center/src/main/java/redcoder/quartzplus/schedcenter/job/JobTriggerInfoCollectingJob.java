@@ -5,7 +5,7 @@ import org.quartz.JobExecutionContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import redcoder.quartzplus.core.annotation.QuartzJob;
 import redcoder.quartzplus.core.annotation.QuartzTrigger;
-import redcoder.quartzplus.schedcenter.collecting.JobTriggerInfoCollector;
+import redcoder.quartzplus.schedcenter.collect.JobTriggerInfoCollector;
 
 import javax.annotation.Resource;
 
@@ -26,7 +26,7 @@ public class JobTriggerInfoCollectingJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) {
         try {
-            collector.collecting();
+            collector.collect();
         } catch (Exception e) {
             log.error("JobTriggerInfoCollectingJob error", e);
         }

@@ -1,6 +1,7 @@
 package redcoder.quartzplus.schedcenter.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import redcoder.quartzplus.schedcenter.collect.JobTriggerInfoCollector;
 import redcoder.quartzplus.schedcenter.dto.instance.QuartzInstanceDTO;
 import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;
 import redcoder.quartzplus.schedcenter.entity.key.QuartzSchedulerInstanceKey;
@@ -10,16 +11,28 @@ import redcoder.quartzplus.schedcenter.service.QuartzJobSchedulerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
 public class QuartzJobSchedulerServiceImpl implements QuartzJobSchedulerService {
 
-    @Resource
     private JobTriggerInfoRepository jobTriggerInfoRepository;
-    @Resource
     private InstanceRepository instanceRepository;
+    private JobTriggerInfoCollector collector;
+    private ScheduledExecutorService executorService;
+
+    public QuartzJobSchedulerServiceImpl(JobTriggerInfoRepository jobTriggerInfoRepository,
+                                         InstanceRepository instanceRepository,
+                                         JobTriggerInfoCollector collector) {
+        this.jobTriggerInfoRepository = jobTriggerInfoRepository;
+        this.instanceRepository = instanceRepository;
+        this.collector = collector;
+        this.executorService = Executors.newScheduledThreadPool(2);
+    }
 
     @Override
     public boolean addInstance(QuartzInstanceDTO dto) {
@@ -31,10 +44,14 @@ public class QuartzJobSchedulerServiceImpl implements QuartzJobSchedulerService 
             // 已存在
             return true;
         }
+
         // 新增
         QuartzSchedulerInstance instance = new QuartzSchedulerInstance();
         BeanUtils.copyProperties(dto, instance);
         instanceRepository.save(instance);
+
+        executorService.schedule(() -> collector.collect(dto.getSchedName(), dto.getInstanceHost(), dto.getInstancePort()), 10, TimeUnit.SECONDS);
+
         return true;
     }
 

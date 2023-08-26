@@ -1,4 +1,4 @@
-package redcoder.quartzplus.schedcenter.collecting;
+package redcoder.quartzplus.schedcenter.collect;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import redcoder.quartzplus.common.utils.HttpTemplate;
 import redcoder.quartzplus.core.core.dto.QuartzJobTriggerInfo;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;
 import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerJobTriggerInfo;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
 import redcoder.quartzplus.schedcenter.repository.JobTriggerInfoRepository;
@@ -37,14 +36,13 @@ public class DefaultJobTriggerInfoCollector implements JobTriggerInfoCollector {
     private CollectingErrorHandlerChain errorHandlerChain;
 
     @Override
-    public void collecting() {
+    public void collect() {
         Set<String> handledScheduler = new HashSet<>();
         instanceRepository.findAll().forEach(instance -> {
             String schedName = instance.getSchedName();
             if (!handledScheduler.contains(schedName)) {
                 try {
-                    List<QuartzJobTriggerInfo> jobTriggerInfos = getJobTriggerInfos(instance);
-                    clearThenInsert(schedName, jobTriggerInfos);
+                    doCollect(instance.getSchedName(), instance.getInstanceHost(), instance.getInstancePort());
                     handledScheduler.add(schedName);
                 } catch (Exception e) {
                     errorHandlerChain.handle(instance, e);
@@ -53,8 +51,22 @@ public class DefaultJobTriggerInfoCollector implements JobTriggerInfoCollector {
         });
     }
 
-    private List<QuartzJobTriggerInfo> getJobTriggerInfos(QuartzSchedulerInstance instance) {
-        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + JOB_TRIGGER_INFO_LIST;
+    @Override
+    public void collect(String schedName, String host, int port) {
+        try {
+            doCollect(schedName, host, port);
+        } catch (Exception e) {
+            log.error("collecting error", e);
+        }
+    }
+
+    private void doCollect(String schedName, String host, int port) {
+        List<QuartzJobTriggerInfo> jobTriggerInfos = getJobTriggerInfos(host, port);
+        clearThenInsert(schedName, jobTriggerInfos);
+    }
+
+    private List<QuartzJobTriggerInfo> getJobTriggerInfos(String host, int port) {
+        String url = "http://" + host + ":" + port + JOB_TRIGGER_INFO_LIST;
         ApiResult<List<QuartzJobTriggerInfo>> result = HttpTemplate.doGet(url, new TypeReference<ApiResult<List<QuartzJobTriggerInfo>>>() {
         });
         if (result.getStatus() != 0) {
