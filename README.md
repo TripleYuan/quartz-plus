@@ -69,8 +69,10 @@ Here is an example that I start scheduler-cent and web-console in my local machi
 3. Open console address in your browser: http://localhost:8080
 
 There are built-in login user:
-> common user that only views job list and execute job, username: quartz, password: 123456
-> admin user that has full permissions, username: admin, password: 123456
+
+> - non-admin user that only views job list and execute job, username: quartz, password: 123456
+> 
+> - admin user that has full permissions, username: admin, password: 123456
 
 Add configuration in your spring boot application.yaml:
 ```yaml
