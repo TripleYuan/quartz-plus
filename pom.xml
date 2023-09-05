@@ -13,7 +13,12 @@
     <version>1.1.0</version>
     <packaging>pom</packaging>
     <name>quartz-plus</name>
-    <description>基于spring的quartz扩展</description>
+    <description>
+        A quartz extension based spring implementation which allows you to create quartz job and trigger using annotation,
+        and it also implements a quartz scheduler center with a web console, you can execute several action easily,
+        i.e. view job list, execute job, change trigger's cron and so on. Furthermore, you are free to manage quartz
+        scheduler instance by web console.
+    </description>
 
     <modules>
         <module>quartz-plus-common</module>
