@@ -76,4 +76,6 @@ quartz-job-scheduler:
     register-url: http://localhost:32007/api/quartz-job-scheduler/instance/register
     # Quartz任务调度管理系统-解除注册地址
     unregister-url: http://localhost:32007/api/quartz-job-scheduler/instance/unregister
+    # 上报任务执行记录的地址
+    report-url: http://localhost:62000/api/job/execution-record/add
 ```

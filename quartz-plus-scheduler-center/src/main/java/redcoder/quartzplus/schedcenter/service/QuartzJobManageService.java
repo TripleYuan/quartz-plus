@@ -71,4 +71,14 @@ public interface QuartzJobManageService {
      * @throws JobManageException 删除job失败
      */
     void scheduleJob(ScheduleJobDto scheduleJobDto);
+
+    /**
+     * 保存任务执行记录
+     */
+    void saveJobExecutionRecord(JobExecutionRecordDto dto);
+
+    /**
+     * 查询任务执行记录
+     */
+    PageResponse<JobExecutionRecordDto> getJobExecutionRecord(QueryJobTriggerInfo dto);
 }

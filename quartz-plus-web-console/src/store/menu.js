@@ -58,6 +58,14 @@ const sysMenus = [
         icon: 'coffee',
         url: 'InstanceManage.vue',
     },
+    {
+        id: '',
+        name: 'job-execution-record',
+        label: '任务执行记录',
+        path: '/job-execution-record',
+        icon: 'film',
+        url: 'JobExecutionRecord.vue',
+    },
 ]
 
 export default {

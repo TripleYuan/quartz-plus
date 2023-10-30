@@ -80,4 +80,5 @@ quartz-job-scheduler:
   registry:
     register-url: http://localhost:62000/api/quartz-job-scheduler/instance/register
     unregister-url: http://localhost:62000/api/quartz-job-scheduler/instance/unregister
+    report-url: http://localhost:62000/api/job/execution-record/add
 ```

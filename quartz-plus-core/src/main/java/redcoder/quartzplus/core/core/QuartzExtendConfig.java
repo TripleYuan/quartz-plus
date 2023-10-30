@@ -1,18 +1,20 @@
 package redcoder.quartzplus.core.core;
 
-import redcoder.quartzplus.core.scheduler.QuartzController;
-import redcoder.quartzplus.core.scheduler.QuartzJobSchedulerProperties;
-import redcoder.quartzplus.core.scheduler.DefaultQuartzService;
 import org.quartz.Scheduler;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
+import redcoder.quartzplus.core.scheduler.DefaultQuartzService;
+import redcoder.quartzplus.core.scheduler.QuartzController;
+import redcoder.quartzplus.core.scheduler.QuartzJobSchedulerProperties;
 import redcoder.quartzplus.core.scheduler.QuartzService;
 
 import javax.sql.DataSource;
@@ -26,7 +28,7 @@ import java.util.Properties;
  */
 @Configuration
 @ConditionalOnClass(SchedulerFactoryBean.class)
-@EnableConfigurationProperties(QuartzProperties.class)
+@EnableConfigurationProperties(value = {QuartzProperties.class, QuartzJobSchedulerProperties.class})
 public class QuartzExtendConfig {
 
     @Bean
@@ -79,7 +81,16 @@ public class QuartzExtendConfig {
     }
 
     @Bean
-    public static QuartzJobBeanPostProcessor quartzJobBeanPostProcessor() {
+    public QuartzJobBeanPostProcessor quartzJobBeanPostProcessor() {
         return new QuartzJobBeanPostProcessor();
+    }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public QuartzJobExecutionAdvisor quartzJobExecutionAdvisor(Environment env,
+                                                               QuartzJobSchedulerProperties properties) {
+        QuartzJobExecutionAdvisor advisor = new QuartzJobExecutionAdvisor();
+        advisor.setAdvice(new QuartzJobExecutionInterceptor(env, properties));
+        return advisor;
     }
 }

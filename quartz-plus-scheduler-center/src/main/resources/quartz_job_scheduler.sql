@@ -54,7 +54,8 @@ values (1, 'sys-manage', '系统管理', 'C', 0),
        (4, 'job-list', '任务列表', 'M', 0),
        (5, 'job-manage', '任务管理', 'M', 0),
        (6, 'instance-manage', '实例管理', 'M', 0),
-       (7, 'operation-log', '操作日志', 'M', 1);
+       (7, 'operation-log', '操作日志', 'M', 1),
+       (8, 'job-execution-record', '任务执行记录', 'M', 0);
 
 -- 用户
 drop table if exists quartz_scheduler_user;
@@ -128,4 +129,19 @@ create table quartz_scheduler_operation_log
     api_desc       varchar(100)                       null comment '访问的接口信息',
     operation_time datetime default CURRENT_TIMESTAMP null comment '操作时间',
     primary key (id)
-)
+);
+
+drop table if exists quartz_scheduler_job_execution_record;
+create table quartz_scheduler_job_execution_record
+(
+    id         bigint auto_increment,
+    sched_name varchar(100)  not null comment 'the name of scheduler',
+    job_name   varchar(255)  not null comment 'job名称',
+    job_group  varchar(255)  not null comment 'job所在组名称',
+    status     int default 1 not null comment '任务执行状态，1-执行中；2-执行成功；2-执行失败',
+    start_time datetime      not null comment '任务开始时间',
+    end_time   datetime      null comment '任务结束时间',
+    cost_time  bigint        null comment '任务执行耗时，毫秒',
+    exception  text          null comment '失败信息',
+    primary key (id)
+);

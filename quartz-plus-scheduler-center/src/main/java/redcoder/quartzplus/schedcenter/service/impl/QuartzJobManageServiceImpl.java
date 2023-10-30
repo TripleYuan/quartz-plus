@@ -3,9 +3,7 @@ package redcoder.quartzplus.schedcenter.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.quartz.CronExpression;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -18,27 +16,36 @@ import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.PageResponse;
 import redcoder.quartzplus.schedcenter.dto.job.*;
 import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;
+import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerJobExecutionRecord;
 import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerJobTriggerInfo;
 import redcoder.quartzplus.schedcenter.entity.key.QuartzSchedulerJobTriggerInfoKey;
 import redcoder.quartzplus.schedcenter.exception.JobManageException;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
+import redcoder.quartzplus.schedcenter.repository.JobExecutionRecordRepository;
 import redcoder.quartzplus.schedcenter.repository.JobTriggerInfoRepository;
 import redcoder.quartzplus.schedcenter.service.QuartzJobManageService;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.springframework.util.StringUtils.hasText;
 
 @Service
 public class QuartzJobManageServiceImpl implements QuartzJobManageService {
 
     private static final String OK = "OK";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Resource
     private JobTriggerInfoRepository jobTriggerInfoRepository;
     @Resource
     private InstanceRepository instanceRepository;
+    @Resource
+    private JobExecutionRecordRepository recordRepository;
 
     @Override
     public List<String> getSchedNames() {
@@ -46,33 +53,33 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
     }
 
     @Override
-    public PageResponse<JobTriggerDTO> getJobTriggerInfos(QueryJobTriggerInfo queryJobTriggerInfo) {
-        String schedName = queryJobTriggerInfo.getSchedName();
-        String jobName = queryJobTriggerInfo.getJobName();
-        int pageNo = queryJobTriggerInfo.getPageNo() - 1;
-        int pageSize = queryJobTriggerInfo.getPageSize();
+    public PageResponse<JobTriggerDTO> getJobTriggerInfos(QueryJobTriggerInfo dto) {
+        String schedName = dto.getSchedName();
+        String search = dto.getJobName();
+        int pageNo = dto.getPageNo() - 1;
+        int pageSize = dto.getPageSize();
 
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(Order.asc("schedName"), Order.asc("jobName")));
-        Page<QuartzSchedulerJobTriggerInfo> page;
-        if (StringUtils.hasText(schedName) && StringUtils.hasText(jobName)) {
-            page = jobTriggerInfoRepository.findBySchedNameAndJobNameLike(schedName, "%" + jobName + "%", pageRequest);
-        } else if (StringUtils.hasText(schedName)) {
-            page = jobTriggerInfoRepository.findBySchedName(schedName, pageRequest);
-        } else if (StringUtils.hasText(jobName)) {
-            page = jobTriggerInfoRepository.findByJobNameLike("%" + jobName + "%", pageRequest);
-        } else {
-            page = jobTriggerInfoRepository.findAll(pageRequest);
+        QuartzSchedulerJobTriggerInfo probe = new QuartzSchedulerJobTriggerInfo();
+        if (hasText(schedName)) {
+            probe.setSchedName(schedName);
         }
+        if (hasText(search)) {
+            probe.setJobName(search);
+        }
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("jobName", matcher -> matcher.contains());
+        Example<QuartzSchedulerJobTriggerInfo> example = Example.of(probe, exampleMatcher);
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(Order.asc("schedName"), Order.asc("jobName")));
+        Page<QuartzSchedulerJobTriggerInfo> page = jobTriggerInfoRepository.findAll(example, pageRequest);
 
-        List<JobTriggerDTO> data = page.stream()
+        List<JobTriggerDTO> data = page.getContent().stream()
                 .map(t -> {
-                    JobTriggerDTO dto = new JobTriggerDTO();
+                    JobTriggerDTO jobTriggerDTO = new JobTriggerDTO();
                     // 属性赋值
-                    BeanUtils.copyProperties(t, dto);
-                    return dto;
+                    BeanUtils.copyProperties(t, jobTriggerDTO);
+                    return jobTriggerDTO;
                 })
                 .collect(Collectors.toList());
-
         return new PageResponse<>(page.getTotalElements(), pageNo, pageSize, data);
     }
 
@@ -176,6 +183,52 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
             return;
         }
         throw new JobManageException("修改job失败：" + result.getMessage());
+    }
+
+    @Override
+    public void saveJobExecutionRecord(JobExecutionRecordDto dto) {
+        QuartzSchedulerJobExecutionRecord record = new QuartzSchedulerJobExecutionRecord();
+        record.setSchedName(dto.getSchedName());
+        record.setJobName(dto.getJobName());
+        record.setJobGroup(dto.getJobGroup());
+        record.setStatus(dto.getStatus());
+        record.setStartTime(LocalDateTime.parse(dto.getStartTime(), DATE_TIME_FORMATTER));
+        record.setEndTime(LocalDateTime.parse(dto.getEndTime(), DATE_TIME_FORMATTER));
+        record.setCostTime(dto.getCostTime());
+        record.setException(dto.getException());
+        recordRepository.save(record);
+    }
+
+    @Override
+    public PageResponse<JobExecutionRecordDto> getJobExecutionRecord(QueryJobTriggerInfo dto) {
+        String schedName = dto.getSchedName();
+        String search = dto.getJobName();
+        int pageNo = dto.getPageNo() - 1;
+        int pageSize = dto.getPageSize();
+
+        QuartzSchedulerJobExecutionRecord probe = new QuartzSchedulerJobExecutionRecord();
+        if (hasText(schedName)) {
+            probe.setSchedName(schedName);
+        }
+        if (hasText(search)) {
+            probe.setJobName(search);
+        }
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("jobName", matcher -> matcher.contains());
+        Example<QuartzSchedulerJobExecutionRecord> example = Example.of(probe, exampleMatcher);
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(Order.desc("id")));
+        Page<QuartzSchedulerJobExecutionRecord> page = recordRepository.findAll(example, pageRequest);
+
+        List<JobExecutionRecordDto> data = page.getContent().stream()
+                .map(t -> {
+                    JobExecutionRecordDto recordDto = new JobExecutionRecordDto();
+                    BeanUtils.copyProperties(t, recordDto);
+                    recordDto.setStartTime(t.getStartTime().format(DATE_TIME_FORMATTER));
+                    recordDto.setEndTime(t.getEndTime().format(DATE_TIME_FORMATTER));
+                    return recordDto;
+                })
+                .collect(Collectors.toList());
+        return new PageResponse<>(page.getTotalElements(), pageNo, pageSize, data);
     }
 
     private String executeCommand(JobManageDTO jobManageDTO, String api) {
