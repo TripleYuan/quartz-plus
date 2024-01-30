@@ -92,7 +92,7 @@ public class QuartzJobExecutionInterceptor implements MethodInterceptor {
         dto.setCostTime(costTime);
         dto.setStatus(status);
         dto.setException(exception);
-        QuartzApiResult<String> result = HttpTemplate.doPost(reportUrl, JsonUtils.beanToJsonString(dto),
+        QuartzApiResult<String> result = HttpTemplate.doPost(reportUrl, JsonUtils.toJsonString(dto),
                 new TypeReference<QuartzApiResult<String>>() {
                 });
         if (result.getStatus() != 0) {

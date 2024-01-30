@@ -2,7 +2,7 @@ package redcoder.quartzplus.schedcenter.shiro;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.util.Assert;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerUser;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusUser;
 
 public class ShiroUtils {
 
@@ -20,9 +20,9 @@ public class ShiroUtils {
      *
      * @throws IllegalStateException 如果用户未登录
      */
-    public static QuartzSchedulerUser getUser() {
+    public static QuartzPlusUser getUser() {
         Object principal = SecurityUtils.getSubject().getPrincipal();
         Assert.state(principal != null, "用户未登录");
-        return (QuartzSchedulerUser) principal;
+        return (QuartzPlusUser) principal;
     }
 }

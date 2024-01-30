@@ -3,7 +3,7 @@ package redcoder.quartzplus.schedcenter.dto.instance;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusInstance;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;
@@ -33,7 +33,7 @@ public class QuartzInstanceDTO {
     @NotNull(message = "'instanceHost' must not be null")
     private Integer instancePort;
 
-    public static QuartzInstanceDTO valueOf(QuartzSchedulerInstance instance) {
+    public static QuartzInstanceDTO valueOf(QuartzPlusInstance instance) {
         QuartzInstanceDTO dto = new QuartzInstanceDTO();
         BeanUtils.copyProperties(instance, dto);
         return dto;

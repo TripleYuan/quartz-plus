@@ -5,7 +5,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusInstance;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,7 +26,7 @@ public class CollectingErrorHandlerChain implements InitializingBean, Applicatio
         return handlers;
     }
 
-    public boolean handle(QuartzSchedulerInstance instance, Exception e) {
+    public boolean handle(QuartzPlusInstance instance, Exception e) {
         for (CollectingErrorHandler handler : handlers) {
             if (handler.handle(instance, e)) {
                 return true;

@@ -127,7 +127,7 @@ public class DefaultQuartzService implements QuartzService, InitializingBean, Di
                     return;
                 }
                 QuartzSchedulerInstance instance = new QuartzSchedulerInstance(schedName, host, Integer.valueOf(port));
-                QuartzApiResult<Boolean> apiResult = HttpTemplate.doPost(registerUrl, JsonUtils.beanToJsonString(instance),
+                QuartzApiResult<Boolean> apiResult = HttpTemplate.doPost(registerUrl, JsonUtils.toJsonString(instance),
                         new TypeReference<QuartzApiResult<Boolean>>() {
                         });
                 if (apiResult.getStatus() == 0 && Boolean.TRUE.equals(apiResult.getData())) {
@@ -156,7 +156,7 @@ public class DefaultQuartzService implements QuartzService, InitializingBean, Di
                 return;
             }
             QuartzSchedulerInstance instance = new QuartzSchedulerInstance(schedName, host, Integer.valueOf(port));
-            QuartzApiResult<Boolean> apiResult = HttpTemplate.doPost(unregisterUrl, JsonUtils.beanToJsonString(instance),
+            QuartzApiResult<Boolean> apiResult = HttpTemplate.doPost(unregisterUrl, JsonUtils.toJsonString(instance),
                     new TypeReference<QuartzApiResult<Boolean>>() {
                     });
             if (apiResult.getStatus() == 0 && Boolean.TRUE.equals(apiResult.getData())) {

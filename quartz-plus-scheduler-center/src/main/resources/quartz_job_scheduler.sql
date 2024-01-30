@@ -1,6 +1,6 @@
 -- 注册的quartz实例
-drop table if exists quartz_scheduler_instance;
-CREATE TABLE `quartz_scheduler_instance`
+drop table if exists quartz_plus_instance;
+CREATE TABLE `quartz_plus_instance`
 (
     `sched_name`    varchar(100) NOT NULL COMMENT 'the name of scheduler',
     `instance_host` varchar(100) NOT NULL COMMENT '实例主机地址',
@@ -11,8 +11,8 @@ CREATE TABLE `quartz_scheduler_instance`
 );
 
 -- 存储quartz中的job和trigger信息
-drop table if exists quartz_scheduler_job_trigger_info;
-CREATE TABLE `quartz_scheduler_job_trigger_info`
+drop table if exists quartz_plus_job_trigger_info;
+CREATE TABLE `quartz_plus_job_trigger_info`
 (
     `sched_name`         varchar(100) NOT NULL COMMENT 'the name of scheduler',
     `job_name`           varchar(255)  DEFAULT NULL COMMENT 'job名称',
@@ -32,8 +32,8 @@ CREATE TABLE `quartz_scheduler_job_trigger_info`
 );
 
 -- 菜单
-drop table if exists quartz_scheduler_menu;
-create table quartz_scheduler_menu
+drop table if exists quartz_plus_menu;
+create table quartz_plus_menu
 (
     `menu_id`     int auto_increment not null comment '菜单id',
     `menu_code`   varchar(100)       not null comment '菜单编码',
@@ -44,10 +44,10 @@ create table quartz_scheduler_menu
     `create_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
     `update_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
     primary key (`menu_id`),
-    constraint quartz_scheduler_menu_uidx_menu_code unique (`menu_code`)
+    constraint quartz_plus_menu_uidx_menu_code unique (`menu_code`)
 );
 -- 添加菜单
-insert into quartz_scheduler_menu(`menu_id`, `menu_code`, `menu_name`, `menu_type`, `parent_id`)
+insert into quartz_plus_menu(`menu_id`, `menu_code`, `menu_name`, `menu_type`, `parent_id`)
 values (1, 'sys-manage', '系统管理', 'C', 0),
        (2, 'user-manage', '用户管理', 'M', 1),
        (3, 'role-manage', '角色管理', 'M', 1),
@@ -58,8 +58,8 @@ values (1, 'sys-manage', '系统管理', 'C', 0),
        (8, 'job-execution-record', '任务执行记录', 'M', 0);
 
 -- 用户
-drop table if exists quartz_scheduler_user;
-create table quartz_scheduler_user
+drop table if exists quartz_plus_user;
+create table quartz_plus_user
 (
     `userid`      int auto_increment not null comment '用户id',
     `username`    varchar(20)        not null comment '用户名',
@@ -68,16 +68,16 @@ create table quartz_scheduler_user
     `create_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
     `update_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
     primary key (`userid`),
-    constraint quartz_scheduler_menu_uidx_username unique (`username`)
+    constraint quartz_plus_menu_uidx_username unique (`username`)
 );
 -- 添加用户
-insert into quartz_scheduler_user(`userid`, `username`, `password`, `user_type`)
+insert into quartz_plus_user(`userid`, `username`, `password`, `user_type`)
 values (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 1),
        (2, 'quartz', 'e10adc3949ba59abbe56e057f20f883e', 0);
 
 -- 角色表
-drop table if exists quartz_scheduler_role;
-create table quartz_scheduler_role
+drop table if exists quartz_plus_role;
+create table quartz_plus_role
 (
     role_id       int auto_increment not null comment '角色id',
     role_name     varchar(20)        not null comment '用户名',
@@ -87,12 +87,12 @@ create table quartz_scheduler_role
     primary key (role_id)
 );
 -- 添加角色
-insert into quartz_scheduler_role(role_id, role_name, role_desc)
+insert into quartz_plus_role(role_id, role_name, role_desc)
 values (1, '普通用户', '只能查看任务列表的用户');
 
 -- 用户角色表
-drop table if exists quartz_scheduler_user_role_rel;
-create table quartz_scheduler_user_role_rel
+drop table if exists quartz_plus_user_role_rel;
+create table quartz_plus_user_role_rel
 (
     userid        int not null comment '用户id',
     role_id       int not null comment '角色id',
@@ -101,12 +101,12 @@ create table quartz_scheduler_user_role_rel
     primary key (userid, role_id)
 );
 -- 添加用户角关系
-insert into quartz_scheduler_user_role_rel(userid, role_id)
+insert into quartz_plus_user_role_rel(userid, role_id)
 values (2, 1);
 
 -- 角色菜单关系表
-drop table if exists quartz_scheduler_role_menu_rel;
-create table quartz_scheduler_role_menu_rel
+drop table if exists quartz_plus_role_menu_rel;
+create table quartz_plus_role_menu_rel
 (
     role_id       int not null comment '角色id',
     menu_id       int not null comment '菜单id',
@@ -115,24 +115,36 @@ create table quartz_scheduler_role_menu_rel
     primary key (role_id, menu_id)
 );
 -- 添加角色菜单关系
-insert into quartz_scheduler_role_menu_rel(role_id, menu_id)
+insert into quartz_plus_role_menu_rel(role_id, menu_id)
 values (1, 4);
 
-drop table if exists quartz_scheduler_operation_log;
-create table quartz_scheduler_operation_log
+drop table if exists quartz_plus_operation_log;
+create table quartz_plus_operation_log
 (
-    id             bigint auto_increment,
-    userid         int                                null comment '操作人用户id',
-    `username`     varchar(20)                        not null comment '用户名',
-    controller     varchar(200)                       not null comment '访问的controller名称',
-    method         varchar(100)                       not null comment '访问的方法名',
-    api_desc       varchar(100)                       null comment '访问的接口信息',
-    operation_time datetime default CURRENT_TIMESTAMP null comment '操作时间',
+    id                bigint auto_increment,
+    userid            int                                null comment '用户id',
+    username          varchar(20)                        not null comment '用户名称',
+    api_path          varchar(200)                       not null comment 'api路径',
+    api_desc          varchar(100)                       not null comment 'api描述',
+    class_name        varchar(100)                       not null comment 'api所在的controller',
+    method_name       varchar(100)                       not null comment 'api对应的方法名',
+    request_time      datetime default CURRENT_TIMESTAMP not null comment '请求时间',
+    params_id         int                                null comment '输入输出参数信息id',
+    spend_time_millis long                               not null comment 'api执行消耗时间',
     primary key (id)
 );
 
-drop table if exists quartz_scheduler_job_execution_record;
-create table quartz_scheduler_job_execution_record
+drop table if exists quartz_plus_operation_params;
+create table quartz_plus_operation_params
+(
+    params_id  bigint auto_increment,
+    in_params  longtext null comment '输入参数',
+    out_params longtext null comment '输出参数',
+    primary key (params_id)
+);
+
+drop table if exists quartz_plus_job_execution_record;
+create table quartz_plus_job_execution_record
 (
     id         bigint auto_increment,
     sched_name varchar(100)  not null comment 'the name of scheduler',

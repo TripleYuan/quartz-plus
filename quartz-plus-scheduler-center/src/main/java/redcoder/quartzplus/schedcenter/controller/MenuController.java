@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.sys.MenuDto;
-import redcoder.quartzplus.schedcenter.service.MenuService;
+import redcoder.quartzplus.schedcenter.service.system.MenuService;
 
 import javax.annotation.Resource;
 import java.util.List;

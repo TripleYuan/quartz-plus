@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.login.LoginDTO;
-import redcoder.quartzplus.schedcenter.service.LoginService;
+import redcoder.quartzplus.schedcenter.service.system.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

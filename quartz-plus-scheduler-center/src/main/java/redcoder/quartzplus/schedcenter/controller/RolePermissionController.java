@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.sys.MenuDto;
 import redcoder.quartzplus.schedcenter.dto.sys.RolePermissionDto;
-import redcoder.quartzplus.schedcenter.service.RolePermissionService;
+import redcoder.quartzplus.schedcenter.service.system.RolePermissionService;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;

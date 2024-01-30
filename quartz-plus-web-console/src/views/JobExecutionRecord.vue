@@ -11,10 +11,14 @@
                     <el-input v-model="queryForm.jobName" placeholder="请输入任务名称"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="this.getjobExecutionRecordList">查找</el-button>
+                    <el-button type="primary" @click="this.getJobExecutionRecordList">查找</el-button>
                 </el-form-item>
             </el-form>
         </div>
+
+        <el-drawer :title="drawerTitle" :visible.sync="drawerVisible" direction="rtl">
+          <span>{{ drawerContent }}</span>
+        </el-drawer>
 
         <!-- 任务列表数据 -->
         <el-table :data="tableData" style="width: 100%" height="90%" stripe>
@@ -31,9 +35,14 @@
             </el-table-column>
             <el-table-column prop="endTime" label="结束执行时间">
             </el-table-column>
-            <el-table-column prop="costTime" label="任务执行耗时（毫秒）">
+            <el-table-column prop="costTime" label="任务耗时（毫秒）">
             </el-table-column>
             <el-table-column prop="exception" label="异常信息">
+              <template slot-scope="{ row }">
+                <div class="truncate-text" @click="showFullContent('异常信息', row.exception)">
+                  {{ truncateText(row.exception) }}
+                </div>
+              </template>
             </el-table-column>
         </el-table>
 
@@ -55,21 +64,25 @@ export default {
             tableData: [],
             queryForm: { schedName: '', jobName: '' },
             pageData: { pageNo: 1, pageSize: 10 },
-            total: 0
+            total: 0,
+            maxLength: 60,
+            drawerTitle: '',
+            drawerVisible: false,
+            drawerContent: '',
         }
     },
     methods: {
         handleSelectChange(val) {
             this.queryForm.schedName = val
-            this.getjobExecutionRecordList()
+            this.getJobExecutionRecordList()
         },
         handlePage(val) {
             this.pageData.pageNo = val
-            this.getjobExecutionRecordList()
+            this.getJobExecutionRecordList()
         },
         handlePageSizeChange(val) {
             this.pageData.pageSize = val
-            this.getjobExecutionRecordList()
+            this.getJobExecutionRecordList()
         },
         getSchedNameList() {
             getSchedNames().then(({ data }) => {
@@ -82,7 +95,7 @@ export default {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
-        getjobExecutionRecordList() {
+        getJobExecutionRecordList() {
             const params = { params: { ...this.queryForm, ...this.pageData } }
             getJobExecutionRecords(params).then(({ data }) => {
                 if (data.status === 0) {
@@ -96,11 +109,24 @@ export default {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
-
+        truncateText(text) {
+          if (text && text.length > this.maxLength) {
+            return text.slice(0, this.maxLength) + '...';
+          } else {
+            return text;
+          }
+        },
+        showFullContent(title, content) {
+          if (content.length > this.maxLength) {
+            this.drawerTitle = title
+            this.drawerVisible = true
+            this.drawerContent = content
+          }
+        },
     },
     mounted() {
         this.getSchedNameList()
-        this.getjobExecutionRecordList()
+        this.getJobExecutionRecordList()
     }
 }
 </script>

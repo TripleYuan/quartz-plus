@@ -28,6 +28,6 @@ public class QuartzFormAuthenticationFilter extends PassThruAuthenticationFilter
 
     private String getErrorMessage() {
         ApiResult<String> result = ApiResult.failure(ApiStatus.UNAUTHORIZED_REQUEST);
-        return JsonUtils.beanToJsonString(result);
+        return JsonUtils.toJsonString(result);
     }
 }

@@ -21,7 +21,7 @@ public interface QuartzJobSchedulerService {
     /**
      * 删除实例，同时移除该实例下的所有job数据。
      * <p>
-     * 注意：删除的是quartz_scheduler_job_trigger_info表中存储的job数据，而不是实例本身的job。
+     * 注意：删除的是quartz_plus_job_trigger_info表中存储的job数据，而不是实例本身的job。
      *
      * @param dto 请求数据
      * @return true - 删除成功

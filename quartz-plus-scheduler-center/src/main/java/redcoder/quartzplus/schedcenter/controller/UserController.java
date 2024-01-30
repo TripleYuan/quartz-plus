@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.sys.ModifyPasswordReq;
 import redcoder.quartzplus.schedcenter.dto.sys.UserDto;
-import redcoder.quartzplus.schedcenter.service.UserService;
+import redcoder.quartzplus.schedcenter.service.system.UserService;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;

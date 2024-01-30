@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.sys.RoleDto;
-import redcoder.quartzplus.schedcenter.service.RoleService;
+import redcoder.quartzplus.schedcenter.service.system.RoleService;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;

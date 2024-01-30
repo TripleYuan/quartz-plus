@@ -29,23 +29,14 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <h2database.version>2.1.210</h2database.version>
+        <guava.version>31.0.1-jre</guava.version>
+        <tomcat-embed.version>9.0.48</tomcat-embed.version>
+        <jakarta-el.version>3.0.4</jakarta-el.version>
+        <shiro.version>1.8.0</shiro.version>
+        <knife4j.version>2.0.8</knife4j.version>
+        <spring-retry.version>1.3.4</spring-retry.version>
     </properties>
-
-    <dependencies>
-        <!-- quartz start -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-quartz</artifactId>
-        </dependency>
-        <!-- quartz end -->
-
-        <!-- lombok start -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <!-- lombok end -->
-    </dependencies>
 
     <dependencyManagement>
         <dependencies>
@@ -59,6 +50,58 @@
                 <artifactId>quartz-plus-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- h2database start-->
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2database.version}</version>
+            </dependency>
+            <!-- h2database end-->
+
+            <!-- guava start -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <!-- guava end -->
+
+            <!-- tomcat embed -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat-embed.version}</version>
+            </dependency>
+
+            <!-- jakarta.el -->
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>jakarta.el</artifactId>
+                <version>${jakarta-el.version}</version>
+            </dependency>
+
+            <!-- shiro -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring-boot-web-starter</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+
+            <!-- swagger -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+
+            <!-- spring retry -->
+            <dependency>
+                <groupId>org.springframework.retry</groupId>
+                <artifactId>spring-retry</artifactId>
+                <version>${spring-retry.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
+
 </project>

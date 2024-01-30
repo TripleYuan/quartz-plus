@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import redcoder.quartzplus.common.utils.HttpTemplate;
 import redcoder.quartzplus.core.core.dto.QuartzJobTriggerInfo;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerJobTriggerInfo;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobTriggerInfo;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
 import redcoder.quartzplus.schedcenter.repository.JobTriggerInfoRepository;
 
@@ -90,7 +90,7 @@ public class DefaultJobTriggerInfoCollector implements JobTriggerInfoCollector {
 
         // insert
         for (QuartzJobTriggerInfo dto : jobTriggerInfos) {
-            QuartzSchedulerJobTriggerInfo info = QuartzSchedulerJobTriggerInfo.valueOf(dto);
+            QuartzPlusJobTriggerInfo info = QuartzPlusJobTriggerInfo.valueOf(dto);
             jobTriggerInfoRepository.save(info);
         }
     }
