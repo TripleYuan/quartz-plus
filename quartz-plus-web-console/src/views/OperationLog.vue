@@ -25,7 +25,9 @@
         </div>
 
         <el-drawer :title="drawerTitle" :visible.sync="drawerVisible" direction="rtl">
-            <span>{{ drawerContent }}</span>
+            <p style="white-space: pre-line; word-wrap: break-word; word-break: break-all;">
+              {{ drawerContent }}
+            </p>
         </el-drawer>
 
         <!-- 列表数据 -->
