@@ -6,14 +6,10 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.io.InputStreamSource;
 import redcoder.quartzplus.common.utils.JsonUtils;
 import redcoder.quartzplus.schedcenter.shiro.ShiroUtils;
 import redcoder.quartzplus.schedcenter.utils.HttpServletUtils;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -102,18 +98,26 @@ public class DefaultOperationLogCreator implements OperationLogCreator {
             }
 
             Object arg = arguments[i];
-            if (arg instanceof InputStream
-                    || arg instanceof InputStreamSource
-                    || arg instanceof ServletRequest
-                    || arg instanceof ServletResponse) {
-                arg = arg.toString();
+            if (canToJson(arg)) {
+                params.put(parameterName, arg);
+            } else {
+                params.put(parameterName, arg.toString());
             }
-            params.put(parameterName, arg);
         }
-        return params;
+        return JsonUtils.toJsonString(params);
     }
 
-    private Object buildOutParams(Object proceedResult) {
-        return Optional.ofNullable(proceedResult).orElse(Collections.emptyMap());
+    private String buildOutParams(Object proceedResult) {
+        Object rtn = Optional.ofNullable(proceedResult).orElse(Collections.emptyMap());
+        return JsonUtils.toJsonString(rtn);
+    }
+
+    private boolean canToJson(Object obj) {
+        try {
+            JsonUtils.toJsonString(obj);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
