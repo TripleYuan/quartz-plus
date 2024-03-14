@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Table(name = "`quartz_plus_role`")
 @Data
-@Entity(name = "QuartzSchedulerRole")
+@Entity(name = "QuartzPlusRole")
 public class QuartzPlusRole implements Serializable {
     /**
      * 角色id

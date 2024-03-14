@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Table(name = "quartz_plus_menu")
-@Entity(name = "QuartzSchedulerMenu")
+@Entity(name = "QuartzPlusMenu")
 public class QuartzPlusMenu implements Serializable {
 
     /**

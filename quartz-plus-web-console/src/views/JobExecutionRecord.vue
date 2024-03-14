@@ -26,23 +26,23 @@
             </el-table-column>
             <el-table-column prop="jobName" label="任务名称">
             </el-table-column>
-            <el-table-column prop="status" label="任务状态">
+            <el-table-column prop="status" label="任务状态" min-width="30">
                 <template slot-scope="scope">
                     {{ scope.row.status === 1 ? '执行中' : scope.row.status === 2 ? '成功' : '失败' }}
                 </template>
             </el-table-column>
-            <el-table-column prop="startTime" label="开始执行时间">
+            <el-table-column prop="startTime" label="开始执行时间" min-width="60">
             </el-table-column>
-            <el-table-column prop="endTime" label="结束执行时间">
+            <el-table-column prop="endTime" label="结束执行时间" min-width="60">
             </el-table-column>
-            <el-table-column prop="costTime" label="任务耗时（毫秒）">
+            <el-table-column prop="costTime" label="任务耗时（毫秒）" min-width="40">
             </el-table-column>
             <el-table-column prop="exception" label="异常信息">
-              <template slot-scope="{ row }">
-                <div class="truncate-text" @click="showFullContent('异常信息', row.exception)">
-                  {{ truncateText(row.exception) }}
-                </div>
-              </template>
+                <template slot-scope="{ row }">
+                    <div class="truncate-text" @click="showFullContent('异常信息', row.exception)">
+                        {{ truncateText(row.exception) }}
+                    </div>
+                </template>
             </el-table-column>
         </el-table>
 

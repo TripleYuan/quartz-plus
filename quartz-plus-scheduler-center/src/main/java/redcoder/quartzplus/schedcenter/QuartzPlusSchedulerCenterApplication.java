@@ -1,8 +1,8 @@
 package redcoder.quartzplus.schedcenter;
 
-import redcoder.quartzplus.core.annotation.QuartzJobScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import redcoder.quartzplus.core.annotation.QuartzJobScan;
 
 @SpringBootApplication
 @QuartzJobScan("redcoder.quartzplus.schedcenter.job")

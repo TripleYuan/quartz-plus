@@ -19,21 +19,21 @@
 
         <!-- 任务列表数据 -->
         <el-table :data="tableData" style="width: 100%" height="90%" stripe>
-            <el-table-column prop="schedName" label="Quartz实例名">
+            <el-table-column prop="schedName" label="Quartz实例名" min-width="60">
             </el-table-column>
             <el-table-column prop="jobName" label="任务名称">
             </el-table-column>
             <el-table-column prop="jobDesc" label="任务描述">
             </el-table-column>
-            <el-table-column prop="prevFireTime" label="上次执行时间">
+            <el-table-column prop="prevFireTime" label="上次执行时间" min-width="60">
             </el-table-column>
-            <el-table-column prop="nextFireTime" label="下次执行时间">
+            <el-table-column prop="nextFireTime" label="下次执行时间" min-width="60">
             </el-table-column>
-            <el-table-column prop="triggerState" label="触发器状态">
+            <el-table-column prop="triggerState" label="触发器状态" min-width="40">
             </el-table-column>
-            <el-table-column prop="cron" label="cron表达式">
+            <el-table-column prop="cron" label="cron表达式" min-width="50">
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" min-width="60">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="tiggerJob(scope.row)">立即执行</el-button>
                     <el-button type="primary" size="mini" @click="refreshJob(scope.row)">刷新</el-button>

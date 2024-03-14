@@ -13,7 +13,7 @@ public interface UserRepository extends CrudRepository<QuartzPlusUser, Integer> 
     QuartzPlusUser findByUsername(String username);
 
     @Modifying
-    @Query("update QuartzSchedulerUser u set u.password=?2, u.updateTime=?3 where u.userid=?1")
+    @Query("update QuartzPlusUser u set u.password=?2, u.updateTime=?3 where u.userid=?1")
     @Transactional(rollbackFor = Exception.class)
     void updatePassword(int userid, String password, Date date);
 }

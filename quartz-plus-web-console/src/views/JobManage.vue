@@ -38,24 +38,24 @@
 
         <!-- 任务列表数据 -->
         <el-table :data="tableData" style="width: 100%" height="90%" stripe>
-            <el-table-column prop="schedName" label="Quartz实例名" width="200">
+            <el-table-column prop="schedName" label="Quartz实例名"  min-width="60">
             </el-table-column>
-            <el-table-column prop="jobName" width="260" label="任务名称">
+            <el-table-column prop="jobName" label="任务名称">
             </el-table-column>
             <el-table-column prop="jobDesc" label="任务描述">
             </el-table-column>
-            <el-table-column prop="prevFireTime" width="160" label="上次执行时间">
+            <el-table-column prop="prevFireTime" label="上次执行时间" min-width="60">
             </el-table-column>
-            <el-table-column prop="nextFireTime" width="160" label="下次执行时间">
+            <el-table-column prop="nextFireTime" label="下次执行时间" min-width="60">
             </el-table-column>
-            <el-table-column prop="triggerStateDesc" width="100" label="触发器状态">
+            <el-table-column prop="triggerState" label="触发器状态" min-width="40">
             </el-table-column>
-            <el-table-column prop="cron" label="cron表达式">
+            <el-table-column prop="cron" label="cron表达式" min-width="50">
             </el-table-column>
-            <el-table-column label="操作" width="280" fixed="right">
+            <el-table-column label="操作" min-width="90" fixed="right">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="handlePauseResume(scope.row)">
-                        {{ scope.row.triggerState === 'PAUSED' ? '恢复' : '暂停' }}
+                        {{ scope.row.triggerState === 'PAUSED' || scope.row.triggerState === '暂停' ? '恢复' : '暂停' }}
                     </el-button>
                     <!-- <el-tooltip effect="light" placement="top" content="该操作不会删除Quart实例上的任务, 只是从任务列表中移除数据"> -->
                     <el-button type="warning" size="mini" @click="removeJob(scope.row)">移除</el-button>

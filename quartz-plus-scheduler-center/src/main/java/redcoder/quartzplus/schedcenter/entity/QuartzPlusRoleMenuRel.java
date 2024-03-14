@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Table(name = "`quartz_plus_role_menu_rel`")
 @Data
-@Entity(name = "QuartzSchedulerRoleMenuRel")
+@Entity(name = "QuartzPlusRoleMenuRel")
 @IdClass(QuartzPlusRoleMenuRelKey.class)
 public class QuartzPlusRoleMenuRel implements Serializable {
 

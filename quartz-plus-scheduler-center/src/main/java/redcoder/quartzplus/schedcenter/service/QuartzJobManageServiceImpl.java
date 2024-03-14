@@ -5,6 +5,7 @@ import org.quartz.CronExpression;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import redcoder.quartzplus.common.utils.HttpTemplate;
 import redcoder.quartzplus.common.utils.JsonUtils;
@@ -17,6 +18,7 @@ import redcoder.quartzplus.schedcenter.dto.job.*;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusInstance;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobExecutionRecord;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobTriggerInfo;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobTriggerInfoSpecifications;
 import redcoder.quartzplus.schedcenter.entity.key.QuartzPlusJobTriggerInfoKey;
 import redcoder.quartzplus.schedcenter.exception.JobManageException;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
@@ -27,7 +29,8 @@ import javax.annotation.Resource;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -57,23 +60,12 @@ public class QuartzJobManageServiceImpl implements QuartzJobManageService {
         int pageNo = dto.getPageNo() - 1;
         int pageSize = dto.getPageSize();
 
-        QuartzPlusJobTriggerInfo probe = new QuartzPlusJobTriggerInfo();
-        if (hasText(schedName)) {
-            probe.setSchedName(schedName);
-        }
-        if (hasText(search)) {
-            probe.setJobName(search);
-        }
-        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("jobName", matcher -> matcher.contains());
-        Example<QuartzPlusJobTriggerInfo> example = Example.of(probe, exampleMatcher);
+        Specification<QuartzPlusJobTriggerInfo> specification = QuartzPlusJobTriggerInfoSpecifications.jobQuery(schedName, search);
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(Order.asc("schedName"), Order.asc("jobName")));
-        Page<QuartzPlusJobTriggerInfo> page = jobTriggerInfoRepository.findAll(example, pageRequest);
-
+        Page<QuartzPlusJobTriggerInfo> page = jobTriggerInfoRepository.findAll(specification, pageRequest);
         List<JobTriggerDTO> data = page.getContent().stream()
                 .map(t -> {
                     JobTriggerDTO jobTriggerDTO = new JobTriggerDTO();
-                    // 属性赋值
                     BeanUtils.copyProperties(t, jobTriggerDTO);
                     return jobTriggerDTO;
                 })

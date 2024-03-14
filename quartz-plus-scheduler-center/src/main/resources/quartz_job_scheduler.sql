@@ -36,13 +36,13 @@ drop table if exists quartz_plus_menu;
 create table quartz_plus_menu
 (
     `menu_id`     int auto_increment not null comment '菜单id',
-    `menu_code`   varchar(100)       not null comment '菜单编码',
-    `menu_name`   varchar(100)       not null comment '菜单名称',
-    `menu_type`   varchar(100)       not null comment '菜单类型，C: 目录，M：菜单，A：操作',
-    `parent_id`   int                not null default 0 comment '父菜单id，0：表示无父菜单，即一级菜单',
-    `menu_status` int                not null default 1 comment '菜单状态，0-隐藏，1-显示',
-    `create_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
-    `update_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
+    `menu_code`   varchar(100) not null comment '菜单编码',
+    `menu_name`   varchar(100) not null comment '菜单名称',
+    `menu_type`   varchar(100) not null comment '菜单类型，C: 目录，M：菜单，A：操作',
+    `parent_id`   int          not null default 0 comment '父菜单id，0：表示无父菜单，即一级菜单',
+    `menu_status` int          not null default 1 comment '菜单状态，0-隐藏，1-显示',
+    `create_time` datetime              DEFAULT CURRENT_TIMESTAMP,
+    `update_time` datetime              DEFAULT CURRENT_TIMESTAMP,
     primary key (`menu_id`),
     constraint quartz_plus_menu_uidx_menu_code unique (`menu_code`)
 );
@@ -62,11 +62,11 @@ drop table if exists quartz_plus_user;
 create table quartz_plus_user
 (
     `userid`      int auto_increment not null comment '用户id',
-    `username`    varchar(20)        not null comment '用户名',
-    `password`    varchar(50)        not null comment '密码（真实密码的md5值）',
-    `user_type`   int                not null default 0 comment '用户类型，0-普通用户，1-管理员',
-    `create_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
-    `update_time` datetime                    DEFAULT CURRENT_TIMESTAMP,
+    `username`    varchar(20) not null comment '用户名',
+    `password`    varchar(50) not null comment '密码（真实密码的md5值）',
+    `user_type`   int         not null default 0 comment '用户类型，0-普通用户，1-管理员',
+    `create_time` datetime             DEFAULT CURRENT_TIMESTAMP,
+    `update_time` datetime             DEFAULT CURRENT_TIMESTAMP,
     primary key (`userid`),
     constraint quartz_plus_menu_uidx_username unique (`username`)
 );
@@ -80,8 +80,8 @@ drop table if exists quartz_plus_role;
 create table quartz_plus_role
 (
     role_id       int auto_increment not null comment '角色id',
-    role_name     varchar(20)        not null comment '用户名',
-    role_desc     varchar(20)        not null comment '角色描述',
+    role_name     varchar(20) not null comment '用户名',
+    role_desc     varchar(20) not null comment '角色描述',
     `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
     `update_time` datetime DEFAULT CURRENT_TIMESTAMP,
     primary key (role_id)
@@ -122,14 +122,14 @@ drop table if exists quartz_plus_operation_log;
 create table quartz_plus_operation_log
 (
     id                bigint auto_increment,
-    userid            int                                null comment '用户id',
-    username          varchar(20)                        not null comment '用户名称',
+    userid            int null comment '用户id',
+    username          varchar(20) null comment '用户名称',
     api_path          varchar(200)                       not null comment 'api路径',
     api_desc          varchar(100)                       not null comment 'api描述',
     class_name        varchar(100)                       not null comment 'api所在的controller',
     method_name       varchar(100)                       not null comment 'api对应的方法名',
     request_time      datetime default CURRENT_TIMESTAMP not null comment '请求时间',
-    params_id         int                                null comment '输入输出参数信息id',
+    params_id         int null comment '输入输出参数信息id',
     spend_time_millis long                               not null comment 'api执行消耗时间',
     primary key (id)
 );
@@ -152,8 +152,8 @@ create table quartz_plus_job_execution_record
     job_group  varchar(255)  not null comment 'job所在组名称',
     status     int default 1 not null comment '任务执行状态，1-执行中；2-执行成功；2-执行失败',
     start_time datetime      not null comment '任务开始时间',
-    end_time   datetime      null comment '任务结束时间',
-    cost_time  bigint        null comment '任务执行耗时，毫秒',
-    exception  text          null comment '失败信息',
+    end_time   datetime null comment '任务结束时间',
+    cost_time  bigint null comment '任务执行耗时，毫秒',
+    exception  text null comment '失败信息',
     primary key (id)
 );

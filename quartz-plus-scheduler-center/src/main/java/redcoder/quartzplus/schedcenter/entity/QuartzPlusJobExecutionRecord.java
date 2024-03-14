@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "QuartzSchedulerJobExecutionRecord")
+@Entity(name = "QuartzPlusJobExecutionRecord")
 @Table(name = "`quartz_plus_job_execution_record`")
 @Data
 public class QuartzPlusJobExecutionRecord {

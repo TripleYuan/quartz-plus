@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name = "QuartzSchedulerJobTriggerInfo")
+@Entity(name = "QuartzPlusJobTriggerInfo")
 @Table(name = "`quartz_plus_job_trigger_info`")
 @IdClass(QuartzPlusJobTriggerInfoKey.class)
 @Data

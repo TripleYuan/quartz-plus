@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "QuartzSchedulerOperationLog")
+@Entity(name = "QuartzPlusOperationLog")
 @Table(name = "quartz_plus_operation_log")
 @Data
 public class QuartzPlusOperationLog {

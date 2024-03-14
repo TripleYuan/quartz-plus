@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name = "QuartzSchedulerInstance")
+@Entity(name = "QuartzPlusInstance")
 @Table(name = "`quartz_plus_instance`")
 @IdClass(QuartzPlusInstanceKey.class)
 @Data
