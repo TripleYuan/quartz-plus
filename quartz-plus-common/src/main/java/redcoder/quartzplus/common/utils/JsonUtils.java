@@ -6,24 +6,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import redcoder.quartzplus.common.exception.JacksonApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
+import redcoder.quartzplus.common.exception.JacksonApiException;
 
 import java.util.Map;
 
-/**
- * JSON工具类，支持：
- * <ul>
- *     <li>将map转成json字符串</li>
- *     <li>将Java Bean转换成json字符串</li>
- *     <li>将json字符串转换成Bean</li>
- * </ul>
- *
- * @author redcoder54
- * @since 1.0.0
- */
 public class JsonUtils {
 
     private static final JsonMapper jsonMapper;
@@ -58,24 +47,24 @@ public class JsonUtils {
      * @return json字符串
      */
     @SuppressWarnings("rawtypes")
-    public static String mapToJsonString(Map map) {
-        return mapToJsonString(map, null);
+    public static String toJsonString(Map map) {
+        return toJsonString(map, null);
     }
 
     /**
      * 将map转成json字符串
      *
-     * @param map        要转换的map
-     * @param optionalJM 用于处理数据转换的JsonMapper，如果为空，使用默认的JsonMapper
+     * @param map  要转换的map
+     * @param spec 用于处理数据转换的JsonMapper，如果为空，使用默认的JsonMapper
      * @return json字符串
      */
     @SuppressWarnings("rawtypes")
-    public static String mapToJsonString(Map map, @Nullable JsonMapper optionalJM) {
+    public static String toJsonString(Map map, @Nullable JsonMapper spec) {
         try {
-            if (optionalJM == null) {
+            if (spec == null) {
                 return jsonMapper.writeValueAsString(map);
             }
-            return optionalJM.writeValueAsString(map);
+            return spec.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             log.error("json serialization exception", e);
             throw new JacksonApiException("map对象转换成json字符串失败");
@@ -88,23 +77,23 @@ public class JsonUtils {
      * @param obj 待转换的对象Bean
      * @return json字符串
      */
-    public static String beanToJsonString(Object obj) {
-        return beanToJsonString(obj, null);
+    public static String toJsonString(Object obj) {
+        return toJsonString(obj, null);
     }
 
     /**
      * 将Java Bean转换成json字符串
      *
-     * @param obj        待转换的对象Bean
-     * @param optionalJM 用于处理数据转换的JsonMapper，如果为空，使用默认的JsonMapper
+     * @param obj  待转换的对象Bean
+     * @param spec 用于处理数据转换的JsonMapper，如果为空，使用默认的JsonMapper
      * @return json字符串
      */
-    public static String beanToJsonString(Object obj, @Nullable JsonMapper optionalJM) {
+    public static String toJsonString(Object obj, @Nullable JsonMapper spec) {
         try {
-            if (optionalJM == null) {
+            if (spec == null) {
                 return jsonMapper.writeValueAsString(obj);
             }
-            return optionalJM.writeValueAsString(obj);
+            return spec.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             log.error("json serialization exception", e);
             throw new JacksonApiException("bean对象转换成json字符串失败");
@@ -119,25 +108,25 @@ public class JsonUtils {
      * @param <T>     待转换的bean类型
      * @return 转换后的Bean对象
      */
-    public static <T> T jsonStringToBean(String jsonStr, Class<T> clazz) {
-        return jsonStringToBean(jsonStr, clazz, null);
+    public static <T> T toBean(String jsonStr, Class<T> clazz) {
+        return toBean(jsonStr, clazz, null);
     }
 
     /**
      * 将json字符串转换成Bean
      *
-     * @param jsonStr    json字符串
-     * @param clazz      待转换的bean class对象
-     * @param optionalJM 用于处理数据转换的JsonMapper，如果为空，使用默认的JsonMapper
-     * @param <T>        待转换的bean类型
+     * @param jsonStr json字符串
+     * @param clazz   待转换的bean class对象
+     * @param spec    用于处理数据转换的JsonMapper，如果为空，使用默认的JsonMapper
+     * @param <T>     待转换的bean类型
      * @return 转换后的Bean对象
      */
-    public static <T> T jsonStringToBean(String jsonStr, Class<T> clazz, @Nullable JsonMapper optionalJM) {
+    public static <T> T toBean(String jsonStr, Class<T> clazz, @Nullable JsonMapper spec) {
         try {
-            if (optionalJM == null) {
+            if (spec == null) {
                 return jsonMapper.readValue(jsonStr, clazz);
             }
-            return optionalJM.readValue(jsonStr, clazz);
+            return spec.readValue(jsonStr, clazz);
         } catch (JsonProcessingException e) {
             log.error("json deserialization exception", e);
             throw new JacksonApiException("json字符串转换成bean对象失败");
@@ -152,8 +141,8 @@ public class JsonUtils {
      * @param <T>           待转换的bean类型
      * @return 转换后的Bean对象
      */
-    public static <T> T jsonStringToBean(String jsonStr, TypeReference<T> typeReference) {
-        return jsonStringToBean(jsonStr, typeReference, null);
+    public static <T> T toBean(String jsonStr, TypeReference<T> typeReference) {
+        return toBean(jsonStr, typeReference, null);
     }
 
     /**
@@ -161,16 +150,16 @@ public class JsonUtils {
      *
      * @param jsonStr       json字符串
      * @param typeReference {@link TypeReference}
-     * @param optionalJM    用于处理数据转换的JsonMapper，如果为空，使用默认的JsonMapper
+     * @param spec          用于处理数据转换的JsonMapper，如果为空，使用默认的JsonMapper
      * @param <T>           待转换的bean类型
      * @return 转换后的Bean对象
      */
-    public static <T> T jsonStringToBean(String jsonStr, TypeReference<T> typeReference, @Nullable JsonMapper optionalJM) {
+    public static <T> T toBean(String jsonStr, TypeReference<T> typeReference, @Nullable JsonMapper spec) {
         try {
-            if (optionalJM == null) {
+            if (spec == null) {
                 return jsonMapper.readValue(jsonStr, typeReference);
             }
-            return optionalJM.readValue(jsonStr, typeReference);
+            return spec.readValue(jsonStr, typeReference);
         } catch (JsonProcessingException e) {
             log.error("json deserialization exception", e);
             throw new JacksonApiException("json字符串转换成bean对象失败");

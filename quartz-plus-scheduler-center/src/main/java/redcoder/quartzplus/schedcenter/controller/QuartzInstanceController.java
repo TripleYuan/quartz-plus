@@ -11,7 +11,7 @@ import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.PageResponse;
 import redcoder.quartzplus.schedcenter.dto.instance.QuartzInstanceDTO;
 import redcoder.quartzplus.schedcenter.dto.instance.QueryInstanceInfo;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusInstance;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
 import redcoder.quartzplus.schedcenter.service.QuartzJobSchedulerService;
 
@@ -41,7 +41,7 @@ public class QuartzInstanceController {
         int pageNo = queryInstanceInfo.getPageNo() - 1;
         int pageSize = queryInstanceInfo.getPageSize();
 
-        Page<QuartzSchedulerInstance> page;
+        Page<QuartzPlusInstance> page;
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by("schedName"));
         if (StringUtils.hasText(schedName)) {
             page = instanceRepository.findBySchedName(schedName, pageRequest);

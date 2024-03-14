@@ -112,4 +112,23 @@ public class QuartzJobController {
             return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
     }
+
+    @PostMapping("/execution-record/add")
+    @ApiOperation(value = "保存任务执行记录", httpMethod = "POST")
+    public ApiResult<String> saveJobExecutionRecord(@RequestBody @Valid JobExecutionRecordDto dto) {
+        try {
+            jobManageService.saveJobExecutionRecord(dto);
+            return ApiResult.success();
+        } catch (JobManageException e) {
+            log.error(e.getMessage(), e);
+            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
+        }
+    }
+
+    @GetMapping("/execution-record/list")
+    @ApiOperation(value = "获取任务执行记录", httpMethod = "GET")
+    public ApiResult<PageResponse<JobExecutionRecordDto>> getJobExecutionRecord(@Valid QueryJobTriggerInfo dto) {
+        PageResponse<JobExecutionRecordDto> data = jobManageService.getJobExecutionRecord(dto);
+        return ApiResult.success(data);
+    }
 }

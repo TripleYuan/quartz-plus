@@ -21,6 +21,11 @@ public class QuartzJobSchedulerProperties {
      */
     private String unregisterUrl;
 
+    /**
+     * 任务执行记录上报地址
+     */
+    private String reportUrl;;
+
     public String getRegisterUrl() {
         return registerUrl;
     }
@@ -35,5 +40,14 @@ public class QuartzJobSchedulerProperties {
 
     public void setUnregisterUrl(String unregisterUrl) {
         this.unregisterUrl = unregisterUrl;
+    }
+
+    public String getReportUrl() {
+        return reportUrl;
+    }
+
+    public QuartzJobSchedulerProperties setReportUrl(String reportUrl) {
+        this.reportUrl = reportUrl;
+        return this;
     }
 }

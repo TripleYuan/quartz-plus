@@ -2,9 +2,9 @@ package redcoder.quartzplus.common.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.client.config.RequestConfig;
+import org.springframework.lang.Nullable;
 import redcoder.quartzplus.common.exception.HttpExecutionFailException;
 import redcoder.quartzplus.common.exception.WrappedIOException;
-import org.springframework.lang.Nullable;
 
 import java.util.Map;
 
@@ -79,7 +79,7 @@ public class HttpTemplate {
                               @Nullable Map<String, String> headers,
                               TypeReference<T> typeReference) {
         String response = HttpUtils.doGet(url, queryParams, headers);
-        return JsonUtils.jsonStringToBean(response, typeReference);
+        return JsonUtils.toBean(response, typeReference);
     }
 
     /**
@@ -189,7 +189,7 @@ public class HttpTemplate {
                                @Nullable String requestBody,
                                TypeReference<T> typeReference) {
         String response = HttpUtils.doPost(url, contentType, headers, formParams, requestBody);
-        return JsonUtils.jsonStringToBean(response, typeReference);
+        return JsonUtils.toBean(response, typeReference);
     }
 
     /**
@@ -206,44 +206,6 @@ public class HttpTemplate {
                                       @Nullable Map<String, String> headers,
                                       TypeReference<T> typeReference) {
         String response = HttpUtils.transferFiles(url, formParams, headers);
-        return JsonUtils.jsonStringToBean(response, typeReference);
-    }
-
-    /**
-     * 构建RequestConfig
-     *
-     * @param connectTimeoutMills           连接超时时间，单位毫秒
-     * @param socketTimeoutMills            请求获取数据的超时时间，单位毫秒
-     * @param connectionRequestTimeoutMills 从连接池中获取连接得超时时间
-     * @return RequestConfig
-     */
-    public static RequestConfig buildRequestConfig(int connectTimeoutMills,
-                                                   int socketTimeoutMills,
-                                                   int connectionRequestTimeoutMills) {
-        return HttpUtils.buildRequestConfig(connectTimeoutMills, socketTimeoutMills, connectionRequestTimeoutMills);
-    }
-
-    /**
-     * 设置RequestConfig，与当前线程绑定
-     *
-     * @param config http配置信息
-     */
-    public static void setRequestConfig(RequestConfig config) {
-        HttpUtils.setRequestConfig(config);
-    }
-
-    /**
-     * 获取与当前线程绑定的RequestConfig，如果不存在，return null
-     */
-    @Nullable
-    public static RequestConfig getRequestConfig() {
-        return HttpUtils.getRequestConfig();
-    }
-
-    /**
-     * 移除当前线程绑定的RequestConfig
-     */
-    public static void removeRequestConfig() {
-        HttpUtils.removeRequestConfig();
+        return JsonUtils.toBean(response, typeReference);
     }
 }

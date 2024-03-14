@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.conn.HttpHostConnectException;
 import org.springframework.stereotype.Component;
 import redcoder.quartzplus.common.exception.WrappedIOException;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;
-import redcoder.quartzplus.schedcenter.entity.key.QuartzSchedulerInstanceKey;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusInstance;
+import redcoder.quartzplus.schedcenter.entity.key.QuartzPlusInstanceKey;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
 
 import javax.annotation.Resource;
@@ -28,7 +28,7 @@ public class RemoveInstanceOnSpecialExceptionCollectingErrorHandler implements C
     private InstanceRepository instanceRepository;
 
     @Override
-    public boolean handle(QuartzSchedulerInstance instance, Exception exception) {
+    public boolean handle(QuartzPlusInstance instance, Exception exception) {
         for (Class<? extends Exception> exClz : exceptions) {
             if (exception.getClass().isAssignableFrom(exClz)
                     || (exception.getClass().isAssignableFrom(WrappedIOException.class) && exception.getCause().getClass().isAssignableFrom(exClz))) {
@@ -39,8 +39,8 @@ public class RemoveInstanceOnSpecialExceptionCollectingErrorHandler implements C
         return false;
     }
 
-    private void deleteInstance(QuartzSchedulerInstance instance, Exception exception) {
-        QuartzSchedulerInstanceKey key = new QuartzSchedulerInstanceKey(instance.getSchedName(),
+    private void deleteInstance(QuartzPlusInstance instance, Exception exception) {
+        QuartzPlusInstanceKey key = new QuartzPlusInstanceKey(instance.getSchedName(),
                 instance.getInstanceHost(), instance.getInstancePort());
         instanceRepository.deleteById(key);
         log.info("采集信息失败，已删除实例信息. [schedName = {}, host = {}, port = {}]",

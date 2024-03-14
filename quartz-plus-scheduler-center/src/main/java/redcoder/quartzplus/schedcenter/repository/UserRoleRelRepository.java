@@ -2,14 +2,14 @@ package redcoder.quartzplus.schedcenter.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerUserRoleRel;
-import redcoder.quartzplus.schedcenter.entity.key.QuartzSchedulerUserRoleRelKey;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusUserRoleRel;
+import redcoder.quartzplus.schedcenter.entity.key.QuartzPlusUserRoleRelKey;
 
 import java.util.List;
 
-public interface UserRoleRelRepository extends CrudRepository<QuartzSchedulerUserRoleRel, QuartzSchedulerUserRoleRelKey> {
+public interface UserRoleRelRepository extends CrudRepository<QuartzPlusUserRoleRel, QuartzPlusUserRoleRelKey> {
 
-    List<QuartzSchedulerUserRoleRel> findByUserid(int userid);
+    List<QuartzPlusUserRoleRel> findByUserid(int userid);
 
     boolean existsByUserid(int userid);
 

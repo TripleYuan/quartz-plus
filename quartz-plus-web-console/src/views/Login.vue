@@ -43,7 +43,7 @@ export default {
                         if (data.status === 0) {
                             // 登录成功
                             this.$store.commit('initMenu', this.$router)
-                            Cookies.set('token', '123456')
+                            Cookies.set('token', '32FFEAC5A82E48ABBC00500DD6BFBACB')
                             this.$router.push('/home')
                         } else {
                             this.$message.error(data.message)

@@ -4,7 +4,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.pam.UnsupportedTokenException;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.springframework.stereotype.Service;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerUser;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusUser;
 import redcoder.quartzplus.schedcenter.repository.UserRepository;
 
 import javax.annotation.Resource;
@@ -39,7 +39,7 @@ public class QuartzRealm extends AuthenticatingRealm {
 
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
         String username = usernamePasswordToken.getUsername();
-        QuartzSchedulerUser user = userRepository.findByUsername(username);
+        QuartzPlusUser user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UnknownAccountException("用户" + username + "不存在");
         }

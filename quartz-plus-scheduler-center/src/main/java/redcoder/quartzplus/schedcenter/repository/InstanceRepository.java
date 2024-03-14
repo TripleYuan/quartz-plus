@@ -3,13 +3,13 @@ package redcoder.quartzplus.schedcenter.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerInstance;
-import redcoder.quartzplus.schedcenter.entity.key.QuartzSchedulerInstanceKey;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusInstance;
+import redcoder.quartzplus.schedcenter.entity.key.QuartzPlusInstanceKey;
 
 public interface InstanceRepository
-        extends PagingAndSortingRepository<QuartzSchedulerInstance, QuartzSchedulerInstanceKey> {
+        extends PagingAndSortingRepository<QuartzPlusInstance, QuartzPlusInstanceKey> {
 
-    Page<QuartzSchedulerInstance> findBySchedName(String schedName, Pageable pageable);
+    Page<QuartzPlusInstance> findBySchedName(String schedName, Pageable pageable);
 
-    QuartzSchedulerInstance findTopBySchedName(String schedName);
+    QuartzPlusInstance findTopBySchedName(String schedName);
 }

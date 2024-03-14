@@ -1,7 +1,7 @@
 package redcoder.quartzplus.schedcenter.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import redcoder.quartzplus.schedcenter.entity.QuartzSchedulerRole;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusRole;
 
-public interface RoleRepository extends CrudRepository<QuartzSchedulerRole, Integer> {
+public interface RoleRepository extends CrudRepository<QuartzPlusRole, Integer> {
 }

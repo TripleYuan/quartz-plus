@@ -98,3 +98,8 @@ export const addOrUpdateUserPermission = (data) => {
 export const getOperationLogs = (params) => {
     return http.get('/operation-log/list', { ...params, ...{ withCredentials: true } })
 }
+
+// 任务执行记录
+export const getJobExecutionRecords = (params) => {
+    return http.get('/job/execution-record/list', { ...params, ...{ withCredentials: true } })
+}
