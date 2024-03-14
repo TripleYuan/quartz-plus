@@ -1,46 +1,79 @@
 # Quartz Plus
 
-quartz-plus是一个基于spring的quartz任务调度框架扩展，提供了原生quartz不具备的能力，帮助我们更好的使用quartz：
+[中文](README_zh.md)
 
-- 支持注解的方式快速定义job、trigger，并自动注册到quartz scheduler中
-- 实现了一个quartz任务调度管理系统（quartz调度中心），提供了Job管理、Quartz实例管理、用户管理等功能
+Quartz Plus is an extension of the Quartz task scheduling framework based on Spring, designed to address the lack of annotation support and a dedicated task scheduling management interface in native Quartz. By supporting annotation for rapid Job and Trigger definition and providing a Task Scheduling Management Center, Quartz Plus offers a more convenient and efficient task scheduling management solution.
 
-## 快速上手
+## Key Features
 
-1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("redcoder.quartzplus.job")
-2. 在你的Job类上添加`QuartzJob`注解，配置job相关属性，目前支持配置 **jobKeyName**（默认值：类名） 、 **jobKeyGroup**（默认值：DEFAULT） 、 **jobDescription**
-   （默认值：空字符串） 、 **storeDurably** （默认值：true）
-3. 在你的Job类上添加`QuartzTrigger`注解，配置trigger相关属性，目前支持配置 **triggerKeyName**（默认值：类名+"Trigger""） 、 **triggerKeyGroup**（默认值：DEFAULT） 、 **triggerDescription**
-   （默认值：空字符串） 、 **cronExpress** （必选属性）；*注意：目前仅支持cron类型的trigger*
+- **Annotation Support**: Define Jobs and Triggers quickly using annotations, automatically registered into the Quartz Scheduler.
+- **Task Scheduling Management Center**: Implements a management interface for job management, Quartz instance management, user management, etc.
 
-## Quartz任务调度管理系统使用指南
+## Getting Started
 
-我这里以本地启动的方式进行演示：
+### Define Job and Trigger
 
-> 1.  启动调度中心服务 **quartz-plus-scheduler-center**
->
-> 2.  启动web控制台 **quartz-plus-web-console**
->
-> 3.  打开 http://localhost:8080 即可查看已注册的实例和Job
+Use `@QuartzJob` and `@QuartzTrigger` annotations to define Job and Trigger, as shown below:
 
-系统内置两个登录用户：
+```java
+@QuartzJob(description = "Print hello world")
+@QuartzTrigger(cron = "0/10 * * * * ?")
+public class HelloWorldJob implements Job {
 
-> - 用户1，用户名：admin, 密码：123456
-> - 用户2，用户名：quartz, 密码：123456
-
-用户1是管理员用户，拥有所有的菜单权限；用户2是普通用户，只有Job列表菜单权限。
-
-## 我的应用如何接入Quartz任务调度管理系统
-
-1. 在spring boot的启动类或自定义配置类上，添加注解`QuartzJobScan`，指定你的job所在包，比如`@QuartzJobScan("redcoder.quartzplusdemo.job")
-2. 在springboot的项目配置文件中添加配置：
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        System.out.println("hello world, current time: " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+    }
+}
 ```
+
+### Configure Spring Boot
+
+In the Spring Boot project configuration file, add the dependency and enable Quartz Plus by specifying the job package path, as shown below:
+
+```xml
+<dependency>
+    <groupId>redcoder</groupId>
+    <artifactId>quartz-plus-core</artifactId>
+    <version>${quartzplus.latest.version}</version>
+</dependency>
+```
+
+```java
+@SpringBootApplication
+@QuartzJobScan("redcoder.quartzplus.demo.job")
+public class QuartzPlusDemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(QuartzPlusDemoApplication.class, args);
+    }
+}
+```
+
+## Using Quartz Task Scheduling Management Center
+
+To use the Quartz Task Scheduling Management Center, you need to deploy `quartz-plus-scheduler-center` and `quartz-plus-web-console` on your server.
+
+### Local Startup Demonstration
+
+Start `quartz-plus-scheduler-center` in your IDE, or use `java -jar quartz-plus-scheduler-center-1.1.0.jar` to start it.
+
+Start `quartz-plus-web-console` in your IDE, or deploy it using nginx.
+
+Open [http://localhost:8080](http://localhost:8080) in your browser to view the registered instances and jobs.
+
+The system comes with two predefined login users:
+
+- User 1: Username `admin`, Password `123456`, with administrator permissions.
+- User 2: Username `quartz`, Password `123456`, with only Job list menu permissions.
+
+Add the following configuration to the Spring Boot project configuration file:
+
+```yaml
 quartz-job-scheduler:
   registry:
-    # Quartz任务调度管理系统-注册地址
+    # Quartz Task Scheduling Management System - Registration URL
     register-url: http://localhost:32007/api/quartz-job-scheduler/instance/register
-    # Quartz任务调度管理系统-解除注册地址
+    # Quartz Task Scheduling Management System - Unregister URL
     unregister-url: http://localhost:32007/api/quartz-job-scheduler/instance/unregister
 ```
-
-完成上述配置后，启动你的应用，应用中的job会自动注册到quartz调度中心，重新打开quartz调度中心web页面，即可看到你的应用job.
