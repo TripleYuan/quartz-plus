@@ -3,13 +3,12 @@ package redcoder.quartzplus.schedcenter.service.system;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.sys.MenuDto;
-import redcoder.quartzplus.schedcenter.dto.sys.RolePermissionDto;
+import redcoder.quartzplus.schedcenter.dto.system.MenuDto;
+import redcoder.quartzplus.schedcenter.dto.system.RolePermissionInfo;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusRoleMenuRel;
 import redcoder.quartzplus.schedcenter.repository.MenuRepository;
 import redcoder.quartzplus.schedcenter.repository.RoleMenuRelRepository;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class RolePermissionServiceImpl implements RolePermissionService {
 
-    @Resource
     private RoleMenuRelRepository roleMenuRelRepository;
-    @Resource
     private MenuRepository menuRepository;
+
+    public RolePermissionServiceImpl(RoleMenuRelRepository roleMenuRelRepository, MenuRepository menuRepository) {
+        this.roleMenuRelRepository = roleMenuRelRepository;
+        this.menuRepository = menuRepository;
+    }
 
     @Override
     public List<MenuDto> getPermission(int roleId) {
@@ -33,9 +35,9 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ApiResult<String> addOrUpdatePermission(RolePermissionDto permission) {
-        int roleId = permission.getRoleId();
-        List<Integer> menuIds = permission.getMenuIds();
+    public ApiResult<String> addOrUpdatePermission(RolePermissionInfo info) {
+        int roleId = info.getRoleId();
+        List<Integer> menuIds = info.getMenuIds();
 
         List<QuartzPlusRoleMenuRel> relList = menuIds.stream()
                 .map(menuId -> {

@@ -3,8 +3,8 @@ package redcoder.quartzplus.schedcenter.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.instance.QuartzInstanceDTO;
-import redcoder.quartzplus.schedcenter.service.QuartzJobSchedulerService;
+import redcoder.quartzplus.schedcenter.dto.instance.QuartzInstanceInfo;
+import redcoder.quartzplus.schedcenter.service.QuartzSchedulerInstanceService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,21 +21,21 @@ import javax.validation.Valid;
 @Api(tags = "QuartzJobScheduler API")
 public class QuartzJobSchedulerController {
 
-    private QuartzJobSchedulerService service;
+    private QuartzSchedulerInstanceService service;
 
-    public QuartzJobSchedulerController(QuartzJobSchedulerService service) {
+    public QuartzJobSchedulerController(QuartzSchedulerInstanceService service) {
         this.service = service;
     }
 
     @PostMapping("/instance/register")
     @ApiOperation(value = "注册实例信息", httpMethod = "POST")
-    public ApiResult<Boolean> addInstance(@Valid @RequestBody QuartzInstanceDTO dto) {
+    public ApiResult<Boolean> addInstance(@Valid @RequestBody QuartzInstanceInfo dto) {
         return ApiResult.success(service.addInstance(dto));
     }
 
     @PostMapping("/instance/unregister")
     @ApiOperation(value = "取消注册的实例信息", httpMethod = "POST")
-    public ApiResult<Boolean> deleteInstance(@Valid @RequestBody QuartzInstanceDTO dto) {
-        return ApiResult.success(service.deleteInstance(dto));
+    public ApiResult<Boolean> removeInstance(@Valid @RequestBody QuartzInstanceInfo dto) {
+        return ApiResult.success(service.removeInstance(dto));
     }
 }

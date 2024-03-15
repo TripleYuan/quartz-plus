@@ -1,8 +1,8 @@
 package redcoder.quartzplus.schedcenter.service.system;
 
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.sys.RoleDto;
-import redcoder.quartzplus.schedcenter.dto.sys.UserPermissionDto;
+import redcoder.quartzplus.schedcenter.dto.system.RoleInfo;
+import redcoder.quartzplus.schedcenter.dto.system.UserPermissionInfo;
 
 import java.util.List;
 
@@ -14,12 +14,12 @@ public interface UserPermissionService {
     /**
      * 获取用户权限
      */
-    List<RoleDto> getList(int userid);
+    List<RoleInfo> getUserPermission(int userid);
 
     /**
      * 添加或更新用户权限
      */
-    ApiResult<String> addOrUpdate(UserPermissionDto dto);
+    ApiResult<String> addOrUpdate(UserPermissionInfo info);
 
     /**
      * 删除用户权限

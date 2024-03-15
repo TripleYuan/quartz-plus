@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { getSchedNames, getJobs, triggerJob, refreshJob } from '../api'
+import { getSchedNames, getJobs, executeJob, refreshJob } from '../api'
 export default {
     name: 'JobList',
     data() {
@@ -102,7 +102,7 @@ export default {
         },
         tiggerJob(row) {
             const data = { schedName: row.schedName, jobName: row.jobName, jobGroup: row.jobGroup }
-            triggerJob(data).then(({ data }) => {
+            executeJob(data).then(({ data }) => {
                 if (data.status === 0) {
                     this.getSchedNameList()
                     this.getJobList()

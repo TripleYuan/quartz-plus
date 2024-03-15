@@ -7,7 +7,7 @@ import redcoder.quartzplus.common.utils.JsonUtils;
 import redcoder.quartzplus.common.utils.MapUtils;
 import redcoder.quartzplus.core.core.QuartzJobTriggerInfoCreator;
 import redcoder.quartzplus.core.core.dto.QuartzApiResult;
-import redcoder.quartzplus.core.core.dto.QuartzJobTriggerInfo;
+import redcoder.quartzplus.core.core.dto.QuartzJobInfo;
 import redcoder.quartzplus.core.core.dto.QuartzSchedulerInstance;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
-import redcoder.quartzplus.core.core.dto.ScheduleJob;
+import redcoder.quartzplus.core.core.dto.JobUniqueId;
 
 import java.util.*;
 
@@ -43,26 +43,26 @@ public class DefaultQuartzService implements QuartzService, InitializingBean, Di
     }
 
     @Override
-    public List<QuartzJobTriggerInfo> getQuartzJobTriggerInfoList() throws SchedulerException {
-        List<QuartzJobTriggerInfo> quartzJobTriggerInfos = new ArrayList<>();
+    public List<QuartzJobInfo> getQuartzJobs() throws SchedulerException {
+        List<QuartzJobInfo> quartzJobInfos = new ArrayList<>();
 
         Set<TriggerKey> triggerKeys = scheduler.getTriggerKeys(GroupMatcher.anyTriggerGroup());
         for (TriggerKey triggerKey : triggerKeys) {
             try {
-                QuartzJobTriggerInfo quartzJobTriggerInfo = creator.create(triggerKey);
-                quartzJobTriggerInfos.add(quartzJobTriggerInfo);
+                QuartzJobInfo quartzJobInfo = creator.create(triggerKey);
+                quartzJobInfos.add(quartzJobInfo);
             } catch (SchedulerException e) {
                 log.warn("createQuartBean error", e);
             }
         }
 
-        return quartzJobTriggerInfos;
+        return quartzJobInfos;
     }
 
     @Override
-    public QuartzJobTriggerInfo getQuartzJobTriggerInfo(String triggerName, String triggerGroup) throws SchedulerException {
+    public QuartzJobInfo queryJob(String triggerName, String triggerGroup) throws SchedulerException {
         TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroup);
-        QuartzJobTriggerInfo quartBean = creator.create(triggerKey);
+        QuartzJobInfo quartBean = creator.create(triggerKey);
         Assert.notNull(quartBean, "QuartzJobTriggerInfo not exist");
         return quartBean;
     }
@@ -92,8 +92,8 @@ public class DefaultQuartzService implements QuartzService, InitializingBean, Di
     }
 
     @Override
-    public void scheduleJob(ScheduleJob scheduleJob) throws SchedulerException {
-        JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
+    public void updateJob(JobUniqueId jobUniqueId) throws SchedulerException {
+        JobKey jobKey = JobKey.jobKey(jobUniqueId.getJobName(), jobUniqueId.getJobGroup());
         JobDetail jobDetail = scheduler.getJobDetail(jobKey);
         Set<Trigger> triggers = new HashSet<>();
         for (Trigger trigger : scheduler.getTriggersOfJob(jobKey)) {
@@ -101,7 +101,7 @@ public class DefaultQuartzService implements QuartzService, InitializingBean, Di
                     .forJob(jobKey)
                     .withIdentity(trigger.getKey())
                     .withDescription(trigger.getDescription())
-                    .withSchedule(CronScheduleBuilder.cronSchedule(scheduleJob.getCron()))
+                    .withSchedule(CronScheduleBuilder.cronSchedule(jobUniqueId.getCron()))
                     .build();
             triggers.add(newTrigger);
         }

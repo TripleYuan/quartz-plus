@@ -4,35 +4,36 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.sys.RoleDto;
+import redcoder.quartzplus.schedcenter.dto.system.RoleInfo;
 import redcoder.quartzplus.schedcenter.service.system.RoleService;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/role")
 @Api(tags = "角色")
 public class RoleController {
 
-    @Resource
     private RoleService roleService;
 
-    @GetMapping("/list")
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
+    }
+
+    @GetMapping("/api/roles")
     @ApiOperation("获取所有角色")
-    public ApiResult<List<RoleDto>> getList() {
-        List<RoleDto> data = roleService.getList();
+    public ApiResult<List<RoleInfo>> getRoles() {
+        List<RoleInfo> data = roleService.getRoles();
         return ApiResult.success(data);
     }
 
-    @PostMapping("/addOrUpdate")
+    @PostMapping("/api/role")
     @ApiOperation("新增|更新角色")
-    public ApiResult<String> addOrUpdate(@RequestBody @Valid RoleDto dto) {
-        return roleService.addOrUpdate(dto);
+    public ApiResult<String> addOrUpdate(@RequestBody @Valid RoleInfo roleInfo) {
+        return roleService.addOrUpdate(roleInfo);
     }
 
-    @DeleteMapping("/delete/{roleId}")
+    @DeleteMapping("/api/role/{roleId}")
     @ApiOperation("删除角色")
     public ApiResult<String> delete(@PathVariable int roleId) {
         return roleService.delete(roleId);

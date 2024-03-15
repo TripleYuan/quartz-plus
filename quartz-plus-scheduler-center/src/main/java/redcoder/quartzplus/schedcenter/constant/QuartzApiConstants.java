@@ -6,11 +6,11 @@ package redcoder.quartzplus.schedcenter.constant;
  */
 public class QuartzApiConstants {
 
-    public static final String JOB_TRIGGER_INFO_LIST = "/quartz/job-trigger-info/list";
-    public static final String JOB_TRIGGER_INFO_QUERY = "/quartz/job-trigger-info/query";
-    public static final String TRIGGER_JOB = "/quartz/trigger-job";
-    public static final String PAUSE_JOB = "/quartz/pause-job";
-    public static final String RESUME_JOB = "/quartz/resume-job";
-    public static final String DELETE_JOB = "/quartz/delete-job";
-    public static final String SCHEDULE_JOB = "/quartz/schedule-job";
+    public static final String JOB_TRIGGER_INFO_LIST = "/quartz/jobs";
+    public static final String JOB_TRIGGER_INFO_QUERY = "/quartz/job";
+    public static final String EXECUTE_JOB = "/quartz/job/execute";
+    public static final String PAUSE_JOB = "/quartz/job/pause";
+    public static final String RESUME_JOB = "/quartz/job/resume";
+    public static final String UPDATE_JOB = "/quartz/job";
+    public static final String DELETE_JOB = "/quartz/job";
 }

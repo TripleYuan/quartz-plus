@@ -1,8 +1,8 @@
 package redcoder.quartzplus.schedcenter.service.system;
 
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.sys.ModifyPasswordReq;
-import redcoder.quartzplus.schedcenter.dto.sys.UserDto;
+import redcoder.quartzplus.schedcenter.dto.system.PasswordUpdate;
+import redcoder.quartzplus.schedcenter.dto.system.UserInfo;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ public interface UserService {
      */
     String DEFAULT_PASSWORD = "e10adc3949ba59abbe56e057f20f883e";
 
-    List<UserDto> getList();
+    List<UserInfo> getUsers();
 
-    ApiResult<String> addOrUpdate(UserDto dto);
+    ApiResult<String> addOrUpdate(UserInfo info);
 
     ApiResult<String> delete(int userid);
 
-    ApiResult<String> modifyPassword(ModifyPasswordReq req);
+    ApiResult<String> updatePassword(PasswordUpdate passwordUpdate);
 }

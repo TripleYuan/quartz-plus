@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import redcoder.quartzplus.common.utils.HttpTemplate;
-import redcoder.quartzplus.core.core.dto.QuartzJobTriggerInfo;
+import redcoder.quartzplus.core.core.dto.QuartzJobInfo;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobTriggerInfo;
+import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobInfo;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
-import redcoder.quartzplus.schedcenter.repository.JobTriggerInfoRepository;
+import redcoder.quartzplus.schedcenter.repository.JobInfoRepository;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -29,7 +29,7 @@ import static redcoder.quartzplus.schedcenter.constant.QuartzApiConstants.JOB_TR
 public class DefaultJobTriggerInfoCollector implements JobTriggerInfoCollector {
 
     @Resource
-    private JobTriggerInfoRepository jobTriggerInfoRepository;
+    private JobInfoRepository jobInfoRepository;
     @Resource
     private InstanceRepository instanceRepository;
     @Resource
@@ -61,13 +61,13 @@ public class DefaultJobTriggerInfoCollector implements JobTriggerInfoCollector {
     }
 
     private void doCollect(String schedName, String host, int port) {
-        List<QuartzJobTriggerInfo> jobTriggerInfos = getJobTriggerInfos(host, port);
+        List<QuartzJobInfo> jobTriggerInfos = getJobTriggerInfos(host, port);
         clearThenInsert(schedName, jobTriggerInfos);
     }
 
-    private List<QuartzJobTriggerInfo> getJobTriggerInfos(String host, int port) {
+    private List<QuartzJobInfo> getJobTriggerInfos(String host, int port) {
         String url = "http://" + host + ":" + port + JOB_TRIGGER_INFO_LIST;
-        ApiResult<List<QuartzJobTriggerInfo>> result = HttpTemplate.doGet(url, new TypeReference<ApiResult<List<QuartzJobTriggerInfo>>>() {
+        ApiResult<List<QuartzJobInfo>> result = HttpTemplate.doGet(url, new TypeReference<ApiResult<List<QuartzJobInfo>>>() {
         });
         if (result.getStatus() != 0) {
             log.error("获取QuartzJobTriggerInfo失败，原因：{}", result.getMessage());
@@ -81,17 +81,17 @@ public class DefaultJobTriggerInfoCollector implements JobTriggerInfoCollector {
      *
      * @param jobTriggerInfos job和trigger数据
      */
-    private void clearThenInsert(String schedName, List<QuartzJobTriggerInfo> jobTriggerInfos) {
+    private void clearThenInsert(String schedName, List<QuartzJobInfo> jobTriggerInfos) {
         if (jobTriggerInfos.isEmpty()) {
             return;
         }
         // delete
-        jobTriggerInfoRepository.deleteBySchedName(schedName);
+        jobInfoRepository.deleteBySchedName(schedName);
 
         // insert
-        for (QuartzJobTriggerInfo dto : jobTriggerInfos) {
-            QuartzPlusJobTriggerInfo info = QuartzPlusJobTriggerInfo.valueOf(dto);
-            jobTriggerInfoRepository.save(info);
+        for (QuartzJobInfo dto : jobTriggerInfos) {
+            QuartzPlusJobInfo info = QuartzPlusJobInfo.valueOf(dto);
+            jobInfoRepository.save(info);
         }
     }
 }

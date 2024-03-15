@@ -66,8 +66,7 @@ public class JsonUtils {
             }
             return spec.writeValueAsString(map);
         } catch (JsonProcessingException e) {
-            log.error("json serialization exception", e);
-            throw new JacksonApiException("map对象转换成json字符串失败");
+            throw new JacksonApiException("map对象转换成json字符串失败", e);
         }
     }
 
@@ -95,8 +94,7 @@ public class JsonUtils {
             }
             return spec.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            log.error("json serialization exception", e);
-            throw new JacksonApiException("bean对象转换成json字符串失败");
+            throw new JacksonApiException("bean对象转换成json字符串失败", e);
         }
     }
 
@@ -128,8 +126,7 @@ public class JsonUtils {
             }
             return spec.readValue(jsonStr, clazz);
         } catch (JsonProcessingException e) {
-            log.error("json deserialization exception", e);
-            throw new JacksonApiException("json字符串转换成bean对象失败");
+            throw new JacksonApiException("json字符串转换成bean对象失败", e);
         }
     }
 
@@ -162,7 +159,7 @@ public class JsonUtils {
             return spec.readValue(jsonStr, typeReference);
         } catch (JsonProcessingException e) {
             log.error("json deserialization exception", e);
-            throw new JacksonApiException("json字符串转换成bean对象失败");
+            throw new JacksonApiException("json字符串转换成bean对象失败", e);
         }
     }
 

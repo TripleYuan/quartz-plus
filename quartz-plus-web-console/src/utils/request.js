@@ -3,7 +3,7 @@ import router from '../router'
 import Cookies from 'js-cookie';
 
 const http = axios.create({
-  baseURL: 'http://localhost:62000/api',
+  baseURL: 'http://localhost:62000',
   timeout: 3000,
   // headers: {'X-Custom-Header': 'foobar'}
 })

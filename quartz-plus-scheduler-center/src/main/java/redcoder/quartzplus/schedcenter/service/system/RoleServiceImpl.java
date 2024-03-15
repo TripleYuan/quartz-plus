@@ -1,14 +1,14 @@
 package redcoder.quartzplus.schedcenter.service.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redcoder.quartzplus.schedcenter.constant.ApiStatus;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.sys.RoleDto;
+import redcoder.quartzplus.schedcenter.dto.system.RoleInfo;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusRole;
 import redcoder.quartzplus.schedcenter.repository.RoleRepository;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,23 +17,27 @@ import java.util.Optional;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    @Resource
     private RoleRepository roleRepository;
-    @Resource
     private RolePermissionService relService;
 
-    @Override
-    public List<RoleDto> getList() {
-        List<RoleDto> roleDtos = new ArrayList<>();
-        roleRepository.findAll().forEach(t -> {
-            RoleDto dto = new RoleDto(t.getRoleId(), t.getRoleName(), t.getRoleDesc());
-            roleDtos.add(dto);
-        });
-        return roleDtos;
+    @Autowired
+    public RoleServiceImpl(RoleRepository roleRepository, RolePermissionService relService) {
+        this.roleRepository = roleRepository;
+        this.relService = relService;
     }
 
     @Override
-    public ApiResult<String> addOrUpdate(RoleDto dto) {
+    public List<RoleInfo> getRoles() {
+        List<RoleInfo> roleInfos = new ArrayList<>();
+        roleRepository.findAll().forEach(t -> {
+            RoleInfo dto = new RoleInfo(t.getRoleId(), t.getRoleName(), t.getRoleDesc());
+            roleInfos.add(dto);
+        });
+        return roleInfos;
+    }
+
+    @Override
+    public ApiResult<String> addOrUpdate(RoleInfo dto) {
         Integer roleId = dto.getRoleId();
         if (roleId == null) {
             // add

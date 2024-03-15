@@ -8,7 +8,7 @@ package redcoder.quartzplus.common.exception;
  */
 public class JacksonApiException extends RuntimeException {
 
-    public JacksonApiException(String message) {
-        super(message);
+    public JacksonApiException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

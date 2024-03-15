@@ -4,44 +4,45 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.sys.ModifyPasswordReq;
-import redcoder.quartzplus.schedcenter.dto.sys.UserDto;
+import redcoder.quartzplus.schedcenter.dto.system.PasswordUpdate;
+import redcoder.quartzplus.schedcenter.dto.system.UserInfo;
 import redcoder.quartzplus.schedcenter.service.system.UserService;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/user")
 @Api(tags = "用户")
 public class UserController {
 
-    @Resource
     private UserService userService;
 
-    @GetMapping("/list")
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/api/users")
     @ApiOperation("获取所有用户")
-    public ApiResult<List<UserDto>> getList() {
-        List<UserDto> data = userService.getList();
+    public ApiResult<List<UserInfo>> getUsers() {
+        List<UserInfo> data = userService.getUsers();
         return ApiResult.success(data);
     }
 
-    @PostMapping("/addOrUpdate")
+    @PostMapping("/api/user")
     @ApiOperation("新增|更新用户")
-    public ApiResult<String> addOrUpdate(@RequestBody @Valid UserDto dto) {
-        return userService.addOrUpdate(dto);
+    public ApiResult<String> addOrUpdate(@RequestBody @Valid UserInfo info) {
+        return userService.addOrUpdate(info);
     }
 
-    @DeleteMapping("/delete/{userid}")
+    @DeleteMapping("/api/user/{userid}")
     @ApiOperation("删除角色")
     public ApiResult<String> delete(@PathVariable int userid) {
         return userService.delete(userid);
     }
 
-    @PostMapping("/pwd")
+    @PostMapping("/password")
     @ApiOperation("修改密码")
-    public ApiResult<String> modifyPassword(@RequestBody @Valid ModifyPasswordReq req) {
-        return userService.modifyPassword(req);
+    public ApiResult<String> updatePassword(@RequestBody @Valid PasswordUpdate passwordUpdate) {
+        return userService.updatePassword(passwordUpdate);
     }
 }

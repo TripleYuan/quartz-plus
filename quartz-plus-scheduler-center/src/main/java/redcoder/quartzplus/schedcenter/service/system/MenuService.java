@@ -1,6 +1,6 @@
 package redcoder.quartzplus.schedcenter.service.system;
 
-import redcoder.quartzplus.schedcenter.dto.sys.MenuDto;
+import redcoder.quartzplus.schedcenter.dto.system.MenuDto;
 
 import java.util.List;
 

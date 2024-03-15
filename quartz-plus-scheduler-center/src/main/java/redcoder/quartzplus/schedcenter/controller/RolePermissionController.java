@@ -4,32 +4,33 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.sys.MenuDto;
-import redcoder.quartzplus.schedcenter.dto.sys.RolePermissionDto;
+import redcoder.quartzplus.schedcenter.dto.system.MenuDto;
+import redcoder.quartzplus.schedcenter.dto.system.RolePermissionInfo;
 import redcoder.quartzplus.schedcenter.service.system.RolePermissionService;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/role/permission")
 @Api(tags = "角色")
 public class RolePermissionController {
 
-    @Resource
     private RolePermissionService rolePermissionService;
 
-    @GetMapping("/list/{roleId}")
+    public RolePermissionController(RolePermissionService rolePermissionService) {
+        this.rolePermissionService = rolePermissionService;
+    }
+
+    @GetMapping("/api/role/permission/{roleId}")
     @ApiOperation("获取角色权限")
-    public ApiResult<List<MenuDto>> getList(@PathVariable int roleId) {
+    public ApiResult<List<MenuDto>> getPermission(@PathVariable int roleId) {
         List<MenuDto> data = rolePermissionService.getPermission(roleId);
         return ApiResult.success(data);
     }
 
-    @PostMapping("/addOrUpdate")
+    @PostMapping("/api/role/permission")
     @ApiOperation("新增|更新角色权限")
-    public ApiResult<String> addOrUpdatePermission(@RequestBody @Valid RolePermissionDto dto) {
-        return rolePermissionService.addOrUpdatePermission(dto);
+    public ApiResult<String> addOrUpdatePermission(@RequestBody @Valid RolePermissionInfo info) {
+        return rolePermissionService.addOrUpdatePermission(info);
     }
 }

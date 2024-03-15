@@ -3,7 +3,9 @@ package redcoder.quartzplus.schedcenter.service.operationlog;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.core.annotation.AnnotationUtils;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -27,6 +29,9 @@ public class OperationLogInterceptor implements MethodInterceptor {
 
     private void recordLog(MethodInvocation invocation, LocalDateTime requestTime, long s1, long s2, Object proceedResult) {
         try {
+            if(ignoreAudit(invocation.getMethod())) {
+                return;
+            }
             OperationLogContext context = OperationLogContext.builder()
                     .methodInvocation(invocation)
                     .requestTime(requestTime)
@@ -39,6 +44,12 @@ public class OperationLogInterceptor implements MethodInterceptor {
         } catch (Exception e) {
             log.warn("记录操作日志异常", e);
         }
+    }
+
+    private boolean ignoreAudit(Method method) {
+        Class<?> clazz = method.getDeclaringClass();
+        return AnnotationUtils.findAnnotation(clazz, NoAudit.class) != null
+                || AnnotationUtils.findAnnotation(method, NoAudit.class) != null;
     }
 
     public void setCreator(OperationLogCreator creator) {

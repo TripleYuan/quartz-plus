@@ -1,7 +1,8 @@
 package redcoder.quartzplus.schedcenter.service.system;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redcoder.quartzplus.schedcenter.dto.sys.MenuDto;
+import redcoder.quartzplus.schedcenter.dto.system.MenuDto;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusMenu;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusRoleMenuRel;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusUser;
@@ -19,11 +20,8 @@ import java.util.stream.Collectors;
 @Service
 public class MenuServiceImpl implements MenuService {
 
-    @Resource
     private UserRoleRelRepository userRoleRelRepository;
-    @Resource
     private MenuRepository menuRepository;
-    @Resource
     private RoleMenuRelRepository roleMenuRelRepository;
 
     @Override
@@ -59,5 +57,20 @@ public class MenuServiceImpl implements MenuService {
                 .stream()
                 .map(t -> new MenuDto(t.getMenuId(), t.getMenuCode(), t.getMenuName(), t.getMenuType()))
                 .collect(Collectors.toList());
+    }
+
+    @Autowired
+    public void setUserRoleRelRepository(UserRoleRelRepository userRoleRelRepository) {
+        this.userRoleRelRepository = userRoleRelRepository;
+    }
+
+    @Autowired
+    public void setMenuRepository(MenuRepository menuRepository) {
+        this.menuRepository = menuRepository;
+    }
+
+    @Autowired
+    public void setRoleMenuRelRepository(RoleMenuRelRepository roleMenuRelRepository) {
+        this.roleMenuRelRepository = roleMenuRelRepository;
     }
 }

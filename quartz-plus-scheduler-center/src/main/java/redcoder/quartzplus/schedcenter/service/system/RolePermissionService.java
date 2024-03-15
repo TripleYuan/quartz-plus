@@ -1,8 +1,8 @@
 package redcoder.quartzplus.schedcenter.service.system;
 
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
-import redcoder.quartzplus.schedcenter.dto.sys.MenuDto;
-import redcoder.quartzplus.schedcenter.dto.sys.RolePermissionDto;
+import redcoder.quartzplus.schedcenter.dto.system.MenuDto;
+import redcoder.quartzplus.schedcenter.dto.system.RolePermissionInfo;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface RolePermissionService {
     /**
      * 添加或更新权限
      */
-    ApiResult<String> addOrUpdatePermission(RolePermissionDto permission);
+    ApiResult<String> addOrUpdatePermission(RolePermissionInfo info);
 
     /**
      * 删除权限

@@ -189,6 +189,7 @@ export default {
     },
     computed: {
         permissionData() {
+            console.log(this.$store.state.menu.sysMenuData)
             return this.$store.state.menu.sysMenuData
         }
     },

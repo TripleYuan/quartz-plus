@@ -38,7 +38,7 @@
 
         <!-- 任务列表数据 -->
         <el-table :data="tableData" style="width: 100%" height="90%" stripe>
-            <el-table-column prop="schedName" label="Quartz实例名"  min-width="60">
+            <el-table-column prop="schedName" label="Quartz实例名" min-width="60">
             </el-table-column>
             <el-table-column prop="jobName" label="任务名称">
             </el-table-column>
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { getSchedNames, getJobs, removeJob, pauseJob, resumeJob, deleteJob, refreshJob, scheduleJob } from '../api'
+import { getSchedNames, getJobs, removeJob, pauseJob, resumeJob, deleteJob, refreshJob, updateJob } from '../api'
 export default {
     name: 'JobManage',
     data() {
@@ -113,7 +113,7 @@ export default {
         submitJob() {
             this.$refs.jobForm.validate((valid) => {
                 if (valid) {
-                    scheduleJob(this.jobForm).then(({ data }) => {
+                    updateJob(this.jobForm).then(({ data }) => {
                         if (data.status === 0) {
                             this.refreshJob(this.jobForm.schedName, this.jobForm.triggerName, this.jobForm.triggerGroup)
                             this.$message.success('任务已修改')
@@ -200,8 +200,8 @@ export default {
                 type: 'info',
                 dangerouslyUseHTMLString: true
             }).then(() => {
-                const data = { schedName: row.schedName, triggerName: row.triggerName, triggerGroup: row.triggerGroup }
-                removeJob(data).then(({ data }) => {
+                // const data = { schedName: row.schedName, triggerName: row.triggerName, triggerGroup: row.triggerGroup }
+                removeJob(row.schedName, row.jobName, row.jobGroup).then(({ data }) => {
                     if (data.status === 0) {
                         this.getJobList()
                         this.$message.success('任务已被移除')
@@ -265,8 +265,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                const data = { schedName: row.schedName, jobName: row.jobName, jobGroup: row.jobGroup }
-                deleteJob(data).then(({ data }) => {
+                // const data = { schedName: row.schedName, jobName: row.jobName, jobGroup: row.jobGroup }
+                deleteJob(row.schedName, row.jobName, row.jobGroup).then(({ data }) => {
                     if (data.status === 0) {
                         this.getJobList()
                         this.$message.success('任务已删除')

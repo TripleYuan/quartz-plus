@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
 import org.springframework.web.bind.annotation.*;
 import redcoder.quartzplus.core.core.dto.QuartzApiResult;
-import redcoder.quartzplus.core.core.dto.QuartzJobTriggerInfo;
-import redcoder.quartzplus.core.core.dto.ScheduleJob;
+import redcoder.quartzplus.core.core.dto.QuartzJobInfo;
+import redcoder.quartzplus.core.core.dto.JobUniqueId;
 
 import java.util.List;
 
@@ -26,32 +26,33 @@ public class QuartzController {
         this.quartzService = quartzService;
     }
 
-    @GetMapping("/job-trigger-info/list")
-    public QuartzApiResult<List<QuartzJobTriggerInfo>> getQuartzJobTriggerInfoList() {
+    @GetMapping("/jobs")
+    public QuartzApiResult<List<QuartzJobInfo>> getQuartzJobs() {
         try {
-            List<QuartzJobTriggerInfo> quartzJobTriggerInfoList = quartzService.getQuartzJobTriggerInfoList();
-            return new QuartzApiResult<>(0, "", quartzJobTriggerInfoList);
+            List<QuartzJobInfo> quartzJobInfoList = quartzService.getQuartzJobs();
+            return new QuartzApiResult<>(0, "", quartzJobInfoList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage());
         }
     }
 
-    @GetMapping("/job-trigger-info/query")
-    public QuartzApiResult<QuartzJobTriggerInfo> getQuartzJobTriggerInfo(@RequestParam String triggerName, @RequestParam String triggerGroup) {
+    @GetMapping("/job")
+    public QuartzApiResult<QuartzJobInfo> queryJob(@RequestParam String triggerName,
+                                                   @RequestParam String triggerGroup) {
         try {
-            QuartzJobTriggerInfo quartzJobTriggerInfo = quartzService.getQuartzJobTriggerInfo(triggerName, triggerGroup);
-            return new QuartzApiResult<>(0, "", quartzJobTriggerInfo);
+            QuartzJobInfo quartzJobInfo = quartzService.queryJob(triggerName, triggerGroup);
+            return new QuartzApiResult<>(0, "", quartzJobInfo);
         } catch (SchedulerException e) {
             log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage());
         }
     }
 
-    @PostMapping("/trigger-job")
-    public QuartzApiResult<Boolean> triggerJob(@RequestParam String jobName, @RequestParam String jobGroup) {
+    @PostMapping("/job")
+    public QuartzApiResult<Boolean> updateJob(@RequestBody JobUniqueId jobUniqueId) {
         try {
-            quartzService.triggerJob(jobName, jobGroup);
+            quartzService.updateJob(jobUniqueId);
             return new QuartzApiResult<>(0, "", true);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -59,30 +60,9 @@ public class QuartzController {
         }
     }
 
-    @PostMapping("/pause-job")
-    public QuartzApiResult<Boolean> pauseJob(@RequestParam String jobName, @RequestParam String jobGroup) {
-        try {
-            quartzService.pauseJob(jobName, jobGroup);
-            return new QuartzApiResult<>(0, "", true);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return new QuartzApiResult<>(500, e.getMessage(), false);
-        }
-    }
-
-    @PostMapping("/resume-job")
-    public QuartzApiResult<Boolean> resumeJob(@RequestParam String jobName, @RequestParam String jobGroup) {
-        try {
-            quartzService.resumeJob(jobName, jobGroup);
-            return new QuartzApiResult<>(0, "", true);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return new QuartzApiResult<>(500, e.getMessage(), false);
-        }
-    }
-
-    @PostMapping("/delete-job")
-    public QuartzApiResult<Boolean> deleteJob(@RequestParam String jobName, @RequestParam String jobGroup) {
+    @DeleteMapping("/job/{jobName}/{jobGroup}")
+    public QuartzApiResult<Boolean> deleteJob(@PathVariable String jobName,
+                                              @PathVariable String jobGroup) {
         try {
             quartzService.deleteJob(jobName, jobGroup);
             return new QuartzApiResult<>(0, "", true);
@@ -92,14 +72,40 @@ public class QuartzController {
         }
     }
 
-    @PostMapping("/schedule-job")
-    public QuartzApiResult<Boolean> scheduleJob(@RequestBody ScheduleJob scheduleJob) {
+    @PostMapping("/job/execute/{jobName}/{jobGroup}")
+    public QuartzApiResult<Boolean> triggerJob(@PathVariable String jobName,
+                                               @PathVariable String jobGroup) {
         try {
-            quartzService.scheduleJob(scheduleJob);
+            quartzService.triggerJob(jobName, jobGroup);
             return new QuartzApiResult<>(0, "", true);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new QuartzApiResult<>(500, e.getMessage(), false);
         }
     }
+
+    @PostMapping("/job/pause/{jobName}/{jobGroup}")
+    public QuartzApiResult<Boolean> pauseJob(@PathVariable String jobName,
+                                             @PathVariable String jobGroup) {
+        try {
+            quartzService.pauseJob(jobName, jobGroup);
+            return new QuartzApiResult<>(0, "", true);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new QuartzApiResult<>(500, e.getMessage(), false);
+        }
+    }
+
+    @PostMapping("/job/resume/{jobName}/{jobGroup}")
+    public QuartzApiResult<Boolean> resumeJob(@PathVariable String jobName,
+                                              @PathVariable String jobGroup) {
+        try {
+            quartzService.resumeJob(jobName, jobGroup);
+            return new QuartzApiResult<>(0, "", true);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new QuartzApiResult<>(500, e.getMessage(), false);
+        }
+    }
+
 }

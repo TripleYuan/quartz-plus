@@ -1,8 +1,8 @@
 package redcoder.quartzplus.core.scheduler;
 
 import org.quartz.SchedulerException;
-import redcoder.quartzplus.core.core.dto.QuartzJobTriggerInfo;
-import redcoder.quartzplus.core.core.dto.ScheduleJob;
+import redcoder.quartzplus.core.core.dto.QuartzJobInfo;
+import redcoder.quartzplus.core.core.dto.JobUniqueId;
 
 import java.util.List;
 
@@ -14,19 +14,19 @@ public interface QuartzService {
     /**
      * 获取当前quartz scheduler中的job和trigger信息
      *
-     * @return 包含job和trigger信息 {@link QuartzJobTriggerInfo} 的集合
+     * @return 包含job和trigger信息 {@link QuartzJobInfo} 的集合
      */
-    List<QuartzJobTriggerInfo> getQuartzJobTriggerInfoList() throws SchedulerException;
+    List<QuartzJobInfo> getQuartzJobs() throws SchedulerException;
 
     /**
-     * 根据trigger查询对应的 {@link QuartzJobTriggerInfo}
+     * 根据trigger查询对应的 {@link QuartzJobInfo}
      *
      * @param triggerName  trigger's name
      * @param triggerGroup trigger's group
-     * @return trigger对应的 {@link QuartzJobTriggerInfo}
+     * @return trigger对应的 {@link QuartzJobInfo}
      * @throws SchedulerException scheduler异常
      */
-    QuartzJobTriggerInfo getQuartzJobTriggerInfo(String triggerName, String triggerGroup) throws SchedulerException;
+    QuartzJobInfo queryJob(String triggerName, String triggerGroup) throws SchedulerException;
 
     /**
      * 执行job
@@ -63,5 +63,5 @@ public interface QuartzService {
     /**
      * 修改任务(执行时间)
      */
-    void scheduleJob(ScheduleJob scheduleJob) throws SchedulerException;
+    void updateJob(JobUniqueId jobUniqueId) throws SchedulerException;
 }

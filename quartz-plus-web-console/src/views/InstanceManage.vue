@@ -2,14 +2,15 @@
     <div class="instancemanage">
 
         <div class="instancemanage-header">
-            <el-select v-model="queryForm.schedName" filterable placeholder="请选择" @change="handleSelectChange" clearable>
+            <el-select v-model="queryForm.schedName" filterable placeholder="请选择" @change="handleSelectChange"
+                clearable>
                 <el-option v-for="item in schedNames" :key="item" :label="item" :value="item">
                 </el-option>
             </el-select>
         </div>
 
         <!-- 实例列表数据 -->
-        <el-table :data="tableData" style="width: 100%" height="90%" stripe >
+        <el-table :data="tableData" style="width: 100%" height="90%" stripe>
             <el-table-column prop="schedName" label="Quartz实例名称" width="200">
             </el-table-column>
             <el-table-column prop="instanceHost" label="实例地址">
@@ -83,8 +84,8 @@ export default {
             })
         },
         deleteInstance(row) {
-            const data = { schedName: row.schedName, instanceHost: row.instanceHost, instancePort: row.instancePort }
-            deleteInstance(data).then(({ data }) => {
+            // const data = { schedName: row.schedName, instanceHost: row.instanceHost, instancePort: row.instancePort }
+            deleteInstance(row.schedName, row.instanceHost, row.instancePort).then(({ data }) => {
                 if (data.status === 0) {
                     this.getIntanceList()
                     this.$message.success('实例已删除')

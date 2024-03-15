@@ -8,56 +8,81 @@ import redcoder.quartzplus.schedcenter.dto.job.*;
 import redcoder.quartzplus.schedcenter.exception.JobManageException;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.PageResponse;
-import redcoder.quartzplus.schedcenter.service.QuartzJobManageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import redcoder.quartzplus.schedcenter.service.QuartzJobService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * @author redcoder54
- * @since 2022-01-09
- */
 @RestController
-@RequestMapping("/api/job")
 @Api(tags = "Quartz任务管理")
 @Slf4j
 public class QuartzJobController {
 
-    @Autowired
-    private QuartzJobManageService jobManageService;
+    private QuartzJobService jobService;
 
-    @GetMapping("/sched-names")
+    public QuartzJobController(QuartzJobService jobService) {
+        this.jobService = jobService;
+    }
+
+    @GetMapping("/api/job/sched-names")
     @ApiOperation(value = "获取quartz实例名称", httpMethod = "GET")
     public ApiResult<List<String>> getSchedNames() {
-        return ApiResult.success(jobManageService.getSchedNames());
+        return ApiResult.success(jobService.getSchedNames());
     }
 
-    @GetMapping("/list")
+    @GetMapping("/api/jobs")
     @ApiOperation(value = "获取job", httpMethod = "GET")
-    public ApiResult<PageResponse<JobTriggerDTO>> getJobTriggerInfoList(QueryJobTriggerInfo queryJobTriggerInfo) {
-        return ApiResult.success(jobManageService.getJobTriggerInfos(queryJobTriggerInfo));
+    public ApiResult<PageResponse<JobInfo>> getJobTriggerInfoList(JobInfoQuery jobInfoQuery) {
+        return ApiResult.success(jobService.getJobInfo(jobInfoQuery));
     }
 
-    @PostMapping("/refresh")
-    @ApiOperation(value = "刷新job信息", httpMethod = "POST")
-    public ApiResult<JobTriggerDTO> refreshJobTrigger(@Valid @RequestBody RefreshJobTriggerDTO dto) {
-        return ApiResult.success(jobManageService.refreshJobTrigger(dto));
+    @PostMapping("/api/job")
+    @ApiOperation(value = "修改job", httpMethod = "POST")
+    public ApiResult<String> scheduleJob(@Valid @RequestBody JobInfoUpdate jobInfoUpdate) {
+        try {
+            jobService.updateJob(jobInfoUpdate);
+            return ApiResult.success();
+        } catch (JobManageException e) {
+            log.error(e.getMessage(), e);
+            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
+        }
     }
 
-    @PostMapping("/removeLocal")
-    @ApiOperation(value = "删除本地保存的job数据", httpMethod = "DELETE")
-    public ApiResult<String> removeLocal(@Valid @RequestBody RemoveLocalJobTriggerDTO dto) {
-        jobManageService.removeLocal(dto);
+    @DeleteMapping("/api/job/{schedName}/{jobGroup}/{jobName}")
+    @ApiOperation(value = "删除job")
+    public ApiResult<String> deleteJob(@PathVariable String schedName,
+                                       @PathVariable String jobName,
+                                       @PathVariable String jobGroup) {
+        try {
+            jobService.deleteJob(new JobUniqueId(schedName, jobName, jobGroup));
+            return ApiResult.success();
+        } catch (JobManageException e) {
+            log.error(e.getMessage(), e);
+            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/api/local-job/{schedName}/{jobGroup}/{jobName}")
+    @ApiOperation(value = "删除本地保存的job数据")
+    public ApiResult<String> removeLocal(@PathVariable String schedName,
+                                         @PathVariable String jobName,
+                                         @PathVariable String jobGroup) {
+        jobService.removeLocal(new JobUniqueId(schedName, jobName, jobGroup));
         return ApiResult.success();
     }
-    
-    @PostMapping("/trigger")
+
+    @PostMapping("/api/job/refresh")
+    @ApiOperation(value = "刷新job信息", httpMethod = "POST")
+    public ApiResult<JobInfo> refreshJob(@Valid @RequestBody JobInfoRefresh jobInfoRefresh) {
+        return ApiResult.success(jobService.refreshJob(jobInfoRefresh));
+    }
+
+    @PostMapping("/api/job/execute")
     @ApiOperation(value = "执行job", httpMethod = "POST")
-    public ApiResult<String> triggerJob(@Valid @RequestBody JobManageDTO dto) {
+    public ApiResult<String> executeJob(@Valid @RequestBody JobUniqueId jobUniqueId) {
         try {
-            jobManageService.triggerJob(dto);
+            jobService.executeJob(jobUniqueId);
             return ApiResult.success();
         } catch (JobManageException e) {
             log.error(e.getMessage(), e);
@@ -65,11 +90,11 @@ public class QuartzJobController {
         }
     }
 
-    @PostMapping("/pause")
+    @PostMapping("/api/job/pause")
     @ApiOperation(value = "暂停job", httpMethod = "POST")
-    public ApiResult<String> pauseJob(@Valid @RequestBody JobManageDTO dto) {
+    public ApiResult<String> pauseJob(@Valid @RequestBody JobUniqueId jobUniqueId) {
         try {
-            jobManageService.pauseJob(dto);
+            jobService.pauseJob(jobUniqueId);
             return ApiResult.success();
         } catch (JobManageException e) {
             log.error(e.getMessage(), e);
@@ -77,11 +102,11 @@ public class QuartzJobController {
         }
     }
 
-    @PostMapping("/resume")
+    @PostMapping("/api/job/resume")
     @ApiOperation(value = "恢复job", httpMethod = "POST")
-    public ApiResult<String> resumeJob(@Valid @RequestBody JobManageDTO dto) {
+    public ApiResult<String> resumeJob(@Valid @RequestBody JobUniqueId jobUniqueId) {
         try {
-            jobManageService.resumeJob(dto);
+            jobService.resumeJob(jobUniqueId);
             return ApiResult.success();
         } catch (JobManageException e) {
             log.error(e.getMessage(), e);
@@ -89,35 +114,11 @@ public class QuartzJobController {
         }
     }
 
-    @PostMapping("/delete")
-    @ApiOperation(value = "删除job", httpMethod = "POST")
-    public ApiResult<String> deleteJob(@Valid @RequestBody JobManageDTO dto) {
-        try {
-            jobManageService.deleteJob(dto);
-            return ApiResult.success();
-        } catch (JobManageException e) {
-            log.error(e.getMessage(), e);
-            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
-        }
-    }
-
-    @PostMapping("/schedule")
-    @ApiOperation(value = "修改job", httpMethod = "POST")
-    public ApiResult<String> scheduleJob(@Valid @RequestBody ScheduleJobDto dto) {
-        try {
-            jobManageService.scheduleJob(dto);
-            return ApiResult.success();
-        } catch (JobManageException e) {
-            log.error(e.getMessage(), e);
-            return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
-        }
-    }
-
-    @PostMapping("/execution-record/add")
+    @PostMapping("/api/job/execution-record/add")
     @ApiOperation(value = "保存任务执行记录", httpMethod = "POST")
-    public ApiResult<String> saveJobExecutionRecord(@RequestBody @Valid JobExecutionRecordDto dto) {
+    public ApiResult<String> saveJobExecutionRecord(@RequestBody @Valid JobExecutionRecord record) {
         try {
-            jobManageService.saveJobExecutionRecord(dto);
+            jobService.saveJobExecutionRecord(record);
             return ApiResult.success();
         } catch (JobManageException e) {
             log.error(e.getMessage(), e);
@@ -125,10 +126,10 @@ public class QuartzJobController {
         }
     }
 
-    @GetMapping("/execution-record/list")
+    @GetMapping("/api/job/execution-records")
     @ApiOperation(value = "获取任务执行记录", httpMethod = "GET")
-    public ApiResult<PageResponse<JobExecutionRecordDto>> getJobExecutionRecord(@Valid QueryJobTriggerInfo dto) {
-        PageResponse<JobExecutionRecordDto> data = jobManageService.getJobExecutionRecord(dto);
+    public ApiResult<PageResponse<JobExecutionRecord>> getJobExecutionRecord(@Valid JobInfoQuery dto) {
+        PageResponse<JobExecutionRecord> data = jobService.getJobExecutionRecord(dto);
         return ApiResult.success(data);
     }
 }
