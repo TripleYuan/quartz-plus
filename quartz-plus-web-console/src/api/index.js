@@ -30,7 +30,7 @@ export const deleteJob = (schedName, jobName, jobGroup) => {
     return http.delete('/api/job/' + schedName + '/' + jobName + '/' + jobGroup, { withCredentials: true })
 }
 export const removeJob = (schedName, jobName, jobGroup) => {
-    return http.delete('/api/local-job' + schedName + '/' + jobName + '/' + jobGroup, { withCredentials: true })
+    return http.delete('/api/local-job/' + schedName + '/' + jobName + '/' + jobGroup, { withCredentials: true })
 }
 export const executeJob = (data) => {
     return http.post('/api/job/execute', data, { withCredentials: true })

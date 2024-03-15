@@ -44,15 +44,15 @@
             </el-table-column>
             <el-table-column prop="jobDesc" label="任务描述">
             </el-table-column>
-            <el-table-column prop="prevFireTime" label="上次执行时间" min-width="60">
+            <el-table-column prop="prevFireTime" label="上次执行时间" min-width="70">
             </el-table-column>
-            <el-table-column prop="nextFireTime" label="下次执行时间" min-width="60">
+            <el-table-column prop="nextFireTime" label="下次执行时间" min-width="70">
             </el-table-column>
             <el-table-column prop="triggerState" label="触发器状态" min-width="40">
             </el-table-column>
             <el-table-column prop="cron" label="cron表达式" min-width="50">
             </el-table-column>
-            <el-table-column label="操作" min-width="90" fixed="right">
+            <el-table-column label="操作" min-width="110" fixed="right">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="handlePauseResume(scope.row)">
                         {{ scope.row.triggerState === 'PAUSED' || scope.row.triggerState === '暂停' ? '恢复' : '暂停' }}
@@ -115,7 +115,7 @@ export default {
                 if (valid) {
                     updateJob(this.jobForm).then(({ data }) => {
                         if (data.status === 0) {
-                            this.refreshJob(this.jobForm.schedName, this.jobForm.triggerName, this.jobForm.triggerGroup)
+                            this.refreshJob(this.jobForm.schedName, this.jobForm.jobName, this.jobForm.jobGroup)
                             this.$message.success('任务已修改')
                             this.getJobList()
 
@@ -180,8 +180,8 @@ export default {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
-        refreshJob(schedName, triggerName, triggerGroup) {
-            const data = { schedName: schedName, triggerName: triggerName, triggerGroup: triggerGroup }
+        refreshJob(schedName, jobName, jobGroup) {
+            const data = { schedName: schedName, jobName: jobName, jobGroup: jobGroup }
             refreshJob(data).then(({ data }) => {
                 if (data.status === 0) {
                     this.getJobList()
@@ -224,7 +224,7 @@ export default {
             if (row.triggerState === 'PAUSED') {
                 resumeJob(data).then(({ data }) => {
                     if (data.status === 0) {
-                        this.refreshJob(row.schedName, row.triggerName, row.triggerGroup)
+                        this.refreshJob(row.schedName, row.jobName, row.jobGroup)
                         this.$message.success('任务已恢复')
                     } else {
                         this.$message.error(data.message)
@@ -235,7 +235,7 @@ export default {
             } else {
                 pauseJob(data).then(({ data }) => {
                     if (data.status === 0) {
-                        this.refreshJob(row.schedName, row.triggerName, row.triggerGroup)
+                        this.refreshJob(row.schedName, row.jobName, row.jobGroup)
                         this.$message.success('任务已暂停')
                     } else {
                         this.$message.error(data.message)

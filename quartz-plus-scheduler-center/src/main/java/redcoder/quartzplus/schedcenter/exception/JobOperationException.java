@@ -6,9 +6,9 @@ package redcoder.quartzplus.schedcenter.exception;
  * @author redcoder54
  * @since 2022-01-09
  */
-public class JobManageException extends RuntimeException {
+public class JobOperationException extends RuntimeException {
 
-    public JobManageException(String message) {
+    public JobOperationException(String message) {
         super(message);
     }
 }

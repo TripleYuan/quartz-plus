@@ -20,7 +20,7 @@ import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobExecutionRecord;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobInfo;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobInfoSpec;
 import redcoder.quartzplus.schedcenter.entity.key.QuartzPlusJobInfoKey;
-import redcoder.quartzplus.schedcenter.exception.JobManageException;
+import redcoder.quartzplus.schedcenter.exception.JobOperationException;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
 import redcoder.quartzplus.schedcenter.repository.JobExecutionRecordRepository;
 import redcoder.quartzplus.schedcenter.repository.JobInfoRepository;
@@ -80,30 +80,31 @@ public class QuartzJobServiceImpl implements QuartzJobService {
     }
 
     @Override
-    public JobInfo refreshJob(JobInfoRefresh jobInfoRefresh) {
+    public JobInfo refreshJob(JobUniqueId jobUniqueId) {
+        QuartzPlusJobInfoKey key = new QuartzPlusJobInfoKey(jobUniqueId.getSchedName(), jobUniqueId.getJobName(), jobUniqueId.getJobGroup());
+        QuartzPlusJobInfo info = jobInfoRepository.findById(key).orElseThrow(() -> new JobOperationException("Job不存在"));
+
         // 刷新数据
-        refreshJobTriggerInfoInternal(jobInfoRefresh);
+        refreshJobTriggerInfoInternal(info.getSchedName(), info.getTriggerName(), info.getTriggerGroup());
 
         // 获取刷新后的数据
-        QuartzPlusJobInfoKey key = new QuartzPlusJobInfoKey(jobInfoRefresh.getSchedName(), jobInfoRefresh.getTriggerName(), jobInfoRefresh.getTriggerGroup());
-        QuartzPlusJobInfo jobTriggerInfo = jobInfoRepository.findById(key).orElseThrow(() -> new JobManageException("刷新Job失败"));
+        info = jobInfoRepository.findById(key).orElseThrow(() -> new JobOperationException("刷新Job失败"));
 
         JobInfo jobInfo = new JobInfo();
-        BeanUtils.copyProperties(jobTriggerInfo, jobInfo);
+        BeanUtils.copyProperties(info, jobInfo);
         return jobInfo;
     }
 
-    private void refreshJobTriggerInfoInternal(JobInfoRefresh dto) {
-        QuartzPlusInstance instance = getQuartzSchedulerInstance(dto.getSchedName());
+    private void refreshJobTriggerInfoInternal(String schedName, String triggerName, String triggerGroup) {
+        QuartzPlusInstance instance = getQuartzSchedulerInstance(schedName);
 
-        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + QuartzApiConstants.JOB_TRIGGER_INFO_QUERY;
-        Map<String, String> queryParams = MapUtils.buildMap("triggerName", dto.getTriggerName(),
-                "triggerGroup", dto.getTriggerGroup());
+        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + QuartzApiConstants.QUERY_JOB;
+        Map<String, String> queryParams = MapUtils.buildMap("triggerName", triggerName, "triggerGroup", triggerGroup);
         ApiResult<QuartzJobInfo> result = HttpTemplate.doGet(url, queryParams,
                 new TypeReference<ApiResult<QuartzJobInfo>>() {
                 });
         if (result.getStatus() != 0) {
-            throw new JobManageException("刷新job和trigger信息失败：" + result.getMessage());
+            throw new JobOperationException("刷新job和trigger信息失败：" + result.getMessage());
         }
 
         // 更新数据
@@ -122,58 +123,44 @@ public class QuartzJobServiceImpl implements QuartzJobService {
 
     @Override
     public void executeJob(JobUniqueId jobUniqueId) {
-        QuartzPlusInstance instance = getQuartzSchedulerInstance(jobUniqueId.getSchedName());
-        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + EXECUTE_JOB
-                + "/" + jobUniqueId.getJobGroup() + "/" + jobUniqueId.getJobName();
-        ApiResult<Boolean> result = HttpTemplate.doPost(url, Collections.emptyMap(),
-                new TypeReference<ApiResult<Boolean>>() {
-                });
-        if (result.getStatus() == 0 && Boolean.TRUE.equals(result.getData())) {
-            return;
-        }
-        throw new JobManageException("触发job失败：" + result);
+        requestScheduler(jobUniqueId, EXECUTE_JOB);
     }
 
     @Override
     public void pauseJob(JobUniqueId jobUniqueId) {
-        QuartzPlusInstance instance = getQuartzSchedulerInstance(jobUniqueId.getSchedName());
-        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + PAUSE_JOB
-                + "/" + jobUniqueId.getJobGroup() + "/" + jobUniqueId.getJobName();
-        ApiResult<Boolean> result = HttpTemplate.doPost(url, Collections.emptyMap(),
-                new TypeReference<ApiResult<Boolean>>() {
-                });
-        if (result.getStatus() == 0 && Boolean.TRUE.equals(result.getData())) {
-            return;
-        }
-        throw new JobManageException("暂停job失败：" + result);
+        requestScheduler(jobUniqueId, PAUSE_JOB);
     }
 
     @Override
     public void resumeJob(JobUniqueId jobUniqueId) {
-        QuartzPlusInstance instance = getQuartzSchedulerInstance(jobUniqueId.getSchedName());
-        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + RESUME_JOB
-                + "/" + jobUniqueId.getJobGroup() + "/" + jobUniqueId.getJobName();
-        ApiResult<Boolean> result = HttpTemplate.doPost(url, Collections.emptyMap(),
-                new TypeReference<ApiResult<Boolean>>() {
-                });
-        if (result.getStatus() == 0 && Boolean.TRUE.equals(result.getData())) {
-            return;
-        }
-        throw new JobManageException("恢复job失败：" + result);
+        requestScheduler(jobUniqueId, RESUME_JOB);
     }
 
     @Override
     public void deleteJob(JobUniqueId jobUniqueId) {
         QuartzPlusInstance instance = getQuartzSchedulerInstance(jobUniqueId.getSchedName());
         String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + DELETE_JOB
-                + "/" + jobUniqueId.getJobGroup() + "/" + jobUniqueId.getJobName();
-        ApiResult<Boolean> result = HttpTemplate.doPost(url, Collections.emptyMap(),
-                new TypeReference<ApiResult<Boolean>>() {
-                });
-        if (result.getStatus() == 0 && Boolean.TRUE.equals(result.getData())) {
+                + "/" + jobUniqueId.getJobName() + "/" + jobUniqueId.getJobGroup();
+        ApiResult<String> result = HttpTemplate.doDelete(url, new TypeReference<ApiResult<String>>() {
+        });
+        if (result.getStatus() == 0) {
+            removeLocal(jobUniqueId);
             return;
         }
-        throw new JobManageException("删除job失败：" + result);
+        throw new JobOperationException(String.format("请求失败，uri: %s, status: %s, message: %s", DELETE_JOB, result.getStatus(), result.getMessage()));
+    }
+
+    private void requestScheduler(JobUniqueId jobUniqueId, String uri) {
+        QuartzPlusInstance instance = getQuartzSchedulerInstance(jobUniqueId.getSchedName());
+        String url = "http://" + instance.getInstanceHost() + ":" + instance.getInstancePort() + uri
+                + "/" + jobUniqueId.getJobName() + "/" + jobUniqueId.getJobGroup();
+        ApiResult<String> result = HttpTemplate.doPost(url, Collections.emptyMap(),
+                new TypeReference<ApiResult<String>>() {
+                });
+        if (result.getStatus() == 0) {
+            return;
+        }
+        throw new JobOperationException(String.format("请求失败，uri: %s, status: %s, message: %s", uri, result.getStatus(), result.getMessage()));
     }
 
     @Override
@@ -183,7 +170,7 @@ public class QuartzJobServiceImpl implements QuartzJobService {
         try {
             new CronExpression(cron);
         } catch (ParseException e) {
-            throw new JobManageException(String.format("无效的cron表达式 \"%s\"", cron));
+            throw new JobOperationException(String.format("无效的cron表达式 \"%s\"", cron));
         }
 
         QuartzPlusInstance instance = getQuartzSchedulerInstance(jobInfoUpdate.getSchedName());
@@ -196,7 +183,7 @@ public class QuartzJobServiceImpl implements QuartzJobService {
         if (result.getStatus() == 0 && Boolean.TRUE.equals(result.getData())) {
             return;
         }
-        throw new JobManageException("修改job失败：" + result.getMessage());
+        throw new JobOperationException("修改job失败：" + result.getMessage());
     }
 
     @Override
@@ -228,7 +215,7 @@ public class QuartzJobServiceImpl implements QuartzJobService {
             probe.setJobName(search);
         }
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
-                .withMatcher("jobName", matcher -> matcher.contains());
+                .withMatcher("jobName", ExampleMatcher.GenericPropertyMatcher::contains);
         Example<QuartzPlusJobExecutionRecord> example = Example.of(probe, exampleMatcher);
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(Order.desc("id")));
         Page<QuartzPlusJobExecutionRecord> page = recordRepository.findAll(example, pageRequest);

@@ -7,7 +7,7 @@ package redcoder.quartzplus.schedcenter.constant;
 public class QuartzApiConstants {
 
     public static final String JOB_TRIGGER_INFO_LIST = "/quartz/jobs";
-    public static final String JOB_TRIGGER_INFO_QUERY = "/quartz/job";
+    public static final String QUERY_JOB = "/quartz/job";
     public static final String EXECUTE_JOB = "/quartz/job/execute";
     public static final String PAUSE_JOB = "/quartz/job/pause";
     public static final String RESUME_JOB = "/quartz/job/resume";

@@ -2,7 +2,7 @@ package redcoder.quartzplus.schedcenter.service;
 
 import redcoder.quartzplus.schedcenter.dto.PageResponse;
 import redcoder.quartzplus.schedcenter.dto.job.*;
-import redcoder.quartzplus.schedcenter.exception.JobManageException;
+import redcoder.quartzplus.schedcenter.exception.JobOperationException;
 
 import java.util.List;
 
@@ -27,24 +27,24 @@ public interface QuartzJobService {
     /**
      * 修改job
      *
-     * @throws JobManageException 删除job失败
+     * @throws JobOperationException 删除job失败
      */
     void updateJob(JobInfoUpdate jobInfoUpdate);
 
     /**
      * 删除job，从quartz实例中删除指定的job
      *
-     * @throws JobManageException 删除job失败
+     * @throws JobOperationException 删除job失败
      */
     void deleteJob(JobUniqueId jobUniqueId);
 
     /**
      * 刷新job和trigger信息
      *
-     * @param jobInfoRefresh 请求数据
+     * @param jobUniqueId job标识
      * @return 刷新后的数据
      */
-    JobInfo refreshJob(JobInfoRefresh jobInfoRefresh);
+    JobInfo refreshJob(JobUniqueId jobUniqueId);
 
     /**
      * 删除本地保存的job数据
@@ -54,21 +54,21 @@ public interface QuartzJobService {
     /**
      * 执行job
      *
-     * @throws JobManageException 执行job失败
+     * @throws JobOperationException 执行job失败
      */
     void executeJob(JobUniqueId jobUniqueId);
 
     /**
      * 暂停job
      *
-     * @throws JobManageException 暂停job失败
+     * @throws JobOperationException 暂停job失败
      */
     void pauseJob(JobUniqueId jobUniqueId);
 
     /**
      * 恢复（取消暂停）job
      *
-     * @throws JobManageException 恢复job失败
+     * @throws JobOperationException 恢复job失败
      */
     void resumeJob(JobUniqueId jobUniqueId);
 

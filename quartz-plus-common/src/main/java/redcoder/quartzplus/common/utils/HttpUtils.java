@@ -5,10 +5,7 @@ import org.apache.http.HttpException;
 import org.apache.http.StatusLine;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -240,17 +237,7 @@ public class HttpUtils {
 
             return executeHttpRequest(url, httpGet, logContext);
         } finally {
-            if (DISABLE_NEXT_INFO_LOG.get()) {
-                logContext.remove();
-            } else {
-                logContext.print(false);
-            }
-            REQUEST_CONFIG_CONTEXT.remove();
-            DISABLE_ERROR_LOG_MARK.remove();
-            DISABLE_NEXT_INFO_LOG.remove();
-            RETRY.remove();
-            RETRY_TEMPLATE_THREAD_LOCAL.remove();
-            CHARSET_THREAD_LOCAL.remove();
+            onComplete(logContext);
         }
     }
 
@@ -404,17 +391,50 @@ public class HttpUtils {
 
             return executeHttpRequest(url, httpPost, logContext);
         } finally {
-            if (DISABLE_NEXT_INFO_LOG.get()) {
-                logContext.remove();
-            } else {
-                logContext.print(false);
-            }
-            REQUEST_CONFIG_CONTEXT.remove();
-            DISABLE_ERROR_LOG_MARK.remove();
-            DISABLE_NEXT_INFO_LOG.remove();
-            RETRY.remove();
-            RETRY_TEMPLATE_THREAD_LOCAL.remove();
+            onComplete(logContext);
         }
+    }
+
+    /**
+     * delete请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
+     *
+     * @param url 请求地址
+     * @return 响应体内容
+     * @throws HttpExecutionFailException http请求执行失败，http status != 200
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
+     */
+    public static String doDelete(String url) {
+        LogContext logContext = LogContext.createInstance(true, Level.INFO).logger(log);
+        try {
+            logContext.append("http get method, ", url);
+            HttpDelete httpDelete = new HttpDelete(url);
+            return executeHttpRequest(url, httpDelete, logContext);
+        } finally {
+            onComplete(logContext);
+        }
+    }
+
+    private static void onComplete(LogContext logContext) {
+        if (DISABLE_NEXT_INFO_LOG.get()) {
+            logContext.remove();
+        } else {
+            logContext.print(false);
+        }
+        REQUEST_CONFIG_CONTEXT.remove();
+        DISABLE_ERROR_LOG_MARK.remove();
+        DISABLE_NEXT_INFO_LOG.remove();
+        RETRY.remove();
+        RETRY_TEMPLATE_THREAD_LOCAL.remove();
+        CHARSET_THREAD_LOCAL.remove();
     }
 
     /**

@@ -115,7 +115,7 @@ export default {
             })
         },
         refreshJob(row) {
-            const data = { schedName: row.schedName, triggerName: row.triggerName, triggerGroup: row.triggerGroup }
+            const data = { schedName: row.schedName, jobName: row.jobName, jobGroup: row.jobGroup }
             refreshJob(data).then(({ data }) => {
                 if (data.status === 0) {
                     this.getJobList()

@@ -3,6 +3,7 @@ package redcoder.quartzplus.common.utils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.client.config.RequestConfig;
 import org.springframework.lang.Nullable;
+import org.springframework.retry.support.RetryTemplate;
 import redcoder.quartzplus.common.exception.HttpExecutionFailException;
 import redcoder.quartzplus.common.exception.WrappedIOException;
 
@@ -20,18 +21,20 @@ public class HttpTemplate {
 
     /**
      * get请求
-     * <p>
-     * 如果需要修改http RequestConfig, 可通过{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加配置，
-     * 在执行http请求前，会自动应用该配置，并在请求结束后，移除该配置，不影响后续的请求。
-     * <p>
-     * 注意：如果调用{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加了配置，但却没有执行http请求，
-     * 请务必删除调用{@link HttpTemplate#removeRequestConfig()}方法，移除配置，避免影响下一次http请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
      *
-     * @param url 请求地址
-     * @param <T> 返回类型
+     * @param url         请求地址
      * @return 响应体内容
      * @throws HttpExecutionFailException http请求执行失败，http status != 200
-     * @throws WrappedIOException         封装的io异常，将checked io exception转换为 unchecked exception
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
      */
     public static <T> T doGet(String url, TypeReference<T> typeReference) {
         return doGet(url, null, typeReference);
@@ -39,19 +42,21 @@ public class HttpTemplate {
 
     /**
      * get请求
-     * <p>
-     * 如果需要修改http RequestConfig, 可通过{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加配置，
-     * 在执行http请求前，会自动应用该配置，并在请求结束后，移除该配置，不影响后续的请求。
-     * <p>
-     * 注意：如果调用{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加了配置，但却没有执行http请求，
-     * 请务必删除调用{@link HttpTemplate#removeRequestConfig()}方法，移除配置，避免影响下一次http请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
      *
      * @param url         请求地址
      * @param queryParams 请求参数
-     * @param <T>         返回类型
      * @return 响应体内容
      * @throws HttpExecutionFailException http请求执行失败，http status != 200
-     * @throws WrappedIOException         封装的io异常，将checked io exception转换为 unchecked exception
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
      */
     public static <T> T doGet(String url, Map<String, String> queryParams, TypeReference<T> typeReference) {
         return doGet(url, queryParams, null, typeReference);
@@ -59,20 +64,22 @@ public class HttpTemplate {
 
     /**
      * get请求
-     * <p>
-     * 如果需要修改http RequestConfig, 可通过{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加配置，
-     * 在执行http请求前，会自动应用该配置，并在请求结束后，移除该配置，不影响后续的请求。
-     * <p>
-     * 注意：如果调用{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加了配置，但却没有执行http请求，
-     * 请务必删除调用{@link HttpTemplate#removeRequestConfig()}方法，移除配置，避免影响下一次http请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
      *
      * @param url         请求地址
      * @param queryParams 请求参数
      * @param headers     header头信息
-     * @param <T>         返回类型
      * @return 响应体内容
      * @throws HttpExecutionFailException http请求执行失败，http status != 200
-     * @throws WrappedIOException         封装的io异常，将checked io exception转换为 unchecked exception
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
      */
     public static <T> T doGet(String url,
                               @Nullable Map<String, String> queryParams,
@@ -84,19 +91,21 @@ public class HttpTemplate {
 
     /**
      * post请求，Content-Type：application/x-www-form-urlencoded
-     * <p>
-     * 如果需要修改http RequestConfig, 可通过{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加配置，
-     * 在执行http请求前，会自动应用该配置，并在请求结束后，移除该配置，不影响后续的请求。
-     * <p>
-     * 注意：如果调用{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加了配置，但却没有执行http请求，
-     * 请务必删除调用{@link HttpTemplate#removeRequestConfig()}方法，移除配置，避免影响下一次http请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
      *
      * @param url        请求地址
      * @param formParams 表单参数
-     * @param <T>        返回类型
      * @return 响应体内容
      * @throws HttpExecutionFailException http请求执行失败，http status != 200
-     * @throws WrappedIOException         封装的io异常，将checked io exception转换为 unchecked exception
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
      */
     public static <T> T doPost(String url, Map<String, String> formParams, TypeReference<T> typeReference) {
         return doPost(url, "application/x-www-form-urlencoded", null, formParams, null, typeReference);
@@ -104,19 +113,22 @@ public class HttpTemplate {
 
     /**
      * post请求，Content-Type：application/x-www-form-urlencoded
-     * <p>
-     * 如果需要修改http RequestConfig, 可通过{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加配置，
-     * 在执行http请求前，会自动应用该配置，并在请求结束后，移除该配置，不影响后续的请求。
-     * <p>
-     * 注意：如果调用{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加了配置，但却没有执行http请求，
-     * 请务必删除调用{@link HttpTemplate#removeRequestConfig()}方法，移除配置，避免影响下一次http请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
      *
      * @param url        请求地址
      * @param headers    header信息
      * @param formParams 表单参数
      * @return 响应体内容
      * @throws HttpExecutionFailException http请求执行失败，http status != 200
-     * @throws WrappedIOException         封装的io异常，将checked io exception转换为 unchecked exception
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
      */
     public static <T> T doPost(String url, Map<String, String> headers, Map<String, String> formParams, TypeReference<T> typeReference) {
         return doPost(url, "application/x-www-form-urlencoded", headers, formParams, null, typeReference);
@@ -124,19 +136,21 @@ public class HttpTemplate {
 
     /**
      * post请求，Content-Type：application/json
-     * <p>
-     * 如果需要修改http RequestConfig, 可通过{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加配置，
-     * 在执行http请求前，会自动应用该配置，并在请求结束后，移除该配置，不影响后续的请求。
-     * <p>
-     * 注意：如果调用{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加了配置，但却没有执行http请求，
-     * 请务必删除调用{@link HttpTemplate#removeRequestConfig()}方法，移除配置，避免影响下一次http请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
      *
      * @param url         请求地址
      * @param requestBody 请求体
-     * @param <T>         返回类型
      * @return 响应体内容
      * @throws HttpExecutionFailException http请求执行失败，http status != 200
-     * @throws WrappedIOException         封装的io异常，将checked io exception转换为 unchecked exception
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
      */
     public static <T> T doPost(String url, String requestBody, TypeReference<T> typeReference) {
         return doPost(url, "application/json", null, null, requestBody, typeReference);
@@ -144,20 +158,22 @@ public class HttpTemplate {
 
     /**
      * post请求，Content-Type：application/json
-     * <p>
-     * 如果需要修改http RequestConfig, 可通过{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加配置，
-     * 在执行http请求前，会自动应用该配置，并在请求结束后，移除该配置，不影响后续的请求。
-     * <p>
-     * 注意：如果调用{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加了配置，但却没有执行http请求，
-     * 请务必删除调用{@link HttpTemplate#removeRequestConfig()}方法，移除配置，避免影响下一次http请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
      *
      * @param url         请求地址
      * @param headers     header信息
      * @param requestBody 请求体
-     * @param <T>         返回类型
      * @return 响应体内容
      * @throws HttpExecutionFailException http请求执行失败，http status != 200
-     * @throws WrappedIOException         封装的io异常，将checked io exception转换为 unchecked exception
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
      */
     public static <T> T doPost(String url, Map<String, String> headers, String requestBody, TypeReference<T> typeReference) {
         return doPost(url, "application/json", headers, null, requestBody, typeReference);
@@ -165,22 +181,24 @@ public class HttpTemplate {
 
     /**
      * post请求。
-     * <p>
-     * 如果需要修改http RequestConfig, 可通过{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加配置，
-     * 在执行http请求前，会自动应用该配置，并在请求结束后，移除该配置，不影响后续的请求。
-     * <p>
-     * 注意：如果调用{@link HttpTemplate#setRequestConfig(RequestConfig)}方法，添加了配置，但却没有执行http请求，
-     * 请务必删除调用{@link HttpTemplate#removeRequestConfig()}方法，移除配置，避免影响下一次http请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
      *
      * @param url         请求地址
      * @param contentType Content-Type
      * @param headers     header信息
      * @param formParams  请求参数
      * @param requestBody 请求体
-     * @param <T>         返回类型
      * @return 响应体内容
      * @throws HttpExecutionFailException http请求执行失败，http status != 200
-     * @throws WrappedIOException         封装的io异常，将checked io exception转换为 unchecked exception
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
      */
     public static <T> T doPost(String url,
                                String contentType,
@@ -189,6 +207,28 @@ public class HttpTemplate {
                                @Nullable String requestBody,
                                TypeReference<T> typeReference) {
         String response = HttpUtils.doPost(url, contentType, headers, formParams, requestBody);
+        return JsonUtils.toBean(response, typeReference);
+    }
+
+    /**
+     * delete请求
+     * <ul>
+     *     <li>HttpUtils会输出表示请求信息和返回信息的info日志，如果想禁用这类info日志，可调用{@link HttpUtils#disableNextHttpRequestInfoLog()}
+     *     方法，禁止输出下一次http请求的info日志。</li>
+     *     <li>如果http请求失败，HttpUtils输出包含错误信息的error日志，如果想禁用这类error日志，可调用{@link HttpUtils#disableHttpRequestFailErrorLog()}
+     *     方法，禁止输出下一次http请求的error日志。</li>
+     *     <li>HttpUtils支持开启重试机制，如果想使用该功能，可调用{@link HttpUtils#enableRetry()}，开启失败重试功能，如果不想使用
+     *     默认的重试策略，可通过{@link HttpUtils#setRetryTemplate(RetryTemplate)}设置重试策略。注意：失败重试仅应用于下一次
+     *     http请求。</li>
+     * </ul>
+     *
+     * @param url 请求地址
+     * @return 响应体内容
+     * @throws HttpExecutionFailException http请求执行失败，http status != 200
+     * @throws WrappedIOException         包装IO异常，将checked io exception转换为 unchecked exception
+     */
+    public static <T> T doDelete(String url, TypeReference<T> typeReference) {
+        String response = HttpUtils.doDelete(url);
         return JsonUtils.toBean(response, typeReference);
     }
 

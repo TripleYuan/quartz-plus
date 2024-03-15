@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import redcoder.quartzplus.schedcenter.constant.ApiStatus;
 import redcoder.quartzplus.schedcenter.dto.job.*;
-import redcoder.quartzplus.schedcenter.exception.JobManageException;
+import redcoder.quartzplus.schedcenter.exception.JobOperationException;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.PageResponse;
 import redcoder.quartzplus.schedcenter.service.QuartzJobService;
@@ -43,13 +43,13 @@ public class QuartzJobController {
         try {
             jobService.updateJob(jobInfoUpdate);
             return ApiResult.success();
-        } catch (JobManageException e) {
+        } catch (JobOperationException e) {
             log.error(e.getMessage(), e);
             return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
     }
 
-    @DeleteMapping("/api/job/{schedName}/{jobGroup}/{jobName}")
+    @DeleteMapping("/api/job/{schedName}/{jobName}/{jobGroup}")
     @ApiOperation(value = "删除job")
     public ApiResult<String> deleteJob(@PathVariable String schedName,
                                        @PathVariable String jobName,
@@ -57,13 +57,13 @@ public class QuartzJobController {
         try {
             jobService.deleteJob(new JobUniqueId(schedName, jobName, jobGroup));
             return ApiResult.success();
-        } catch (JobManageException e) {
+        } catch (JobOperationException e) {
             log.error(e.getMessage(), e);
             return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
     }
 
-    @DeleteMapping("/api/local-job/{schedName}/{jobGroup}/{jobName}")
+    @DeleteMapping("/api/local-job/{schedName}/{jobName}/{jobGroup}")
     @ApiOperation(value = "删除本地保存的job数据")
     public ApiResult<String> removeLocal(@PathVariable String schedName,
                                          @PathVariable String jobName,
@@ -74,8 +74,8 @@ public class QuartzJobController {
 
     @PostMapping("/api/job/refresh")
     @ApiOperation(value = "刷新job信息", httpMethod = "POST")
-    public ApiResult<JobInfo> refreshJob(@Valid @RequestBody JobInfoRefresh jobInfoRefresh) {
-        return ApiResult.success(jobService.refreshJob(jobInfoRefresh));
+    public ApiResult<JobInfo> refreshJob(@Valid @RequestBody JobUniqueId jobUniqueId) {
+        return ApiResult.success(jobService.refreshJob(jobUniqueId));
     }
 
     @PostMapping("/api/job/execute")
@@ -84,7 +84,7 @@ public class QuartzJobController {
         try {
             jobService.executeJob(jobUniqueId);
             return ApiResult.success();
-        } catch (JobManageException e) {
+        } catch (JobOperationException e) {
             log.error(e.getMessage(), e);
             return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
@@ -96,7 +96,7 @@ public class QuartzJobController {
         try {
             jobService.pauseJob(jobUniqueId);
             return ApiResult.success();
-        } catch (JobManageException e) {
+        } catch (JobOperationException e) {
             log.error(e.getMessage(), e);
             return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
@@ -108,7 +108,7 @@ public class QuartzJobController {
         try {
             jobService.resumeJob(jobUniqueId);
             return ApiResult.success();
-        } catch (JobManageException e) {
+        } catch (JobOperationException e) {
             log.error(e.getMessage(), e);
             return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
@@ -120,7 +120,7 @@ public class QuartzJobController {
         try {
             jobService.saveJobExecutionRecord(record);
             return ApiResult.success();
-        } catch (JobManageException e) {
+        } catch (JobOperationException e) {
             log.error(e.getMessage(), e);
             return ApiResult.failure(ApiStatus.SERVER_ERROR.status, e.getMessage());
         }
