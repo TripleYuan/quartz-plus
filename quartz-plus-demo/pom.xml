@@ -5,10 +5,10 @@
     <parent>
         <groupId>redcoder</groupId>
         <artifactId>quartz-plus</artifactId>
-        <version>1.1.0</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>quartz-plus-demo</artifactId>
-    <version>1.1.0</version>
+    <version>0.0.1</version>
     <name>quartz-plus-demo</name>
     <description>示例项目，演示如何使用注解、如何接入Quartz任务调度中心</description>
 

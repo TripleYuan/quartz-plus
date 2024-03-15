@@ -5,13 +5,13 @@
     <parent>
         <groupId>redcoder</groupId>
         <artifactId>quartz-plus</artifactId>
-        <version>1.1.0</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>quartz-plus-core</artifactId>
-    <version>1.1.0</version>
+    <version>0.0.1</version>
     <name>quartz-plus-core</name>
     <description>
-        核心组件，增强了quartz的功能，支持以注解的方式定义Job和Trigger；支持自动接入quartz调度中心。
+        核心组件，增强了quartz的功能，支持以注解的方式定义Job和Trigger；自动接入quartz调度中心。
     </description>
 
     <properties>

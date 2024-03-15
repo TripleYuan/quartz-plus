@@ -56,7 +56,7 @@ To use the Quartz Task Scheduling Management Center, you need to deploy `quartz-
 
 ### Local Startup Demonstration
 
-Start `quartz-plus-scheduler-center` in your IDE, or use `java -jar quartz-plus-scheduler-center-1.1.0.jar` to start it.
+Start `quartz-plus-scheduler-center` in your IDE, or use `java -jar quartz-plus-scheduler-center-{lastest-version}.jar` to start it.
 
 Start `quartz-plus-web-console` in your IDE, or deploy it using nginx.
 
