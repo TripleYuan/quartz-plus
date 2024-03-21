@@ -14,14 +14,14 @@ import org.springframework.core.type.AnnotationMetadata;
  */
 public class ClassPathQuartzJobScanner extends ClassPathBeanDefinitionScanner {
 
-    public ClassPathQuartzJobScanner(BeanDefinitionRegistry registry) {
-        super(registry);
-    }
+  public ClassPathQuartzJobScanner(BeanDefinitionRegistry registry) {
+    super(registry);
+  }
 
-    @Override
-    protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
-        AnnotationMetadata metadata = beanDefinition.getMetadata();
-        return metadata.isConcrete()
-                && metadata.hasAnnotation("redcoder.quartzplus.core.annotation.QuartzJob");
-    }
+  @Override
+  protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
+    AnnotationMetadata metadata = beanDefinition.getMetadata();
+    return metadata.isConcrete() && metadata.hasAnnotation(QuartzJob.class.getName());
+  }
+
 }

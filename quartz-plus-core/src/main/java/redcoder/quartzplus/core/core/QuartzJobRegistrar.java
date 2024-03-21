@@ -25,44 +25,43 @@ import java.util.List;
 @Slf4j
 public class QuartzJobRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
-    private ResourceLoader resourceLoader;
-    private Environment environment;
+  private ResourceLoader resourceLoader;
+  private Environment environment;
 
-    @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        AnnotationAttributes annoAttrs = AnnotationAttributes
-                .fromMap(importingClassMetadata.getAnnotationAttributes(QuartzJobScan.class.getName()));
-        if (annoAttrs == null) {
-            log.warn("缺失@QuartzJobScan");
-            return;
-        }
-        List<String> basePackages = new ArrayList<>();
-        for (String pkg : annoAttrs.getStringArray("value")) {
-            if (StringUtils.hasText(pkg)) {
-                basePackages.add(pkg);
-            }
-        }
-        ClassPathQuartzJobScanner jobScanner = new ClassPathQuartzJobScanner(registry);
-        jobScanner.setResourceLoader(resourceLoader);
-        jobScanner.setEnvironment(environment);
-        jobScanner.addIncludeFilter((metadataReader, metadataReaderFactory) -> {
-            AnnotationMetadata metadata = metadataReader.getAnnotationMetadata();
-            return metadata.isConcrete()
-                    && metadata.hasAnnotation("redcoder.quartzplus.core.annotation.QuartzJob");
-        });
-
-        if (!basePackages.isEmpty()) {
-            jobScanner.scan(StringUtils.toStringArray(basePackages));
-        }
+  @Override
+  public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+    AnnotationAttributes annoAttrs = AnnotationAttributes
+        .fromMap(importingClassMetadata.getAnnotationAttributes(QuartzJobScan.class.getName()));
+    if (annoAttrs == null) {
+      log.warn("缺失@QuartzJobScan");
+      return;
     }
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
+    List<String> basePackages = new ArrayList<>();
+    for (String pkg : annoAttrs.getStringArray("value")) {
+      if (StringUtils.hasText(pkg)) {
+        basePackages.add(pkg);
+      }
     }
+    ClassPathQuartzJobScanner jobScanner = new ClassPathQuartzJobScanner(registry);
+    jobScanner.setResourceLoader(resourceLoader);
+    jobScanner.setEnvironment(environment);
+    jobScanner.addIncludeFilter((metadataReader, metadataReaderFactory) -> {
+      AnnotationMetadata metadata = metadataReader.getAnnotationMetadata();
+      return metadata.isConcrete() && metadata.hasAnnotation(QuartzJob.class.getName());
+    });
 
-    @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
+    if (!basePackages.isEmpty()) {
+      jobScanner.scan(StringUtils.toStringArray(basePackages));
     }
+  }
+
+  @Override
+  public void setEnvironment(Environment environment) {
+    this.environment = environment;
+  }
+
+  @Override
+  public void setResourceLoader(ResourceLoader resourceLoader) {
+    this.resourceLoader = resourceLoader;
+  }
 }
