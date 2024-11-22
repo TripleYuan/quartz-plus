@@ -32,9 +32,8 @@ import java.util.Properties;
 public class QuartzExtendConfig {
 
     @Bean
-    @ConditionalOnMissingBean(SpringBeanJobFactory.class)
-    public SpringBeanJobFactory springBeanJobFactory() {
-        return new SpringBeanJobFactory();
+    public SpringSingletonBeanJobFactory springBeanJobFactory(QuartzJobSchedulerProperties properties) {
+        return new SpringSingletonBeanJobFactory(properties);
     }
 
     @Bean
