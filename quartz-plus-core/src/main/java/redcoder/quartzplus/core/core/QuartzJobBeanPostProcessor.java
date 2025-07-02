@@ -1,8 +1,6 @@
 package redcoder.quartzplus.core.core;
 
 import lombok.extern.slf4j.Slf4j;
-import redcoder.quartzplus.core.annotation.QuartzJob;
-import redcoder.quartzplus.core.annotation.QuartzTrigger;
 import org.quartz.*;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.BeansException;
@@ -12,8 +10,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.quartz.SchedulerAccessor;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
-import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.util.StringUtils;
+import redcoder.quartzplus.core.annotation.QuartzJob;
+import redcoder.quartzplus.core.annotation.QuartzTrigger;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -93,9 +92,6 @@ public class QuartzJobBeanPostProcessor extends QuartzJobProcessorSupport implem
         return bean;
     }
 
-    /**
-     * 如果{@link SchedulerFactoryBean#jobFactory}为null，则将其设置为{@link SpringBeanJobFactory}
-     */
     private void setJobFactoryIfNull(SchedulerFactoryBean schedulerFactoryBean) {
         try {
             Class<SchedulerFactoryBean> clazz = SchedulerFactoryBean.class;
@@ -103,7 +99,7 @@ public class QuartzJobBeanPostProcessor extends QuartzJobProcessorSupport implem
             field.setAccessible(true);
             JobFactory jobFactory = (JobFactory) field.get(schedulerFactoryBean);
             if (jobFactory == null) {
-                schedulerFactoryBean.setJobFactory(applicationContext.getBean(SpringBeanJobFactory.class));
+                schedulerFactoryBean.setJobFactory(applicationContext.getBean(SpringSingletonBeanJobFactory.class));
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
