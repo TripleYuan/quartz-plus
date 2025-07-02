@@ -2,13 +2,13 @@ package redcoder.quartzplus.schedcenter.collect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.conn.HttpHostConnectException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redcoder.quartzplus.common.exception.WrappedIOException;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusInstance;
 import redcoder.quartzplus.schedcenter.entity.key.QuartzPlusInstanceKey;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
 
-import javax.annotation.Resource;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +24,7 @@ public class RemoveInstanceOnSpecialExceptionCollectingErrorHandler implements C
 
     private final List<Class<? extends Exception>> exceptions = Arrays.asList(UnknownHostException.class, HttpHostConnectException.class);
 
-    @Resource
+    @Autowired
     private InstanceRepository instanceRepository;
 
     @Override

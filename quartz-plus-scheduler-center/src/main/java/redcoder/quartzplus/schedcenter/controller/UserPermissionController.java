@@ -2,13 +2,13 @@ package redcoder.quartzplus.schedcenter.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import redcoder.quartzplus.schedcenter.dto.ApiResult;
 import redcoder.quartzplus.schedcenter.dto.system.RoleInfo;
 import redcoder.quartzplus.schedcenter.dto.system.UserPermissionInfo;
 import redcoder.quartzplus.schedcenter.service.system.UserPermissionService;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Api(tags = "用户权限")
 public class UserPermissionController {
 
-    @Resource
+    @Autowired
     private UserPermissionService userPermissionService;
 
     @GetMapping("/api/user/permission/{roleId}")

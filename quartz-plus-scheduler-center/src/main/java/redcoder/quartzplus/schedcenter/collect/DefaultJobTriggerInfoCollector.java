@@ -2,6 +2,7 @@ package redcoder.quartzplus.schedcenter.collect;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redcoder.quartzplus.common.utils.HttpTemplate;
 import redcoder.quartzplus.core.core.dto.QuartzJobInfo;
@@ -10,7 +11,6 @@ import redcoder.quartzplus.schedcenter.entity.QuartzPlusJobInfo;
 import redcoder.quartzplus.schedcenter.repository.InstanceRepository;
 import redcoder.quartzplus.schedcenter.repository.JobInfoRepository;
 
-import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -28,11 +28,11 @@ import static redcoder.quartzplus.schedcenter.constant.QuartzApiConstants.JOB_TR
 @Component
 public class DefaultJobTriggerInfoCollector implements JobTriggerInfoCollector {
 
-    @Resource
+    @Autowired
     private JobInfoRepository jobInfoRepository;
-    @Resource
+    @Autowired
     private InstanceRepository instanceRepository;
-    @Resource
+    @Autowired
     private CollectingErrorHandlerChain errorHandlerChain;
 
     @Override

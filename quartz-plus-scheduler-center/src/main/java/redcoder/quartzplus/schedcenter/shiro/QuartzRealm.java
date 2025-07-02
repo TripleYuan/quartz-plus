@@ -3,11 +3,10 @@ package redcoder.quartzplus.schedcenter.shiro;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.pam.UnsupportedTokenException;
 import org.apache.shiro.realm.AuthenticatingRealm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redcoder.quartzplus.schedcenter.entity.QuartzPlusUser;
 import redcoder.quartzplus.schedcenter.repository.UserRepository;
-
-import javax.annotation.Resource;
 
 /**
  * 自定义的Realm实现类，根据username从用户表中查询用户信息，将查询到用户信息作为身份验证信息返回。
@@ -19,7 +18,7 @@ import javax.annotation.Resource;
 @Service
 public class QuartzRealm extends AuthenticatingRealm {
 
-    @Resource
+    @Autowired
     private UserRepository userRepository;
 
     /**

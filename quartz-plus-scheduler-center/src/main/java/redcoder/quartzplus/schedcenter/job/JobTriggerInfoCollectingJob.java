@@ -2,12 +2,11 @@ package redcoder.quartzplus.schedcenter.job;
 
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import redcoder.quartzplus.core.annotation.QuartzJob;
 import redcoder.quartzplus.core.annotation.QuartzTrigger;
 import redcoder.quartzplus.schedcenter.collect.JobTriggerInfoCollector;
-
-import javax.annotation.Resource;
 
 /**
  * 采集quartz job和trigger信息，保存到数据库表中
@@ -20,7 +19,6 @@ import javax.annotation.Resource;
 @QuartzTrigger(description = "JobTriggerInfoCollectingJob's trigger", cron = "0 0/5 * * * ?")
 public class JobTriggerInfoCollectingJob extends QuartzJobBean {
 
-    @Resource
     private JobTriggerInfoCollector collector;
 
     @Override
@@ -31,4 +29,10 @@ public class JobTriggerInfoCollectingJob extends QuartzJobBean {
             log.error("JobTriggerInfoCollectingJob error", e);
         }
     }
+
+    @Autowired
+    public void setCollector(JobTriggerInfoCollector collector) {
+        this.collector = collector;
+    }
+
 }

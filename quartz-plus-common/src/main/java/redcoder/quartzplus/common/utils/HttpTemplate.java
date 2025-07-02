@@ -1,7 +1,6 @@
 package redcoder.quartzplus.common.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.http.client.config.RequestConfig;
 import org.springframework.lang.Nullable;
 import org.springframework.retry.support.RetryTemplate;
 import redcoder.quartzplus.common.exception.HttpExecutionFailException;
