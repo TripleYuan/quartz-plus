@@ -22,12 +22,12 @@
 
 ### 复杂页面（需要事件处理）
 ```vue
-<PageStateWrapper 
-  page-name="YourPage" 
-  :state-config="stateConfig"
-  events="both"
-  @state-restored="onStateRestored"
-  @need-load-data="onNeedLoadData">
+<PageStateWrapper
+    page-name="YourPage"
+    :state-config="stateConfig"
+    events="both"
+    @state-restored="onStateRestored"
+    @need-load-data="onNeedLoadData">
   <!-- 页面内容 -->
 </PageStateWrapper>
 ```
@@ -40,9 +40,9 @@
 import PageStateWrapper from '../components/PageStateWrapper.vue'
 
 export default {
-  components: {
-    PageStateWrapper
-  }
+components: {
+PageStateWrapper
+}
 }
 ```
 
@@ -50,22 +50,22 @@ export default {
 
 ```javascript
 data() {
-  return {
-    stateConfig: {
-      // 查询表单状态
-      queryForm: 'queryForm',
-      // 分页数据
-      pageData: 'pageData',
-      // 表格数据
-      tableData: 'tableData',
-      // 总数
-      total: 'total'
-    },
-    queryForm: { appid: '', startTime: '', endTime: '' },
-    pageData: { pageNo: 1, pageSize: 10 },
-    tableData: [],
-    total: 0
-  }
+    return {
+        stateConfig: {
+            // 查询表单状态
+            queryForm: 'queryForm',
+            // 分页数据
+            pageData: 'pageData',
+            // 表格数据
+            tableData: 'tableData',
+            // 总数
+            total: 'total'
+        },
+        queryForm: { appid: '', startTime: '', endTime: '' },
+        pageData: { pageNo: 1, pageSize: 10 },
+        tableData: [],
+        total: 0
+    }
 }
 ```
 
@@ -73,15 +73,15 @@ data() {
 
 ```vue
 <template>
-  <PageStateWrapper 
-    page-name="YourPageName" 
-    :state-config="stateConfig">
-    
+  <PageStateWrapper
+      page-name="YourPageName"
+      :state-config="stateConfig">
+
     <!-- 你的页面内容 -->
     <div class="your-page">
       <!-- 页面内容 -->
     </div>
-    
+
   </PageStateWrapper>
 </template>
 ```
@@ -101,25 +101,34 @@ data() {
 
 #### events 配置详解
 
+**重要说明：**
+- **字符串值**：`events="restore"` 或 `:events="'restore'"` 都可以，效果相同
+- **布尔值**：必须使用 `:events="false"` 或 `:events="true"`，不能省略冒号
+- **对象值**：必须使用 `:events="{ restore: true, load: false }"`
+
+**为什么布尔值不能省略冒号？**
+- `events="false"` 传递的是字符串 `"false"`，在布尔上下文中会被转换为 `true`
+- `:events="false"` 传递的是布尔值 `false`，这才是我们想要的结果
+
 ```vue
 <!-- 1. 禁用所有事件（默认） -->
-<PageStateWrapper events="false">
-  <!-- 或 -->
 <PageStateWrapper :events="false">
 
-<!-- 2. 启用所有事件 -->
-<PageStateWrapper events="both">
-  <!-- 或 -->
-<PageStateWrapper :events="true">
+  <!-- 2. 启用所有事件 -->
+  <PageStateWrapper :events="true">
 
-<!-- 3. 只启用状态恢复事件 -->
-<PageStateWrapper events="restore">
+    <!-- 3. 只启用状态恢复事件 -->
+    <PageStateWrapper events="restore">
+      <!-- 或 -->
+      <PageStateWrapper :events="'restore'">
 
-<!-- 4. 只启用需要加载数据事件 -->
-<PageStateWrapper events="load">
+        <!-- 4. 只启用需要加载数据事件 -->
+        <PageStateWrapper events="load">
+          <!-- 或 -->
+          <PageStateWrapper :events="'load'">
 
-<!-- 5. 精确控制每个事件 -->
-<PageStateWrapper :events="{ restore: true, load: false }">
+            <!-- 5. 精确控制每个事件 -->
+            <PageStateWrapper :events="{ restore: true, load: false }">
 ```
 
 ## 事件处理
@@ -127,12 +136,12 @@ data() {
 ### 方式 1: 完全禁用事件（推荐用于简单页面）
 
 ```vue
-<PageStateWrapper 
-  page-name="SimplePage" 
-  :state-config="stateConfig">
-  
+<PageStateWrapper
+    page-name="SimplePage"
+    :state-config="stateConfig">
+
   <!-- 页面内容 -->
-  
+
 </PageStateWrapper>
 ```
 
@@ -150,32 +159,32 @@ data() {
 
 ```vue
 <template>
-  <PageStateWrapper 
-    page-name="ComplexPage" 
-    :state-config="stateConfig"
-    events="both"
-    @state-restored="onStateRestored"
-    @need-load-data="onNeedLoadData">
-    
+  <PageStateWrapper
+      page-name="ComplexPage"
+      :state-config="stateConfig"
+      events="both"
+      @state-restored="onStateRestored"
+      @need-load-data="onNeedLoadData">
+
     <!-- 页面内容 -->
-    
+
   </PageStateWrapper>
 </template>
 
 <script>
-export default {
-  methods: {
-    onStateRestored() {
-      // 状态恢复后的处理逻辑
-      console.log('状态已恢复')
-    },
-    
-    onNeedLoadData() {
-      // 需要重新加载数据的处理逻辑
-      this.loadData()
+  export default {
+    methods: {
+      onStateRestored() {
+        // 状态恢复后的处理逻辑
+        console.log('状态已恢复')
+      },
+
+      onNeedLoadData() {
+        // 需要重新加载数据的处理逻辑
+        this.loadData()
+      }
     }
   }
-}
 </script>
 ```
 
@@ -190,29 +199,29 @@ export default {
 
 ```vue
 <template>
-  <PageStateWrapper 
-    page-name="AppAlertRecord" 
-    :state-config="stateConfig">
-    
+  <PageStateWrapper
+      page-name="AppAlertRecord"
+      :state-config="stateConfig">
+
     <!-- 页面内容 -->
-    
+
   </PageStateWrapper>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      stateConfig: {
-        ciApp: 'ciApp',
-        queryForm: 'queryForm',
-        pageData: 'pageData',
-        tableData: 'tableData',
-        total: 'total'
+  export default {
+    data() {
+      return {
+        stateConfig: {
+          ciApp: 'ciApp',
+          queryForm: 'queryForm',
+          pageData: 'pageData',
+          tableData: 'tableData',
+          total: 'total'
+        }
       }
     }
   }
-}
 </script>
 ```
 
@@ -220,28 +229,28 @@ export default {
 
 ```vue
 <template>
-  <PageStateWrapper 
-    page-name="OperationLog" 
-    :state-config="stateConfig">
-    
+  <PageStateWrapper
+      page-name="OperationLog"
+      :state-config="stateConfig">
+
     <!-- 页面内容 -->
-    
+
   </PageStateWrapper>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      stateConfig: {
-        queryForm: 'queryForm',
-        pageData: 'pageData',
-        tableData: 'tableData',
-        total: 'total'
+  export default {
+    data() {
+      return {
+        stateConfig: {
+          queryForm: 'queryForm',
+          pageData: 'pageData',
+          tableData: 'tableData',
+          total: 'total'
+        }
       }
     }
   }
-}
 </script>
 ```
 
@@ -249,43 +258,43 @@ export default {
 
 ```vue
 <template>
-  <PageStateWrapper 
-    page-name="ComplexPage" 
-    :state-config="stateConfig"
-    events="both"
-    @state-restored="onStateRestored"
-    @need-load-data="onNeedLoadData">
-    
+  <PageStateWrapper
+      page-name="ComplexPage"
+      :state-config="stateConfig"
+      events="both"
+      @state-restored="onStateRestored"
+      @need-load-data="onNeedLoadData">
+
     <!-- 页面内容 -->
-    
+
   </PageStateWrapper>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      stateConfig: {
-        queryForm: 'queryForm',
-        pageData: 'pageData',
-        tableData: 'tableData',
-        total: 'total'
+  export default {
+    data() {
+      return {
+        stateConfig: {
+          queryForm: 'queryForm',
+          pageData: 'pageData',
+          tableData: 'tableData',
+          total: 'total'
+        }
+      }
+    },
+    methods: {
+      onStateRestored() {
+        // 状态恢复后的处理逻辑
+        this.getUsernames()
+      },
+
+      onNeedLoadData() {
+        // 需要重新加载数据的处理逻辑
+        this.getUsernames()
+        this.getList()
       }
     }
-  },
-  methods: {
-    onStateRestored() {
-      // 状态恢复后的处理逻辑
-      this.getUsernames()
-    },
-    
-    onNeedLoadData() {
-      // 需要重新加载数据的处理逻辑
-      this.getUsernames()
-      this.getList()
-    }
   }
-}
 </script>
 ```
 
