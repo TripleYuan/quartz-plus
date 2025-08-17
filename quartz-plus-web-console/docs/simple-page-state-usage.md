@@ -1,172 +1,177 @@
-# 页面状态管理 - 简便方案
+# PageStateWrapper 组件使用说明
 
-## 🚀 新的简便方案
+## 概述
 
-使用 `PageStateWrapper` 组件，页面组件只需要很少的配置就能实现状态管理！
+`PageStateWrapper` 是一个用于页面状态保存与恢复的 Vue 组件，可以自动保存和恢复页面的查询条件、分页信息、表格数据等状态。
 
-## ✨ 主要优势
+## 🚀 快速使用
 
-- **代码量减少 80%** - 从原来的 50+ 行代码减少到 10 行以内
-- **配置化** - 只需要配置需要保存的字段，无需写保存/恢复逻辑
-- **自动处理** - 自动保存、恢复、过期检查，无需手动管理
-- **零侵入** - 不影响原有业务逻辑，只是包装了一层
+| 使用场景 | 配置方式 | 代码示例 |
+|---------|---------|----------|
+| **简单页面**（推荐） | 默认配置 | `<PageStateWrapper page-name="YourPage" :state-config="stateConfig">` |
+| **需要状态恢复事件** | `events="restore"` | `<PageStateWrapper events="restore" @state-restored="onRestored">` |
+| **需要加载数据事件** | `events="load"` | `<PageStateWrapper events="load" @need-load-data="onLoadData">` |
+| **需要所有事件** | `events="both"` | `<PageStateWrapper events="both" @state-restored="onRestored" @need-load-data="onLoadData">` |
 
-## 📝 使用方法
+### 简单页面（默认配置，推荐）
+```vue
+<PageStateWrapper page-name="YourPage" :state-config="stateConfig">
+  <!-- 页面内容 -->
+</PageStateWrapper>
+```
 
-### 1. 引入组件
+### 复杂页面（需要事件处理）
+```vue
+<PageStateWrapper 
+  page-name="YourPage" 
+  :state-config="stateConfig"
+  events="both"
+  @state-restored="onStateRestored"
+  @need-load-data="onNeedLoadData">
+  <!-- 页面内容 -->
+</PageStateWrapper>
+```
+
+## 基本用法
+
+### 1. 导入组件
 
 ```vue
-<template>
-  <PageStateWrapper 
-    page-name="YourPageName"
-    :state-config="stateConfig"
-    @state-restored="onStateRestored"
-    @need-load-data="onNeedLoadData"
-  >
-    <!-- 你的页面内容 -->
-  </PageStateWrapper>
-</template>
-
-<script>
 import PageStateWrapper from '../components/PageStateWrapper.vue'
 
 export default {
-  components: { PageStateWrapper },
-  data() {
-    return {
-      // 状态配置 - 只需要配置需要保存的字段
-      stateConfig: {
-        queryForm: 'queryForm',        // 查询条件
-        pageData: 'pageData',          // 分页信息
-        tableData: 'tableData',        // 表格数据
-        total: 'total',                // 总记录数
-        selectedRows: 'selectedRows'   // 选中的行
-      },
-      isDataLoaded: false,            // 必须：标记数据是否已加载
-      // ... 其他数据
-    }
-  },
-  methods: {
-    // 状态恢复后的回调（可选）
-    onStateRestored() {
-      // 状态已恢复，可以做一些额外处理
-    },
-    
-    // 需要加载数据的回调（可选）
-    onNeedLoadData() {
-      // 没有保存的状态，需要重新请求数据
-      this.loadData()
-    }
+  components: {
+    PageStateWrapper
   }
 }
-</script>
 ```
 
-### 2. 配置说明
+### 2. 配置状态保存
 
-#### stateConfig 格式
 ```javascript
-stateConfig: {
-  // key: 保存时的字段名
-  // value: 组件中的字段路径（支持嵌套路径）
-  queryForm: 'queryForm',           // 直接字段
-  userInfo: 'user.info',            // 嵌套字段
-  tableData: 'tableData',           // 数组字段
-  settings: 'config.settings'       // 深层嵌套
+data() {
+  return {
+    stateConfig: {
+      // 查询表单状态
+      queryForm: 'queryForm',
+      // 分页数据
+      pageData: 'pageData',
+      // 表格数据
+      tableData: 'tableData',
+      // 总数
+      total: 'total'
+    },
+    queryForm: { appid: '', startTime: '', endTime: '' },
+    pageData: { pageNo: 1, pageSize: 10 },
+    tableData: [],
+    total: 0
+  }
 }
 ```
 
-#### 支持的字段类型
-- 基本类型：String, Number, Boolean
-- 对象：Object, Array
-- 嵌套对象：支持任意深度的嵌套
-
-### 3. 完整示例
+### 3. 在模板中使用
 
 ```vue
 <template>
   <PageStateWrapper 
-    page-name="UserManage"
-    :state-config="stateConfig"
-    @state-restored="onStateRestored"
-    @need-load-data="onNeedLoadData"
-  >
-    <div class="user-manage">
-      <!-- 查询表单 -->
-      <el-form :model="queryForm" :inline="true">
-        <el-form-item>
-          <el-input v-model="queryForm.username" placeholder="用户名"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="search">查询</el-button>
-        </el-form-item>
-      </el-form>
-      
-      <!-- 数据表格 -->
-      <el-table :data="tableData">
-        <!-- 表格列 -->
-      </el-table>
-      
-      <!-- 分页 -->
-      <el-pagination 
-        :current-page="pageData.pageNo"
-        :page-size="pageData.pageSize"
-        :total="total"
-        @current-change="handlePageChange"
-      />
+    page-name="YourPageName" 
+    :state-config="stateConfig">
+    
+    <!-- 你的页面内容 -->
+    <div class="your-page">
+      <!-- 页面内容 -->
     </div>
+    
+  </PageStateWrapper>
+</template>
+```
+
+## 配置选项
+
+### 必需属性
+
+- `page-name`: 页面名称，用于标识状态
+- `state-config`: 需要保存的状态字段配置
+
+### 可选属性
+
+- `enabled`: 是否启用状态管理，默认为 `true`
+- `expire-minutes`: 状态过期时间（分钟），默认为 360 分钟
+- `events`: 事件配置，支持多种配置方式（默认为 `false`）
+
+#### events 配置详解
+
+```vue
+<!-- 1. 禁用所有事件（默认） -->
+<PageStateWrapper events="false">
+  <!-- 或 -->
+<PageStateWrapper :events="false">
+
+<!-- 2. 启用所有事件 -->
+<PageStateWrapper events="both">
+  <!-- 或 -->
+<PageStateWrapper :events="true">
+
+<!-- 3. 只启用状态恢复事件 -->
+<PageStateWrapper events="restore">
+
+<!-- 4. 只启用需要加载数据事件 -->
+<PageStateWrapper events="load">
+
+<!-- 5. 精确控制每个事件 -->
+<PageStateWrapper :events="{ restore: true, load: false }">
+```
+
+## 事件处理
+
+### 方式 1: 完全禁用事件（推荐用于简单页面）
+
+```vue
+<PageStateWrapper 
+  page-name="SimplePage" 
+  :state-config="stateConfig">
+  
+  <!-- 页面内容 -->
+  
+</PageStateWrapper>
+```
+
+**优点：**
+- 无需实现任何事件处理方法
+- 代码更简洁
+- 自动处理状态保存和恢复
+
+**适用场景：**
+- 只需要保存查询条件和分页信息
+- 不需要在状态恢复后执行特殊逻辑
+- 页面逻辑相对简单
+
+### 方式 2: 启用事件处理（适用于复杂页面）
+
+```vue
+<template>
+  <PageStateWrapper 
+    page-name="ComplexPage" 
+    :state-config="stateConfig"
+    events="both"
+    @state-restored="onStateRestored"
+    @need-load-data="onNeedLoadData">
+    
+    <!-- 页面内容 -->
+    
   </PageStateWrapper>
 </template>
 
 <script>
-import PageStateWrapper from '../components/PageStateWrapper.vue'
-
 export default {
-  name: 'UserManage',
-  components: { PageStateWrapper },
-  
-  data() {
-    return {
-      // 状态配置 - 只需要这一行配置！
-      stateConfig: {
-        queryForm: 'queryForm',
-        pageData: 'pageData',
-        tableData: 'tableData',
-        total: 'total',
-        selectedRows: 'selectedRows'
-      },
-      
-      // 业务数据
-      queryForm: { username: '', status: '' },
-      pageData: { pageNo: 1, pageSize: 10 },
-      tableData: [],
-      total: 0,
-      selectedRows: [],
-      isDataLoaded: false
-    }
-  },
-  
   methods: {
-    search() {
-      this.loadData()
-    },
-    
-    loadData() {
-      // 你的数据加载逻辑
-      // 成功后设置 this.isDataLoaded = true
-    },
-    
-    handlePageChange(page) {
-      this.pageData.pageNo = page
-      this.loadData()
-    },
-    
-    // 可选的回调方法
     onStateRestored() {
+      // 状态恢复后的处理逻辑
       console.log('状态已恢复')
     },
     
     onNeedLoadData() {
+      // 需要重新加载数据的处理逻辑
       this.loadData()
     }
   }
@@ -174,55 +179,127 @@ export default {
 </script>
 ```
 
-## 🔧 高级配置
+**适用场景：**
+- 需要在状态恢复后执行特殊逻辑
+- 需要根据状态恢复情况决定是否重新加载数据
+- 页面有复杂的初始化逻辑
 
-### 自定义过期时间
+## 实际使用示例
+
+### 示例 1: AppAlertRecord.vue（简单页面）
+
 ```vue
-<PageStateWrapper 
-  page-name="YourPage"
-  :state-config="stateConfig"
-  :expire-minutes="60"  <!-- 1小时后过期 -->
->
-```
+<template>
+  <PageStateWrapper 
+    page-name="AppAlertRecord" 
+    :state-config="stateConfig">
+    
+    <!-- 页面内容 -->
+    
+  </PageStateWrapper>
+</template>
 
-### 禁用状态管理
-```vue
-<PageStateWrapper 
-  page-name="YourPage"
-  :state-config="stateConfig"
-  :enabled="false"  <!-- 禁用状态管理 -->
->
-```
-
-### 支持复杂字段路径
-```javascript
-stateConfig: {
-  // 支持任意深度的嵌套路径
-  userProfile: 'user.profile.basic',
-  permissions: 'auth.permissions.list',
-  tableConfig: 'table.config.columns'
+<script>
+export default {
+  data() {
+    return {
+      stateConfig: {
+        ciApp: 'ciApp',
+        queryForm: 'queryForm',
+        pageData: 'pageData',
+        tableData: 'tableData',
+        total: 'total'
+      }
+    }
+  }
 }
+</script>
 ```
 
-## 📊 对比效果
+### 示例 2: OperationLog.vue（简单页面）
 
-| 方案 | 代码行数 | 配置复杂度 | 维护成本 |
-|------|----------|------------|----------|
-| 原始方案 | 50+ 行 | 高 | 高 |
-| **新方案** | **10 行** | **低** | **低** |
+```vue
+<template>
+  <PageStateWrapper 
+    page-name="OperationLog" 
+    :state-config="stateConfig">
+    
+    <!-- 页面内容 -->
+    
+  </PageStateWrapper>
+</template>
 
-## 🎯 适用场景
+<script>
+export default {
+  data() {
+    return {
+      stateConfig: {
+        queryForm: 'queryForm',
+        pageData: 'pageData',
+        tableData: 'tableData',
+        total: 'total'
+      }
+    }
+  }
+}
+</script>
+```
 
-- ✅ 列表页面（查询条件、分页、数据）
-- ✅ 表单页面（表单数据、验证状态）
-- ✅ 配置页面（用户设置、偏好）
-- ✅ 任何需要保持状态的页面
+### 示例 3: 需要事件处理的复杂页面
 
-## 🚨 注意事项
+```vue
+<template>
+  <PageStateWrapper 
+    page-name="ComplexPage" 
+    :state-config="stateConfig"
+    events="both"
+    @state-restored="onStateRestored"
+    @need-load-data="onNeedLoadData">
+    
+    <!-- 页面内容 -->
+    
+  </PageStateWrapper>
+</template>
 
-1. **必须添加 `isDataLoaded` 标记**
-2. **字段路径必须正确**，建议使用简单路径
-3. **只保存必要的状态**，避免内存占用过大
-4. **状态有过期时间**，默认30分钟
+<script>
+export default {
+  data() {
+    return {
+      stateConfig: {
+        queryForm: 'queryForm',
+        pageData: 'pageData',
+        tableData: 'tableData',
+        total: 'total'
+      }
+    }
+  },
+  methods: {
+    onStateRestored() {
+      // 状态恢复后的处理逻辑
+      this.getUsernames()
+    },
+    
+    onNeedLoadData() {
+      // 需要重新加载数据的处理逻辑
+      this.getUsernames()
+      this.getList()
+    }
+  }
+}
+</script>
+```
 
-现在为任何页面添加状态管理，只需要几行配置即可！🎉
+## 注意事项
+
+1. **状态字段路径**: `state-config` 中的值必须是组件中实际存在的字段路径
+2. **数据加载标记**: 组件会自动设置 `isDataLoaded` 标记，确保状态保存的准确性
+3. **状态过期**: 默认状态保存 6 小时，可以通过 `expire-minutes` 调整
+4. **自动保存**: 状态会在页面销毁和路由离开时自动保存
+5. **事件可选**: 两个事件都是可选的，可以根据页面需求选择启用或禁用
+
+## 最佳实践
+
+1. **简单页面**: 使用默认配置，无需添加任何事件相关属性
+2. **复杂页面**: 使用 `events="both"` 启用所有事件，或使用 `events="restore"` 等精确控制
+3. **状态配置**: 只保存必要的状态字段，避免保存过大的数据
+4. **性能考虑**: 对于大数据量的表格，考虑只保存分页信息，不保存完整数据

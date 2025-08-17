@@ -1,6 +1,5 @@
 <template>
-    <PageStateWrapper page-name="OperationLog" :state-config="stateConfig" @state-restored="onStateRestored"
-        @need-load-data="onNeedLoadData">
+    <PageStateWrapper page-name="OperationLog" :state-config="stateConfig" :events="false">
 
         <div class="operationlog">
             <div class="operationlog-header">
@@ -217,13 +216,6 @@ export default {
             }
         },
 
-        onStateRestored() {
-            this.getUsernames()
-        },
-        onNeedLoadData() {
-            this.getUsernames()
-            this.getList()
-        }
     },
     mounted() {
         this.getUsernames()

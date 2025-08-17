@@ -1,6 +1,5 @@
 <template>
-    <PageStateWrapper page-name="InstanceManage" :state-config="stateConfig" @state-restored="onStateRestored"
-        @need-load-data="onNeedLoadData">
+    <PageStateWrapper page-name="InstanceManage" :state-config="stateConfig" :events="false">
 
         <div class="instancemanage">
 
@@ -115,13 +114,6 @@ export default {
             })
         },
 
-        onStateRestored() {
-            this.getSchedNameList()
-        },
-        onNeedLoadData() {
-            this.getSchedNameList()
-            this.getIntanceList()
-        }
     },
     mounted() {
         this.getSchedNameList()

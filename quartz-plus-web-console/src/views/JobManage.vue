@@ -1,6 +1,5 @@
 <template>
-    <PageStateWrapper page-name="JobManage" :state-config="stateConfig" @state-restored="onStateRestored"
-        @need-load-data="onNeedLoadData">
+    <PageStateWrapper page-name="JobManage" :state-config="stateConfig" :events="false">
 
         <div class="jobmanage">
             <!-- 编辑Job的弹窗 -->
@@ -301,13 +300,6 @@ export default {
             });
         },
 
-        onStateRestored() {
-            this.getSchedNameList()
-        },
-        onNeedLoadData() {
-            this.getSchedNameList()
-            this.getJobList()
-        }
     },
     mounted() {
         this.getSchedNameList()

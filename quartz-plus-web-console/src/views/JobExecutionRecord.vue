@@ -1,6 +1,5 @@
 <template>
-    <PageStateWrapper page-name="JobExecutionRecord" :state-config="stateConfig" @state-restored="onStateRestored"
-        @need-load-data="onNeedLoadData">
+    <PageStateWrapper page-name="JobExecutionRecord" :state-config="stateConfig" :events="false">
 
         <div class="jobExecutionRecordList">
 
@@ -143,13 +142,6 @@ export default {
             }
         },
 
-        onStateRestored() {
-            this.getSchedNameList()
-        },
-        onNeedLoadData() {
-            this.getSchedNameList()
-            this.getJobExecutionRecordList()
-        }
     },
     mounted() {
         this.getSchedNameList()

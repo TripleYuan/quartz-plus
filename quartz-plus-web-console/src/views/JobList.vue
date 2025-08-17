@@ -1,6 +1,5 @@
 <template>
-    <PageStateWrapper page-name="JobList" :state-config="stateConfig" @state-restored="onStateRestored"
-        @need-load-data="onNeedLoadData">
+    <PageStateWrapper page-name="JobList" :state-config="stateConfig">
 
         <div class="joblist">
             <div class="joblist-header">
@@ -144,19 +143,10 @@ export default {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
-
-        // 状态恢复后的回调
-        onStateRestored() {
-            // 状态已恢复，只需要获取调度器名称列表
-            this.getSchedNameList()
-        },
-
-        // 需要加载数据的回调
-        onNeedLoadData() {
-            // 没有保存的状态，需要重新请求数据
-            this.getSchedNameList()
-            this.getJobList()
-        }
+    },
+    mounted() {
+        this.getSchedNameList()
+        this.getJobList()
     }
 }
 </script>

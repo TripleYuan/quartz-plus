@@ -31,11 +31,57 @@ export default {
     expireMinutes: {
       type: Number,
       default: 360
+    },
+    // 事件配置，支持多种配置方式
+    events: {
+      type: [String, Object, Boolean],
+      default: false,
+      validator: function (value) {
+        if (typeof value === 'boolean') return true
+        if (typeof value === 'string') return ['restore', 'load', 'both'].includes(value)
+        if (typeof value === 'object') {
+          return Object.keys(value).every(key => ['restore', 'load'].includes(key))
+        }
+        return false
+      }
     }
   },
 
   computed: {
-    ...mapGetters('pageState', ['getPageState'])
+    ...mapGetters('pageState', ['getPageState']),
+    
+    // 解析事件配置
+    eventConfig() {
+      if (this.events === false) {
+        return { restore: false, load: false }
+      }
+      
+      if (this.events === true) {
+        return { restore: true, load: true }
+      }
+      
+      if (typeof this.events === 'string') {
+        switch (this.events) {
+          case 'restore':
+            return { restore: true, load: false }
+          case 'load':
+            return { restore: false, load: true }
+          case 'both':
+            return { restore: true, load: true }
+          default:
+            return { restore: false, load: false }
+        }
+      }
+      
+      if (typeof this.events === 'object') {
+        return {
+          restore: !!this.events.restore,
+          load: !!this.events.load
+        }
+      }
+      
+      return { restore: false, load: false }
+    }
   },
 
   methods: {
@@ -139,11 +185,15 @@ export default {
   mounted() {
     // 自动恢复状态
     if (this.autoRestoreState()) {
-      // 触发恢复事件
-      this.$emit('state-restored')
+      // 触发恢复事件（如果启用且父组件监听了该事件）
+      if (this.eventConfig.restore) {
+        this.$emit('state-restored')
+      }
     } else {
-      // 触发需要加载数据事件
-      this.$emit('need-load-data')
+      // 触发需要加载数据事件（如果启用且父组件监听了该事件）
+      if (this.eventConfig.load) {
+        this.$emit('need-load-data')
+      }
     }
   },
 
