@@ -96,6 +96,7 @@ export default {
                             this.$message.error(data.message)
                         }
                     }).catch((err) => {
+                        console.log(err)
                         this.$message.error('系统繁忙，请稍后重试~')
                     })
                     this.roleDialogVisible = false
@@ -127,6 +128,7 @@ export default {
                         this.$message.error(data.message)
                     }
                 }).catch((err) => {
+                    console.log(err)
                     this.$message.error('系统繁忙，请稍后重试~')
                 })
             }).catch(() => {
@@ -170,6 +172,7 @@ export default {
                 }
                 this.permissionDialogVisible = false
             }).catch((err) => {
+                console.log(err)
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
@@ -183,6 +186,7 @@ export default {
                     this.$message.error(data.message)
                 }
             }).catch((err) => {
+                console.log(err)
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },

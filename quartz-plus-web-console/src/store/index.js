@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import tab from './tab'
 import menu from './menu'
+import pageState from './pageState'
 
 Vue.use(Vuex)
 
@@ -9,7 +10,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     modules: {
         tab,
-        menu
+        menu,
+        pageState
     }
 })
 

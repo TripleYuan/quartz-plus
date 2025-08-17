@@ -1,65 +1,81 @@
 <template>
-    <div class="joblist">
+    <PageStateWrapper page-name="JobList" :state-config="stateConfig" @state-restored="onStateRestored"
+        @need-load-data="onNeedLoadData">
 
-        <div class="joblist-header">
-            <el-select v-model="queryForm.schedName" filterable placeholder="请选择" @change="handleSelectChange"
-                clearable>
-                <el-option v-for="item in schedNames" :key="item" :label="item" :value="item">
-                </el-option>
-            </el-select>
-            <el-form :model="queryForm" :inline="true" style="margin-left: 20px">
-                <el-form-item>
-                    <el-input v-model="queryForm.jobName" placeholder="请输入任务名称"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="this.getJobList">查找</el-button>
-                </el-form-item>
-            </el-form>
+        <div class="joblist">
+            <div class="joblist-header">
+                <el-select v-model="queryForm.schedName" filterable placeholder="请选择" @change="handleSelectChange"
+                    clearable>
+                    <el-option v-for="item in schedNames" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select>
+                <el-form :model="queryForm" :inline="true" style="margin-left: 20px">
+                    <el-form-item>
+                        <el-input v-model="queryForm.jobName" placeholder="请输入任务名称"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="this.getJobList">查找</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+
+            <!-- 任务列表数据 -->
+            <el-table :data="tableData" style="width: 100%" height="90%" stripe>
+                <el-table-column prop="schedName" label="Quartz实例名" min-width="60">
+                </el-table-column>
+                <el-table-column prop="jobName" label="任务名称">
+                </el-table-column>
+                <el-table-column prop="jobDesc" label="任务描述">
+                </el-table-column>
+                <el-table-column prop="prevFireTime" label="上次执行时间" min-width="60">
+                </el-table-column>
+                <el-table-column prop="nextFireTime" label="下次执行时间" min-width="60">
+                </el-table-column>
+                <el-table-column prop="triggerState" label="触发器状态" min-width="40">
+                </el-table-column>
+                <el-table-column prop="cron" label="cron表达式" min-width="50">
+                </el-table-column>
+                <el-table-column label="操作" min-width="60">
+                    <template slot-scope="scope">
+                        <el-button type="primary" size="mini" @click="tiggerJob(scope.row)">立即执行</el-button>
+                        <el-button type="primary" size="mini" @click="refreshJob(scope.row)">刷新</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div class="page">
+                <el-pagination layout="total, sizes, prev, pager, next" :total="this.total" @current-change="handlePage"
+                    @size-change="handlePageSizeChange">
+                </el-pagination>
+            </div>
         </div>
-
-        <!-- 任务列表数据 -->
-        <el-table :data="tableData" style="width: 100%" height="90%" stripe>
-            <el-table-column prop="schedName" label="Quartz实例名" min-width="60">
-            </el-table-column>
-            <el-table-column prop="jobName" label="任务名称">
-            </el-table-column>
-            <el-table-column prop="jobDesc" label="任务描述">
-            </el-table-column>
-            <el-table-column prop="prevFireTime" label="上次执行时间" min-width="60">
-            </el-table-column>
-            <el-table-column prop="nextFireTime" label="下次执行时间" min-width="60">
-            </el-table-column>
-            <el-table-column prop="triggerState" label="触发器状态" min-width="40">
-            </el-table-column>
-            <el-table-column prop="cron" label="cron表达式" min-width="50">
-            </el-table-column>
-            <el-table-column label="操作" min-width="60">
-                <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="tiggerJob(scope.row)">立即执行</el-button>
-                    <el-button type="primary" size="mini" @click="refreshJob(scope.row)">刷新</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-
-        <div class="page">
-            <el-pagination layout="total, sizes, prev, pager, next" :total="this.total" @current-change="handlePage"
-                @size-change="handlePageSizeChange">
-            </el-pagination>
-        </div>
-    </div>
+    </PageStateWrapper>
 </template>
 
 <script>
 import { getSchedNames, getJobs, executeJob, refreshJob } from '../api'
+import PageStateWrapper from '../components/PageStateWrapper.vue'
+
 export default {
     name: 'JobList',
+    components: {
+        PageStateWrapper
+    },
     data() {
         return {
             schedNames: [],
             tableData: [],
             queryForm: { schedName: '', jobName: '' },
             pageData: { pageNo: 1, pageSize: 10 },
-            total: 0
+            total: 0,
+            isDataLoaded: false,
+            // 状态配置 - 只需要配置需要保存的字段
+            stateConfig: {
+                queryForm: 'queryForm',
+                pageData: 'pageData',
+                tableData: 'tableData',
+                total: 'total'
+            }
         }
     },
     methods: {
@@ -82,7 +98,7 @@ export default {
                 } else {
                     this.$message.error(data.message)
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
@@ -93,10 +109,11 @@ export default {
                     const pageResponse = data.data
                     this.tableData = pageResponse.data
                     this.total = pageResponse.total
+                    this.isDataLoaded = true
                 } else {
                     this.$message.error(data.message)
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
@@ -110,7 +127,7 @@ export default {
                 } else {
                     this.$message.error(data.message)
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
@@ -123,14 +140,23 @@ export default {
                 } else {
                     this.$message.error(data.message)
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
-    },
-    mounted() {
-        this.getSchedNameList()
-        this.getJobList()
+
+        // 状态恢复后的回调
+        onStateRestored() {
+            // 状态已恢复，只需要获取调度器名称列表
+            this.getSchedNameList()
+        },
+
+        // 需要加载数据的回调
+        onNeedLoadData() {
+            // 没有保存的状态，需要重新请求数据
+            this.getSchedNameList()
+            this.getJobList()
+        }
     }
 }
 </script>

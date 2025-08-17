@@ -1,48 +1,65 @@
 <template>
-    <div class="instancemanage">
+    <PageStateWrapper page-name="InstanceManage" :state-config="stateConfig" @state-restored="onStateRestored"
+        @need-load-data="onNeedLoadData">
 
-        <div class="instancemanage-header">
-            <el-select v-model="queryForm.schedName" filterable placeholder="请选择" @change="handleSelectChange"
-                clearable>
-                <el-option v-for="item in schedNames" :key="item" :label="item" :value="item">
-                </el-option>
-            </el-select>
+        <div class="instancemanage">
+
+            <div class="instancemanage-header">
+                <el-select v-model="queryForm.schedName" filterable placeholder="请选择" @change="handleSelectChange"
+                    clearable>
+                    <el-option v-for="item in schedNames" :key="item" :label="item" :value="item">
+                    </el-option>
+                </el-select>
+            </div>
+
+            <!-- 实例列表数据 -->
+            <el-table :data="tableData" style="width: 100%" height="90%" stripe>
+                <el-table-column prop="schedName" label="Quartz实例名称" width="200">
+                </el-table-column>
+                <el-table-column prop="instanceHost" label="实例地址">
+                </el-table-column>
+                <el-table-column prop="instancePort" label="实例端口">
+                </el-table-column>
+                <el-table-column label="操作" width="210" fixed="right">
+                    <template slot-scope="scope">
+                        <el-button type="danger" size="mini" @click="deleteInstance(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div class="page">
+                <el-pagination layout="total, sizes, prev, pager, next" :total="this.total" @current-change="handlePage"
+                    @size-change="handlePageSizeChange">
+                </el-pagination>
+            </div>
         </div>
 
-        <!-- 实例列表数据 -->
-        <el-table :data="tableData" style="width: 100%" height="90%" stripe>
-            <el-table-column prop="schedName" label="Quartz实例名称" width="200">
-            </el-table-column>
-            <el-table-column prop="instanceHost" label="实例地址">
-            </el-table-column>
-            <el-table-column prop="instancePort" label="实例端口">
-            </el-table-column>
-            <el-table-column label="操作" width="210" fixed="right">
-                <template slot-scope="scope">
-                    <el-button type="danger" size="mini" @click="deleteInstance(scope.row)">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-
-        <div class="page">
-            <el-pagination layout="total, sizes, prev, pager, next" :total="this.total" @current-change="handlePage"
-                @size-change="handlePageSizeChange">
-            </el-pagination>
-        </div>
-    </div>
+    </PageStateWrapper>
 </template>
 
 <script>
 import { getSchedNames, getInstances, deleteInstance } from '../api'
+import PageStateWrapper from '../components/PageStateWrapper.vue'
+
 export default {
     name: 'InstanceManage',
+    components: {
+        PageStateWrapper
+    },
     data() {
         return {
             schedNames: [],
             tableData: [],
             queryForm: { schedName: '' },
             pageData: { pageNo: 1, pageSize: 10 },
-            total: 0
+            total: 0,
+            isDataLoaded: false,
+            stateConfig: {
+                queryForm: 'queryForm',
+                pageData: 'pageData',
+                tableData: 'tableData',
+                total: 'total'
+            }
         }
     },
     methods: {
@@ -65,7 +82,7 @@ export default {
                 } else {
                     this.$message.error(data.message)
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
@@ -76,10 +93,11 @@ export default {
                     const pageResponse = data.data
                     this.tableData = pageResponse.data
                     this.total = pageResponse.total
+                    this.isDataLoaded = true
                 } else {
                     this.$message.error(data.message)
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
@@ -92,10 +110,18 @@ export default {
                 } else {
                     this.$message.error(data.message)
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
+
+        onStateRestored() {
+            this.getSchedNameList()
+        },
+        onNeedLoadData() {
+            this.getSchedNameList()
+            this.getIntanceList()
+        }
     },
     mounted() {
         this.getSchedNameList()

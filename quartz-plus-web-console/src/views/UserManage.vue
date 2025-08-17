@@ -58,7 +58,7 @@
 <script>
 import {
     getUsers, addOrUpdateUser, deleteUser, getUserPermissions, addOrUpdateUserPermission,
-    getRoles, getRolePermissions
+    getRoles
 } from '../api'
 export default {
     data() {
@@ -106,6 +106,7 @@ export default {
                             this.$message.error(data.message)
                         }
                     }).catch((err) => {
+                        console.log(err)
                         this.$message.error('系统繁忙，请稍后重试~')
                     })
                     this.userDialogVisible = false
@@ -137,6 +138,7 @@ export default {
                         this.$message.error(data.message)
                     }
                 }).catch((err) => {
+                    console.log(err)
                     this.$message.error('系统繁忙，请稍后重试~')
                 })
             }).catch(() => {
@@ -198,45 +200,10 @@ export default {
                 }
                 this.permissionDialogVisible = false
             }).catch((err) => {
+                console.log(err)
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
-        // loadPermissionNode(node, resolve) {
-        //     if (node.level === 0) {
-        //         return resolve(node.data)
-        //     }
-
-        //     if (node.level > 1) {
-        //         return node.data.children ? resolve(node.data.children) : resolve([])
-        //     }
-
-        //     getRolePermissions(node.data.id).then(({ data }) => {
-        //         let nodeData = []
-        //         if (data.status === 0) {
-        //             const menuIds = data.data.map(item => item.menuId)
-        //             const menuData = JSON.parse(JSON.stringify(this.$store.state.menu.sysMenuData))
-        //             menuData.forEach(item => {
-        //                 if (menuIds.indexOf(item.id) !== -1) {
-        //                     if (item.children) {
-        //                         item.children = item.children.filter(item => menuIds.indexOf(item.id) !== -1)
-        //                         if (item.children.length > 0) {
-        //                             nodeData.push(item)
-        //                         }
-        //                     } else {
-        //                         item.disabled = true
-        //                         nodeData.push(item)
-        //                     }
-        //                 }
-        //             })
-        //         } else {
-        //             this.$message.error('获取角色权限失败：' + data.message)
-        //         }
-        //         resolve(nodeData)
-        //     }).catch((err) => {
-        //         this.$message.error('系统繁忙，请稍后重试~')
-        //         console.log(err)
-        //     })
-        // },
 
         // 获取角色列表
         getList() {
@@ -247,6 +214,7 @@ export default {
                     this.$message.error(data.message)
                 }
             }).catch((err) => {
+                console.log(err)
                 this.$message.error('系统繁忙，请稍后重试~')
             })
         },
